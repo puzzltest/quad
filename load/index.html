@@ -1,9 +1,15 @@
+<textarea></textarea>
+<button>load</button>
 <script src="https://cdn.jsdelivr.net/npm/zipson@latest/dist/zipson.min.js"></script>
 <script>
   const raw = localStorage.getItem("save");
-  const new_raw = prompt("paste nonsense here");
-  if (new_raw) {
-    localStorage.setItem("save", new_raw);
-  }
-  setTimeout(() => window.location.href = "/", 100);
+  const a = document.querySelector("textarea");
+  const b = document.querySelector("button");
+  b.addEventListener("click", function(event) {
+    const new_raw = a.value;
+    if (new_raw) {
+      localStorage.setItem("save", new_raw);
+    }
+    setTimeout(() => window.location.href = "/", 100);
+  });
 </script>
