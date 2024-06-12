@@ -8,7 +8,7 @@
   b.addEventListener("click", function(event) {
     const new_raw = a.value;
     if (new_raw) {
-      localStorage.setItem("save", new_raw);
+      localStorage.setItem("save", zipson.stringify(JSON.parse(new_raw)));
     }
     setTimeout(() => window.location.href = "/", 100);
   });
