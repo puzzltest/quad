@@ -1,0 +1,15 @@
+
+
+<script src="https://cdn.jsdelivr.net/npm/zipson@latest/dist/zipson.min.js"></script>
+<script>
+  const raw = localStorage.getItem("save");
+  const s = zipson.parse(raw);
+  s.player.x = 0;
+  s.player.y = 0;
+  s.player.z = -1;
+  const new_raw = zipson.stringify(s);
+  localStorage.setItem("save", new_raw);
+  setTimeout(() => window.location.href = "/", 100);
+</script>
+
+
