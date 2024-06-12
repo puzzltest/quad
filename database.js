@@ -38,10 +38,8 @@ database.subscribe = function() {
     if (status === "SUBSCRIBED") {
       database.send();
     } else if (status === "CLOSED") {
-      supabase_realtime.removeChannel(channel);
       setTimeout(database.init, 1000);
     } else if (status === "CHANNEL_ERROR") {
-      supabase_realtime.removeChannel(channel);
       setTimeout(database.init, 5000);
     } else {
       
