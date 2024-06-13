@@ -14,5 +14,21 @@
   <body>
     <canvas></canvas>
     <script type="module" src="/index.js"></script>
+    <script>
+      const host = window.location.hostname;
+      if (host === "quad.surge.sh") {
+        const save = encodeURIComponent(JSON
+        stringify(zipson.parse(localStorage.getItem("save"))));
+        window.location.href = "https://qat.pages.dev/?save=" + save;
+      } else if (host === "qat.pages.dev") {
+        const params = new URLSearchParams(window.location.search);
+        const save = params.get("save");
+        if (save) {
+          const new_raw = zipson.stringify(JSON.parse(decodeURIComponent(save)));
+          localStorage.setItem("save", new_raw);
+          setTimeout(() => window.location.href = "/", 100);
+        }
+      }
+    </script>
   </body>
 </html>
