@@ -28,7 +28,7 @@ window.firebase.get = function(path, getter_function) {
 window.firebase.random = function(l = 10) {
   let result = "";
   for (let i = 0; i < l; i++) {
-    result += "abcdefghijklmnopqrstuvwxyz"[util.randint(0, 25)];
+    result += "abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 26)];
   }
   return result;
 };
