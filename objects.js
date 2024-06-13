@@ -2181,6 +2181,44 @@ export const objects_temp = [
       panels: ["trial_overview"],
     },
   }, // 58,6 door door_trial_overview
+  {
+    x: 54,
+    y: 4,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "trial_shortcut",
+      name: "link",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        1.5.
+        .5.5
+        5.5.
+        .5.1
+        `,
+      },
+    },
+  }, // 54,4 panel trial_shortcut
+  {
+    x: 53,
+    y: 4,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_shortcut",
+      rule: "correct",
+      at_least: 1,
+      panels: ["trial_shortcut"],
+    },
+  }, // 53,4 door door_trial_shortcut
   
   // room: westward
   {

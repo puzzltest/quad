@@ -433,7 +433,7 @@ export const maps = [
     map: `
     00.00
     0...0
-    0...0
+    0....
     0...0
     00000
     `,
@@ -509,18 +509,18 @@ export const maps = [
     `,
   }, // 54,-4,0 central
   {
-    x: 56,
+    x: 54,
     y: 3,
     z: 0,
     scale: 12,
     theme: "grass",
     name: "overview",
     map: `
-    0...0
-    0...0
-    0...0
-    00.00
-    ..,..
+    ..0...0
+    ......0
+    ..0...0
+    0000.00
+    ....,..
     `,
   }, // 56,3,0 overview
   {
@@ -1060,11 +1060,14 @@ export const map = {
     for (const pid in panel_lookup) {
       const o = map.get_panel(pid);
       const p = o.panel;
-      save.panels[pid] = {
+      const panelsave = {
         state: p.state,
-        lock: p.lock,
         solved: p.solved,
       };
+      if (p.lock.flat().includes(1)) {
+        panelsave.lock = p.lock;
+      }
+      save.panels[pid] = panelsave;
     }
     const zipped = zipson.stringify(save);
     // console.log("saved", save);

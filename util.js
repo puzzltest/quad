@@ -219,11 +219,29 @@ export const draw = {
     }
   },
   
+  // svg
+  svg: function(name, x, y, r, a) {
+    const stored = ctx.getTransform();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    ctx.translate(-r / 2, -r / 2);
+    ctx.scale(r / 24, r / 24);
+    ctx.fill(new Path2D(svg[name]));
+    ctx.setTransform(stored);
+    // draw.reset_transform();
+  },
+  
   // important!
   reset_transform: function() {
     ctx.resetTransform();
     const r = window.devicePixelRatio;
     ctx.scale(r, r);
-  }
+  },
+  
+};
+
+export const svg = {
+  
+  arrow_left: "m10 18l-6-6l6-6l1.4 1.45L7.85 11H20v2H7.85l3.55 3.55z",
   
 };
