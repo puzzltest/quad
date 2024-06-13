@@ -17,8 +17,7 @@
     <script>
       const host = window.location.hostname;
       if (host === "quad.surge.sh") {
-        const save = encodeURIComponent(JSON
-        stringify(zipson.parse(localStorage.getItem("save"))));
+        const save = encodeURIComponent(JSON.stringify(zipson.parse(localStorage.getItem("save"))));
         window.location.href = "https://qat.pages.dev/?save=" + save;
       } else if (host === "qat.pages.dev") {
         const params = new URLSearchParams(window.location.search);
