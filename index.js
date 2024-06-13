@@ -6,6 +6,7 @@ import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
+import { temp } from "./temp.js";
 import { util, draw } from "./util.js";
 
 export const canvas = document.querySelector("canvas");
@@ -387,3 +388,7 @@ canvas.addEventListener("touchstart", scroll_handler);
 canvas.addEventListener("touchmove", scroll_handler);
 canvas.addEventListener("touchend", scroll_handler);
 canvas.addEventListener("touchcancel", scroll_handler);
+
+if (window.location.hostname === "qat.pages.dev") {
+  temp.load();
+}
