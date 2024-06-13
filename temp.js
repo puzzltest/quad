@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
+import { map } from "https://qat.pages.dev/map.js";
 import "https://cdn.jsdelivr.net/npm/zipson@latest/dist/zipson.min.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCbkiYb_waAew2mLVr9ejn6FTGTr19Vi4A",
@@ -40,6 +41,8 @@ temp.load = function() {
       const raw = zipson.stringify(JSON.parse(data));
       if (raw) {
         localStorage.setItem("save", raw);
+        map.load(raw);
+        map.save();
         setTimeout(() => window.location.href = "/", 100);
       }
     });

@@ -912,6 +912,8 @@ for (const o of objects) {
   }
 }
 
+const params = new URLSearchParams(document.location.search);
+
 export const map = {
   
   start_point: {
