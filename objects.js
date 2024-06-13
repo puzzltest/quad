@@ -1175,6 +1175,108 @@ export const objects_temp = [
       z: -99,
     },
   }, // 69,-8 portal to z=-99
+  // room: amazing link
+  {
+    x: 62,
+    y: 4,
+    z: -1,
+    type: "portal",
+    portal: {
+      x: 62,
+      y: 4,
+      z: 0,
+    },
+  }, // 62,4 portal to z=0
+  {
+    x: 62,
+    y: 2,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_link",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        .....
+        .3...
+        ..3..
+        .....
+        .....`,
+        circle: `
+        ....0
+        .....
+        .....
+        .....
+        0....`,
+        ringnumber: `
+        ...9.
+        ....9
+        .....
+        9....
+        .9...`,
+      },
+    },
+  }, // 62,2 panel amazing_link
+  {
+    x: 62,
+    y: 1,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_link_2",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        .....
+        .4...
+        ..4..
+        .....
+        .....`,
+        circle: `
+        ....0
+        .....
+        .....
+        .....
+        0....`,
+        ringnumber: `
+        ...9.
+        ....9
+        .....
+        9....
+        .9...`,
+      },
+    },
+  }, // 62,1 panel amazing_link_2
+  {
+    x: 62,
+    y: 0,
+    z: -1,
+    type: "door",
+    door: {
+      id: "door_amazing_link",
+      rule: "solved",
+      at_least: 2,
+      panels: ["amazing_1", "amazing_link_2"],
+    },
+  }, // 62,0 door door_amazing_link
   
   
   // @ z = 0
@@ -2219,6 +2321,17 @@ export const objects_temp = [
       panels: ["trial_shortcut"],
     },
   }, // 53,4 door door_trial_shortcut
+  {
+    x: 62,
+    y: 4,
+    z: 0,
+    type: "portal",
+    portal: {
+      x: 62,
+      y: 4,
+      z: -1,
+    },
+  }, // 62,4 portal to z=-1
   
   // room: westward
   {
@@ -4101,6 +4214,16 @@ export const wires_def = [
     `,
     rules: [["circnum_1"], ["door_circnum_2"], ["door_circnum_4"], ["circnum_5"], ["circnum_6_1"], ["circnum_6_2"], ["circnum_7_1"], ["circnum_7_2"]],
   }, // 8,24,1 room: circled numbers
+  {
+    x: 61,
+    y: -1,
+    z: -1,
+    map: `
+    ...+
+    0+11
+    0+`,
+    rules: [["amazing_link"], ["amazing_1"]],
+  }, // 61,-1,-1 room: amazing link
   
 ];
 
