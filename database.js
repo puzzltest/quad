@@ -13,6 +13,8 @@ export const database = {};
 
 database.init = function() {
   
+  return;
+  /*
   const supabase_realtime = createClient(url, api_key);
   const the_channel = supabase_realtime.channel("room");
   channel = the_channel;
@@ -27,12 +29,14 @@ database.init = function() {
     player.others[data.id] = data;
   });
   
-  database.subscribe();
+  database.subscribe();*/
   
 };
 
 database.subscribe = function() {
   
+  return;
+  /*
   channel.subscribe((status) => {
     console.log(status);
     if (status === "SUBSCRIBED") {
@@ -44,12 +48,13 @@ database.subscribe = function() {
     } else {
       
     }
-  });
+  });*/
   
 };
 
 database.time = 0;
 database.tick = function(time) {
+  return;
   if (time - database.time < 30) return;
   database.time = time;
   // console.log(time);
@@ -57,6 +62,8 @@ database.tick = function(time) {
 };
 
 database.send = function() {
+  return;
+  /*
   channel.send({
     type: "broadcast",
     event: "position",
@@ -67,5 +74,5 @@ database.send = function() {
       z: player.z,
       p: map.panel_ref.total_solved,
     },
-  });
+  });*/
 };
