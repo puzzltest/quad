@@ -129,7 +129,7 @@ panel.draw = function() {
         for (const symbol in p.hide_symbols ? [] : p.symbols) {
           const str = p.symbols[symbol][j][i];
           if (str !== ".") {
-            panel_symbols[symbol](str, x, y, size, size, s);
+            panel_symbols[symbol](str, x + size / 2, y + size / 2, size, size, s);
           }
         }
         y += size + gap;
@@ -266,6 +266,13 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
     return has_same;
   }
+  else if (name === "ruing") {
+    if (s == 0)
+      return util.compare_shape(util.bfs_to_shape(util.bfs(p.state, x, y)), p.ruin);
+    else if (s == 1) {
+      // todo
+    }
+  }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
   }
@@ -316,7 +323,7 @@ panel_symbols.number = function(s, x, y, w, h, state) {
   draw.set_font(w * 0.5);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(s, x + w / 2, y + h / 2);
+  ctx.fillText(s, x, y);
 };
 
 panel_symbols.diagonal = function(s, x, y, w, h, state) {
@@ -324,7 +331,7 @@ panel_symbols.diagonal = function(s, x, y, w, h, state) {
   draw.set_font(w * 0.5);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.translate(x + w / 2, y + h / 2);
+  ctx.translate(x, y);
   ctx.rotate(-Math.PI / 4);
   ctx.fillText(s, 0, 0);
   draw.reset_transform();
@@ -333,28 +340,42 @@ panel_symbols.diagonal = function(s, x, y, w, h, state) {
 panel_symbols.ring = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.065;
-  draw.circle(x + w / 2, y + h / 2, w * 0.3);
+  draw.circle(x, y, w * 0.3);
   ctx.stroke();
 };
 
 panel_symbols.ringnumber = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.045;
-  draw.circle(x + w / 2, y + h / 2, w * 0.35);
+  draw.circle(x, y, w * 0.35);
   ctx.stroke();
   ctx.fillStyle = (state) ? "#111" : "#eee";
   const n = parseInt(s, 36);
   draw.set_font(n > 9 ? w * 0.28 : w * 0.36, "bold");
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(n, x + w / 2, y + h / 2 + 1);
+  ctx.fillText(n, x, y + 1);
 };
 
-const circle_colours = ["#d65", "#56b", "#6c5", "#cb4", "#4cc"]
+const circle_colours = ["#d65", "#56b", "#6c5", "#cb4", "#4cc"];
 panel_symbols.circle = function(s, x, y, w, h, state) {
   ctx.fillStyle = circle_colours[s];
-  draw.circle(x + w / 2, y + h / 2, w * 0.28);
+  draw.circle(x, y, w * 0.28);
   ctx.fill();
+};
+
+panel_symbols.ruing = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.065;
+  draw.circle(x, y, w * 0.34);
+  ctx.stroke();
+  if (s == 0) {
+    draw.rectangle(x, y, w * 0.32, h * 0.32);
+    ctx.stroke();
+  } else if (s == 1) {
+    draw.rect_angle(x, y, w * 0.32, h * 0.32, Math.PI / 4, true);
+    // draw.rect_angle(x, y, w * 0.32, h * 0.32, v.time * 0.03, true);
+  }
 };
 
 sign_pictures.text = function(x, y, w, h, o) {

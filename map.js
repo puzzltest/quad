@@ -502,9 +502,8 @@ export const maps = [
     0..000.0.0
     0...0..0.0
     .........0
-    0......0.0
-    00000000000
-    00000000000
+    0......0..,
+    00000000.00
     `,
   }, // 60,-4,0 addition
   {
@@ -808,6 +807,31 @@ export const maps = [
     .0000000.
     `,
   }, // 10,37,1 more circles?
+  {
+    x: 63,
+    y: 1,
+    z: 1,
+    scale: 6.5,
+    theme: "wood",
+    name: "circle test",
+    map: `
+0000000
+0000000
+00...00
+00...00
+00...00
+000.000
+000.000
+000.000
+0.....0
+0.....0
+0.....0
+0.....0
+0.....0
+000.000
+...,...
+    `,
+  },
   
   {
     x: -10,
@@ -1100,13 +1124,13 @@ export const map = {
       if (s) o.seen = true;
       if (s?.state != undefined) {
         p.state = [];
-        for (let y = 0; y < o.panel.h; y++) {
+        for (let y = 0; y < p.h; y++) {
           const temp = [];
-          for (let x = 0; x < o.panel.w; x++) {
+          for (let x = 0; x < p.w; x++) {
             if (+p.map[y][x] != 2) {
               temp.push(+p.map[y][x]);
             } else {
-              temp.push(s?.state[y] ? +s?.state[y][x] ?? 0 : 0);
+              temp.push(s?.state[y] ? +(s?.state[y][x] ?? 0) : 0);
             }
           }
           p.state.push(temp);
@@ -1227,4 +1251,4 @@ for (let wi = 0; wi < start_wires.length; wi++) {
 }
 */
 
-console.log(wires);
+// console.log(wires);

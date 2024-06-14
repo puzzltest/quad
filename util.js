@@ -7,6 +7,10 @@ export const util = {
   dir8: [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]],
   dir9: [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]],
   dir5x: [[0, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]],
+  pi: Math.PI,
+  sqrt2: Math.sqrt(2.0),
+  sqrt3: Math.sqrt(3.0),
+  invsqrt2: 1.0 / Math.sqrt(2.0),
   lerp: function(a, b, t) {
     return a * (1 - t) + b * t;
   },
@@ -61,7 +65,37 @@ export const util = {
       result.push(b);
     }
     return result;
-  }, 
+  },
+  bfs_to_shape: function(bfs_result) {
+    const xs = [];
+    const ys = [];
+    for (const { x, y } of bfs_result) {
+      xs.push(x);
+      ys.push(y);
+    }
+    const min_x = Math.min(...xs);
+    const max_x = Math.max(...xs);
+    const min_y = Math.min(...ys);
+    const max_y = Math.max(...ys);
+    const temp = [];
+    for (const line of ((".").repeat(max_x - min_x + 1) + "\n").repeat(max_y - min_y + 1).trim().split("\n")) {
+      temp.push(line.split(""));
+    }
+    for (const { x, y } of bfs_result) {
+      temp[y - min_y][x - min_x] = "0";
+    }
+    const result = [];
+    for (const line of temp) {
+      result.push(line.join(""));
+    }
+    return result;
+  },
+  rotate_shape: function(shape) {
+    // todo
+  },
+  compare_shape: function(shape1, shape2) {
+    return (shape1.join("\n") === shape2.join("\n"));
+  },
   copy: function(text) {
     function fallbackCopyTextToClipboard(text) {
       var textArea = document.createElement("textarea");
@@ -170,10 +204,14 @@ export const draw = {
       ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a));
     }
   },
-  rect_angle: function(x, y, w, h, a) {
-    x -= w / 2;
-    y -= h / 2;
-    // todo
+  rect_angle: function(x, y, w, h, a, stroke = false) {
+    const stored = ctx.getTransform();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    draw.rectangle(0, 0, w, h);
+    if (stroke) ctx.stroke();
+    else ctx.fill();
+    ctx.setTransform(stored);
   },
   
   // text functions

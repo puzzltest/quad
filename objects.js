@@ -2332,6 +2332,75 @@ export const objects_temp = [
       z: -1,
     },
   }, // 62,4 portal to z=-1
+  {
+    x: 66,
+    y: 4,
+    z: 0,
+    type: "portal",
+    portal: {
+      x: 66,
+      y: 4,
+      z: 1,
+    },
+  }, // 66,4 portal to z=1
+  {
+    x: 68,
+    y: 4,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "trial_shortcut_2",
+      name: "link",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      ruin: `
+      00.
+      .00
+      .0.`,
+      symbols: {
+        ruing: `
+        ......
+        .00...
+        .01...
+        ......
+        ......
+        ......
+        `,
+      },
+    },
+  }, // 68,4 panel trial_shortcut_2
+  {
+    x: 68,
+    y: 2,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_shortcut_2",
+      rule: "correct",
+      at_least: 1,
+      panels: ["trial_shortcut_2"],
+    },
+  }, // 68,2 door door_trial_shortcut_2
+  {
+    x: 69,
+    y: 1,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_shortcut_2_2",
+      rule: "correct",
+      at_least: 1,
+      panels: ["trial_shortcut_2"],
+    },
+  }, // 69,1 door door_trial_shortcut_2_2
   
   // room: westward
   {
@@ -3829,7 +3898,112 @@ export const objects_temp = [
       panels: ["circnum_7_1", "circnum_7_2"],
     },
   }, // 6,29 panel circnum_8
-  
+  // room: circle test
+  {
+    x: 66,
+    y: 4,
+    z: 1,
+    type: "portal",
+    portal: {
+      x: 66,
+      y: 4,
+      z: 0,
+    },
+  }, // 66,4 portal to z=0
+  {
+    x: 66,
+    y: 7,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_test_0",
+      name: "circle test: 0",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        ...9
+        .3..
+        ....
+        9..3
+        `,
+      },
+    },
+  }, // 66,7 panel circle_test_0
+  {
+    x: 65,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_test_1",
+      name: "circle test: 1",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ring: `
+        ...0.
+        ....0
+        ..0..
+        0....
+        .0...`,
+        ringnumber: `
+        ....a
+        .....
+        .....
+        .....
+        a....
+        `,
+      },
+    },
+  }, // 65,10 panel circle_test_1
+  {
+    x: 67,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_test_2",
+      name: "circle test: 2",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        circle: `
+        0....
+        .....
+        ..0..
+        ...0.
+        ....0`,
+        ringnumber: `
+        ....c
+        .4..2
+        .....
+        .....
+        c....
+        `,
+      },
+    },
+  }, // 67,10 panel circle_test_2
   
   // @ z = -99
   
@@ -4155,6 +4329,17 @@ export const wires_def = [
     rules: [["trial_overview"]],
   }, // 58,4,0 room: overview
   {
+    x: 68,
+    y: 1,
+    z: 0,
+    map: `
+    .+
+    +0
+    0
+    +`,
+    rules: [["trial_shortcut_2"]],
+  }, // 68,2,0 room: overview
+  {
     x: 17,
     y: 3,
     z: 0,
@@ -4234,6 +4419,7 @@ for (const o of objects_temp) {
   if (o.panel) {
     if (o.panel.map) o.panel.map = o.panel.map.trim().replaceAll(/[ ]/g, "").split("\n");
     if (o.panel.answer) o.panel.answer = o.panel.answer.trim().replaceAll(/[ ]/g, "").split("\n");
+    if (o.panel.ruin) o.panel.ruin = o.panel.ruin.trim().replaceAll(/[ ]/g, "").split("\n");
     for (const s in o.panel.symbols ?? []) {
       o.panel.symbols[s] = o.panel.symbols[s].trim().replaceAll(/[ ]/g, "").split("\n");
     }
