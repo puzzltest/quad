@@ -2375,6 +2375,7 @@ export const objects_temp = [
         ......
         `,
       },
+      unsolvable: true,
     },
   }, // 68,4 panel trial_shortcut_2
   {
@@ -4004,6 +4005,80 @@ export const objects_temp = [
       },
     },
   }, // 67,10 panel circle_test_2
+  {
+    x: 65,
+    y: 12,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_test_3",
+      name: "circle test: 3",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ring: `
+        .....
+        .....
+        .....
+        .....
+        00000
+        `,
+        ringnumber: `
+        66666
+        .....
+        66666
+        .....
+        .....
+        `,
+      },
+    },
+  }, // 65,12 panel circle_test_3
+  {
+    x: 67,
+    y: 12,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_test_4",
+      name: "circle test: 4",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ring: `
+        .....
+        .....
+        .....
+        .....
+        .....`,
+        circle: `
+        .....
+        .....
+        .....
+        .....
+        .....`,
+        ringnumber: `
+        1...1
+        .4...
+        ..3..
+        ...2.
+        1...5`,
+      },
+    },
+  }, // 67,12 panel circle_test_4
   
   // @ z = -99
   
