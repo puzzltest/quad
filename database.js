@@ -31,6 +31,14 @@ function connect() {
   firebase.listen("/quad/positions/", function(positions) {
     player.others = positions;
   });
+  firebase.listen("/quad/timestamp/", function(now) {
+      for (const other_id in player.others ?? []) {
+        if (now - (player.others[other_id].t ?? 0) > 3000) {
+          console.log(now - (player.others[other_id].t ?? 0));
+          firebase.remove("/quad/positions/" + other_id);
+        }
+      }
+  });
   firebase.disconnect_remove("/quad/positions/" + the_id);
 };
 
@@ -127,15 +135,10 @@ firebase.tick = function(time) {
   if (time - firebase.time < 30) return;
   firebase.time = time;
   firebase.send();
-  const now = Date.now();
-  for (const other_id in player.others) {
-    if (now - (player.others[other_id].t ?? 0) > 3000) {
-      firebase.remove("/quad/positions/" + other_id);
-    }
-  }
 };
 
 firebase.send = function() {
+  firebase.set("/quad/timestamp", serverTimestamp());
   firebase.set("/quad/positions/" + the_id, {
     id: the_id,
     x: util.round_to(player.x, 100),

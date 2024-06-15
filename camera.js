@@ -101,15 +101,11 @@ camera.draw = function() {
   }
   
   // draw other players
-  const now = Date.now();
   for (const other_id in player.others) {
     const other = player.others[other_id];
     if (other.z == player.z) {
       const [ox, oy] = camera.convert(other.x, other.y);
       player_theme.other(ox, oy, size * player.size, size * player.size, other);
-    }
-    if (now - (other.t ?? 0) > 700) {
-      delete player.others[other_id];
     }
   };
   
