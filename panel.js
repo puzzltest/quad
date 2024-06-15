@@ -81,7 +81,7 @@ panel.mousecheck = function() {
   for (const t of mouse.newtaps) {
     if (ctx.isPointInPath(t.x, t.y)) {
       t.active = false;
-      sound.play("tap");
+      // sound.play("tap");
       return t;
     }
   }

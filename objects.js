@@ -3474,6 +3474,7 @@ export const objects_temp = [
       id: "door_circnum_2",
       rule: "solved",
       at_least: 4,
+      countdown: true,
       panels: ["circnum_2_1", "circnum_2_2", "circnum_2_3", "circnum_2_4", "circnum_2_5"],
     },
   }, // 10,29 door door_circnum_2
@@ -3640,6 +3641,7 @@ export const objects_temp = [
       id: "door_circnum_4",
       rule: "solved",
       at_least: 4,
+      countdown: true,
       panels: ["circnum_4_1", "circnum_4_2", "circnum_4_3", "circnum_4_4", "circnum_4_5"],
     },
   }, // 9,35 door door_circnum_4
@@ -4086,6 +4088,19 @@ export const objects_temp = [
       },
     },
   }, // 67,12 panel circle_test_4
+  {
+    x: 66,
+    y: 14,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_circle_test",
+      rule: "correct",
+      at_least: 2,
+      countdown: true,
+      panels: ["circle_test_1", "circle_test_2", "circle_test_3", "circle_test_4"],
+    },
+  }, // 66,14 door door_circle_test
   
   // @ z = -99
   

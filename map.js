@@ -1070,7 +1070,8 @@ export const map = {
       const corr = ((door.rule.includes("solved")) ? pane?.solved : pane?.correct) === true;
       if (corr) number++;
     }
-    const open = number >= (door.at_least ?? door.panels?.length ?? 0);
+    door.number = number - (door.at_least ?? door.panels?.length ?? 0);
+    const open = (door.number >= 0);
     door.open = open;
     return (open !== old);
   },

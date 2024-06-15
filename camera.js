@@ -213,7 +213,16 @@ export const theme = {
       ctx.lineWidth = w * 0.05;
       draw.rectangle(x, y, w * 0.8, h * 0.8);
       if (o.door?.open) ctx.stroke();
-      else ctx.fill();
+      else {
+        ctx.fill();
+        if (o.door?.countdown) {
+          ctx.fillStyle = "#1116";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          draw.set_font(w * 0.4);
+          ctx.fillText(-o.door?.number || 0, x, y, w, h);
+        }
+      }
     },
     ["sign"]: function(x, y, w, h) {
       ctx.fillStyle = "#a859";
