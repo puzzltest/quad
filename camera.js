@@ -108,7 +108,7 @@ camera.draw = function() {
       const [ox, oy] = camera.convert(other.x, other.y);
       player_theme.other(ox, oy, size * player.size, size * player.size, other);
     }
-    if (now - other.t > 700) {
+    if (now - (other.t ?? 0) > 700) {
       delete player.others[other_id];
     }
   };

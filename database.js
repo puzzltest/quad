@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
 import { map } from "/map.js";
 import { player } from "/player.js";
 import { util } from "/util.js";
@@ -103,7 +103,7 @@ firebase.init = function() {
   }
 
   firebase.remove = function(path) {
-    ref(db, path).remove();
+    remove(ref(db, path));
   };
 
   firebase.disconnect_set = function(path, value) {
@@ -127,6 +127,12 @@ firebase.tick = function(time) {
   if (time - firebase.time < 30) return;
   firebase.time = time;
   firebase.send();
+  const now = Date.now();
+  for (const other_id in player.others) {
+    if (now - (player.others[other_id].t ?? 0) > 3000) {
+      firebase.remove("/quad/positions/" + other_id);
+    }
+  }
 };
 
 firebase.send = function() {
@@ -135,6 +141,7 @@ firebase.send = function() {
     x: util.round_to(player.x, 100),
     y: util.round_to(player.y, 100),
     z: player.z,
+    t: serverTimestamp(),
     p: map.panel_ref.total_solved,
   });
 };
