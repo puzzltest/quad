@@ -70,6 +70,7 @@ export const util = {
     return result;
   },
   bfs_to_shape: function(bfs_result) {
+    if (bfs_result.length === 1) return ["0"];
     const xs = [];
     const ys = [];
     for (const { x, y } of bfs_result) {
@@ -89,7 +90,7 @@ export const util = {
     }
     const result = [];
     for (const line of temp) {
-      result.push(line.join(""));
+      result.push(line?.join("") ?? line);
     }
     return result;
   },

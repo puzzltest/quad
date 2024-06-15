@@ -369,13 +369,16 @@ panel_symbols.circle = function(s, x, y, w, h, state) {
 panel_symbols.ruing = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.065;
+  ctx.lineCap = "square";
   draw.circle(x, y, w * 0.34);
   ctx.stroke();
   if (s == 0) {
-    draw.rectangle(x, y, w * 0.32, h * 0.32);
+    draw.polygon(3, x, y, w * 0.28, Math.PI / 6);
     ctx.stroke();
   } else if (s == 1) {
-    draw.rect_angle(x, y, w * 0.32, h * 0.32, Math.PI / 4, true);
+    draw.polygon(3, x, y, w * 0.28, Math.PI / 6 + v.time * 0.03);
+    ctx.stroke();
+    // draw.rect_angle(x, y, w * 0.32, h * 0.32, Math.PI / 4, true);
     // draw.rect_angle(x, y, w * 0.32, h * 0.32, v.time * 0.03, true);
   }
 };

@@ -4101,6 +4101,93 @@ export const objects_temp = [
       panels: ["circle_test_1", "circle_test_2", "circle_test_3", "circle_test_4"],
     },
   }, // 66,14 door door_circle_test
+  // room: triangles?
+  {
+    x: 64,
+    y: 18,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_0_1",
+      name: "",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      212
+      222`,
+      ruin: "00\n0.",
+      symbols: {
+        ruing: `
+        ...
+        .0.
+        ...`,
+      },
+    },
+  }, // 64,18 panel ruing_0_1
+  {
+    x: 67,
+    y: 18,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_0_2",
+      name: "",
+      w: 1,
+      h: 3,
+      type: "binary",
+      map: `
+      2
+      2
+      2`,
+      ruin: "0\n0",
+      symbols: {
+        ruing: `
+        .
+        0
+        .`,
+      },
+    },
+  }, // 67,18 panel ruing_0_2
+  {
+    x: 69,
+    y: 18,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_0_3",
+      name: "",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      ruin: "0",
+      symbols: {
+        ruing: `
+        000
+        0.0
+        000`,
+      },
+    },
+  }, // 69,18 panel ruing_0_3
+  {
+    x: 66,
+    y: 20,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_ruing_0",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["ruing_0_1", "ruing_0_2", "ruing_0_3"],
+    },
+  }, // 66,20 door door_ruing_0
+  
   
   // @ z = -99
   
