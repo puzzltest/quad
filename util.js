@@ -20,6 +20,9 @@ export const util = {
   halfbounce: function(t, a) {
     return -Math.min((t % (a * 2)) - a, 0) / a;
   },
+  round_to: function(n, mult) {
+    return Math.round((n + Number.EPSILON) * mult) / mult;
+  },
   rand: function() {
     return Math.random();
   },

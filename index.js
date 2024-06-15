@@ -1,12 +1,11 @@
 import { camera } from "./camera.js";
-import { database } from "./database.js";
+import { database, firebase, temp } from "./database.js";
 import { map } from "./map.js";
 import { physics } from "./physics.js";
 import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
-import { temp } from "./temp.js";
 import { util, draw } from "./util.js";
 
 export const canvas = document.querySelector("canvas");
@@ -44,7 +43,7 @@ export const mouse = {
 
 const init = function() {
   map.init();
-  database.init();
+  firebase.init();
   camera.init();
   physics.init();
   physics.tick();
@@ -260,7 +259,7 @@ const tick = function(time) {
   physics.tick(dt);
   player.tick();
   particle.tick();
-  database.tick(time);
+  firebase.tick(time);
   maindraw();
   tick_after();
   requestAnimationFrame(tick);

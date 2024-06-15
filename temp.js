@@ -33,18 +33,3 @@ window.firebase.random = function(l = 10) {
   }
   return result;
 };
-
-export const temp = {};
-temp.load = function() {
-  if (params.get("save")) {
-    window.firebase.get("/quad/" + params.get("save"), (data) => {
-      const raw = zipson.stringify(JSON.parse(data));
-      if (raw) {
-        localStorage.setItem("save", raw);
-        map.load(raw);
-        map.save();
-        setTimeout(() => window.location.href = "/", 100);
-      }
-    });
-  }
-};

@@ -1,6 +1,7 @@
 import { canvas, ctx, v, view, mouse } from "./index.js";
 import { maps, map, objects } from "./map.js";
 import { player } from "./player.js";
+import { sound } from "./sfx.js";
 import { util, draw } from "./util.js";
 
 export const panel = {
@@ -80,6 +81,7 @@ panel.mousecheck = function() {
   for (const t of mouse.newtaps) {
     if (ctx.isPointInPath(t.x, t.y)) {
       t.active = false;
+      sound.play("tap");
       return t;
     }
   }

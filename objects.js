@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 5, 🧩 116",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 5, 🧩 121",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -1831,14 +1831,17 @@ export const objects_temp = [
       type: "binary",
       map: `
       2222
-      2220
+      2222
       2222
       2222`,
-      answer: `
-      1011
-      0100
-      1011
-      1101`,
+      symbols: {
+        ringnumber: `
+        1122
+        1122
+        3133
+        3313`,
+      },
+      hide_symbols: true,
     },
   }, // 45,-6 panel ruins_water
   {
@@ -1855,11 +1858,15 @@ export const objects_temp = [
       map: `
       222
       222
-      220`,
-      answer: `
-      000
-      101
-      010`,
+      222`,
+      symbols: {
+        ringnumber: `
+        444
+        141
+        111
+        `,
+      },
+      hide_symbols: true,
     },
   }, // 48,-7 panel ruins_wall
   {
