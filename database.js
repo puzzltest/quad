@@ -215,8 +215,8 @@ temp.load = function(code = false) {
         setTimeout(() => window.location.href = "/", 100);
       }
     });
-  } else if (code.length === 10) {
-    firebase.get("/quad/save/" + the_id, function(data) {
+  } else if ((code?.length ?? 0) === 10) {
+    firebase.get("/quad/save/" + code, function(data) {
       if (data == null) {
         alert("error: no such save code?");
       } else {

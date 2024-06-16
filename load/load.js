@@ -46,6 +46,7 @@ window.addEventListener("load", function(event) {
     console.log(hi);
   });
   const div = document.querySelector("div");
+  const span = document.querySelector("span");
   firebase.init();
   firebase.listen("/quad/positions/", function(data) {
     let s = "";
@@ -62,6 +63,13 @@ window.addEventListener("load", function(event) {
         setpos(o);
       });
     }
+  });
+  firebase.listen("/quad/save/", function(data) {
+    let s = "";
+    for (const id in data) {
+      s += id + ", ";
+    }
+    span.innerHTML = s;
   });
 });
 
