@@ -224,6 +224,7 @@ temp.load = function(code = false) {
       } else {
         const raw = zipson.stringify(JSON.parse(data));
         if (raw) {
+          alert("loading...");
           localStorage.setItem("save", raw);
           map.load(raw);
           map.save();
@@ -235,7 +236,7 @@ temp.load = function(code = false) {
       }
     });
   } else {
-    alert("error: ???");
+    // alert("error: ???");
     return;
   }
 };
