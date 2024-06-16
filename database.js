@@ -201,6 +201,8 @@ temp.save = function() {
     nice = zipson.parse(nice);
     nice = JSON.stringify(nice);
     firebase.set("/quad/save/" + the_id, nice);
+  } else {
+    alert("error: no save data?");
   }
   return the_id;
 };
@@ -225,11 +227,15 @@ temp.load = function(code = false) {
           localStorage.setItem("save", raw);
           map.load(raw);
           map.save();
+          alert("loaded!");
           setTimeout(() => window.location.href = "/", 100);
+        } else {
+          alert("error: ?");
         }
       }
     });
   } else {
+    alert("error: ???");
     return;
   }
 };
