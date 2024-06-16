@@ -4187,6 +4187,148 @@ export const objects_temp = [
       panels: ["ruing_0_1", "ruing_0_2", "ruing_0_3"],
     },
   }, // 66,20 door door_ruing_0
+  {
+    x: 66,
+    y: 22,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_1_1",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      ruin: "00.\n.00",
+      symbols: {
+        ruing: `
+        00...
+        ...0.
+        .....
+        .0...
+        ...0.`,
+      },
+    },
+  }, // 66,22 panel ruing_1_1
+  {
+    x: 66,
+    y: 24,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_1_2",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      ruin: "000",
+      symbols: {
+        ruing: `
+        ..0..
+        ....0
+        .....
+        ..0..
+        0....`,
+        circle: `
+        4....
+        .....
+        .....
+        .....
+        ....4`,
+      },
+    },
+  }, // 66,24 panel ruing_1_2
+  {
+    x: 67,
+    y: 26,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_1_3",
+      name: "",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      022220
+      222222
+      222222
+      222222
+      222222
+      022220`,
+      ruin: "00.0.\n.0000",
+      symbols: {
+        ruing: `
+        ......
+        .....0
+        ......
+        ...0..
+        ......
+        ......`,
+        ring: `
+        ......
+        0.....
+        ......
+        ....0.
+        0.....
+        ......`,
+      },
+    },
+  }, // 67,26 panel ruing_1_3
+  {
+    x: 70,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "ruing_1_4",
+      name: "",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      ruin: ".0.\n000\n.0.",
+      symbols: {
+        ruing: `
+        ......
+        .0..0.
+        ......
+        ......
+        .0..0.
+        ......`,
+      },
+    },
+  }, // 70,21 panel ruing_1_4
+  {
+    x: 71,
+    y: 25,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_ruing_1",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["ruing_1_1", "ruing_1_2", "ruing_1_3", "ruing_1_4"],
+    },
+  }, // 71,25 door door_ruing_1
   
   
   // @ z = -99

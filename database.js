@@ -32,6 +32,8 @@ function connect() {
     player.others = positions;
   });
   firebase.listen("/quad/timestamp/", function(now) {
+      if (firebase.time - firebase.update2_time < 2000) return;
+      firebase.update2_time = firebase.time;
       for (const other_id in player.others ?? []) {
         if (now - (player.others[other_id].t ?? 0) > 3000) {
           console.log(now - (player.others[other_id].t ?? 0));
@@ -131,9 +133,12 @@ firebase.init = function() {
 };
 
 firebase.time = 0;
+firebase.update_time = 0;
+firebase.update2_time = 0;
 firebase.tick = function(time) {
-  if (time - firebase.time < 30) return;
   firebase.time = time;
+  if (time - firebase.update_time < 30) return;
+  firebase.update_time = time;
   firebase.send();
 };
 

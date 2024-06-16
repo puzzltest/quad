@@ -1,4 +1,5 @@
 import { canvas, ctx, v, view, mouse } from "./index.js";
+import { the_id } from "./database.js";
 import { maps, map } from "./map.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
@@ -102,6 +103,7 @@ camera.draw = function() {
   
   // draw other players
   for (const other_id in player.others) {
+    if (other_id === the_id) continue;
     const other = player.others[other_id];
     if (other.z == player.z) {
       const [ox, oy] = camera.convert(other.x, other.y);
