@@ -67,9 +67,16 @@ window.addEventListener("load", function(event) {
   firebase.listen("/quad/save/", function(data) {
     let s = "";
     for (const id in data) {
-      s += id + ", ";
+      s += `<a id="save_${id}">${id}</a>, `;
     }
     span.innerHTML = s;
+    for (const id in data) {
+      const link = document.getElementById("save_" + id);
+      link.href = "#";
+      link.addEventListener("click", function(event) {
+        firebase.remove("/quad/save/" + id);
+      });
+    }
   });
 });
 
