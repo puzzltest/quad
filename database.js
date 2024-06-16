@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
+import { map } from "./map.js";
 import { util } from "/util.js";
 
 const params = new URLSearchParams(document.location.search);
@@ -226,8 +227,8 @@ temp.load = function(code = false) {
         if (raw) {
           // alert("loading...");
           localStorage.setItem("save", raw);
-          // map.load(raw);
-          // map.save();
+          map.load(raw);
+          map.save();
           alert("loaded!");
           setTimeout(() => window.location.href = "/", 250);
         } else {
