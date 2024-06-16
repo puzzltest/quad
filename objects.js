@@ -4134,19 +4134,19 @@ export const objects_temp = [
     panel: {
       id: "ruing_0_2",
       name: "",
-      w: 1,
+      w: 3,
       h: 3,
       type: "binary",
       map: `
-      2
-      2
-      2`,
-      ruin: "0\n0",
+      222
+      222
+      222`,
+      ruin: "00\n00",
       symbols: {
         ruing: `
-        .
-        0
-        .`,
+        ...
+        .0.
+        ...`,
       },
     },
   }, // 67,18 panel ruing_0_2
