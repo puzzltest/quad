@@ -3,6 +3,7 @@ import { maps, map, objects } from "./map.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
 import { util } from "./util.js";
+import { temp } from "./database.js";
 import { draw } from "./draw.js";
 
 export const panel = {
@@ -34,6 +35,7 @@ for (const o of objects) {
 const panel_symbols = {};
 const sign_functions = {};
 const sign_pictures = {};
+const symbol_functions = {};
 const door_custom = {};
 
 panel.init = function() {
@@ -321,6 +323,12 @@ panel.update_doors = function(doors) {
   }
 };
 
+panel.symbol_function = function(type, o) {
+  if (!type) return null;
+  if (!symbol_functions[type]) return null;
+  return symbol_functions[type]?.(o);
+};
+
 panel_symbols.number = function(s, x, y, w, h, state) {
   ctx.fillStyle = (state) ? "#111" : "#eee"
   draw.set_font(w * 0.5);
@@ -523,6 +531,23 @@ sign_functions["answer :)"] = function(o) {
   if (!othersign.content.includes("wait")) {
     othersign.content = othersign.content.replace(" :)", "... wait you already looked at it :)");
   }
+};
+
+symbol_functions.arrow_left = function() {
+  map.physics_ref.move_player(-50 * player.speed, 0);
+};
+
+symbol_functions.arrow_right = function() {
+  map.physics_ref.move_player(50 * player.speed, 0);
+};
+
+symbol_functions.save = function() {
+  window.prompt("saved! copy this:", temp.save());
+};
+
+symbol_functions.load = function() {
+  const code = window.prompt("load from 10-letter code:");
+  temp.load(code);
 };
 
 door_custom.door_0_1234 = function(door) {

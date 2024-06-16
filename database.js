@@ -3,6 +3,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
 import { util } from "/util.js";
 
+const params = new URLSearchParams(document.location.search);
+
 const url = "https://hwrnmdsdjevfcvgpablf.supabase.co";
 const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3cm5tZHNkamV2ZmN2Z3BhYmxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgwNzkyOTQsImV4cCI6MjAzMzY1NTI5NH0.zYEJGqxrQYZoOensuJWG5NCyWC9vFhSbIvMVX3zVq5Y";
 const firebaseConfig = {
@@ -193,15 +195,38 @@ database.send = function() {
 
 export const temp = {};
 
-temp.load = function() {
-  if (params.get("save")) {
-    window.firebase.get("/quad/" + params.get("save"), (data) => {
+temp.save = function() {
+  let nice = localStorage.getItem("save");
+  if (nice) {
+    nice = zipson.parse(nice);
+    nice = JSON.stringify(nice);
+    firebase.set("/quad/save/" + the_id, nice);
+  }
+  return the_id;
+};
+temp.load = function(code = false) {
+  if (!code && params.get("save")) {
+    firebase.get("/quad/" + params.get("save"), (data) => {
       const raw = zipson.stringify(JSON.parse(data));
       if (raw) {
         localStorage.setItem("save", raw);
         map.load(raw);
         map.save();
         setTimeout(() => window.location.href = "/", 100);
+      }
+    });
+  } else if (code.length === 10) {
+    firebase.get("/quad/save/" + the_id, function(data) {
+      if (data == null) {
+        alert("error: no such save code?");
+      } else {
+        const raw = zipson.stringify(JSON.parse(data));
+        if (raw) {
+          localStorage.setItem("save", raw);
+          map.load(raw);
+          map.save();
+          setTimeout(() => window.location.href = "/", 100);
+        }
       }
     });
   } else {

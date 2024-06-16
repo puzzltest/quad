@@ -930,6 +930,9 @@ export const tiledef = {
   ["link"]: {
     physics: "empty",
   },
+  ["symbol"]: {
+    physics: "empty",
+  },
   ["sign"]: {
     physics: "sign",
   },
@@ -987,6 +990,7 @@ export const map = {
   },
   door_custom: null,
   panel_ref: null,
+  physics_ref: null,
   player_ref: null,
   util_ref: null,
   levels: [],

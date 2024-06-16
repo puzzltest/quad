@@ -19,6 +19,7 @@ export const player = {
   mode: "normal",
   others: {},
   init: function() {
+    map.physics_ref = physics;
     firebase.send = function() {
       // firebase.set("/quad/timestamp", serverTimestamp());
       firebase.set("/quad/positions/" + the_id, {
@@ -195,6 +196,9 @@ export const player = {
       }
       else if (o.type === "door") {
         
+      }
+      else if (o.type === "symbol") {
+        panel.symbol_function(o.symbol?.type, o);
       }
       return true;
     } else {

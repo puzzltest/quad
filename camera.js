@@ -198,6 +198,11 @@ export const theme = {
       draw.rectangle(x, y, w, h);
       ctx.fill();
     },
+    ["symbol"]: function(x, y, w, h, o) {
+      if (!o.symbol) return;
+      ctx.fillStyle = o.symbol?.fill ?? "#ffff";
+      draw.svg(o.symbol.type, x, y, w);
+    },
     ["panel"]: function(x, y, w, h, o) {
       ctx.fillStyle = o.panel?.solved ? "#8da" : "#baf";
       if (o.door) {
@@ -229,7 +234,7 @@ export const theme = {
         }
       }
     },
-    ["sign"]: function(x, y, w, h) {
+    ["sign"]: function(x, y, w, h, o) {
       ctx.fillStyle = "#a859";
       draw.rectangle(x, y - h * 0.15, w * 0.8, h * 0.6);
       ctx.fill();

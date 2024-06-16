@@ -1300,12 +1300,21 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 5, 🧩 121",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 5, 🧩 128",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
     textangle: -0.1,
   }, // 27,0 sign
+  {
+    x: 22,
+    y: 0,
+    z: 0,
+    type: "symbol",
+    symbol: {
+      type: "arrow_left",
+    },
+  }, // 22,0 symbol arrow_left
   // room: home
   {
     x: 27,
@@ -1318,6 +1327,24 @@ export const objects_temp = [
       z: -1,
     },
   }, // 27,11 portal to z=-1
+  {
+    x: 26,
+    y: 5,
+    z: 0,
+    type: "symbol",
+    symbol: {
+      type: "save",
+    },
+  }, // 26,5 symbol save
+  {
+    x: 27,
+    y: 5,
+    z: 0,
+    type: "symbol",
+    symbol: {
+      type: "load",
+    },
+  }, // 27,5 symbol load
   // room: scattered
   {
     x: 29,
