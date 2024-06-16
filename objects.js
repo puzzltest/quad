@@ -3246,7 +3246,7 @@ export const objects_temp = [
     door: {
       rule: "correct",
       at_least: 1,
-      panels: ["circle_4_2"],
+      panels: ["circle_5_1", "circle_5_2"],
     },
   }, // 5,20 panel circle_last
   {
@@ -4103,7 +4103,7 @@ export const objects_temp = [
   }, // 66,14 door door_circle_test
   // room: triangles?
   {
-    x: 64,
+    x: 63,
     y: 18,
     z: 1,
     type: "panel",
@@ -4125,7 +4125,7 @@ export const objects_temp = [
         ...`,
       },
     },
-  }, // 64,18 panel ruing_0_1
+  }, // 63,18 panel ruing_0_1
   {
     x: 67,
     y: 18,
