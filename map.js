@@ -993,6 +993,7 @@ export const map = {
   physics_ref: null,
   player_ref: null,
   util_ref: null,
+  v_ref: null,
   levels: [],
   solvable_panels: 0,
   stars_collected: [],

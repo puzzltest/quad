@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
 import { map } from "./map.js";
-import { util } from "/util.js";
+import { util } from "./util.js";
 
 const params = new URLSearchParams(document.location.search);
 
@@ -22,6 +22,8 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
+export const VERSION = 80301;
+const version = VERSION;
 
 let already_ran_connect = false;
 function connect() {
@@ -29,8 +31,20 @@ function connect() {
   already_ran_connect = true;
   firebase.increment("/quad/connections", 1);
   firebase.disconnect_increment("/quad/connections", -1);
+  firebase.disconnect_remove("/quad/positions/" + the_id);
   firebase.listen("/quad/positions/", function(positions) {
     firebase.others = positions;
+  });
+  firebase.listen("/quad/version/", function(new_ver) {
+    if (new_ver < version) {
+      firebase.set("/quad/version/", version);
+    } else if (new_ver > version) {
+      if (window.confirm("new version released! reload?")) {
+        window.location.reload(true);
+      }
+    } else {
+      // yay correct version
+    }
   });
   /*
   firebase.listen("/quad/timestamp/", function(now) {
@@ -43,7 +57,6 @@ function connect() {
         }
       }
   });*/
-  firebase.disconnect_remove("/quad/positions/" + the_id);
 };
 
 firebase.init = function() {

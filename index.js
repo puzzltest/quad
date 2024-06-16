@@ -1,5 +1,5 @@
 import { camera } from "./camera.js";
-import { database, firebase, temp } from "./database.js";
+import { database, firebase, temp, the_id, VERSION } from "./database.js";
 import { map } from "./map.js";
 import { physics } from "./physics.js";
 import { panel } from "./panel.js";
@@ -13,6 +13,7 @@ export const canvas = document.querySelector("canvas");
 export const ctx = canvas.getContext("2d");
 
 export const v = {
+  version: VERSION,
   width: 0,
   height: 0,
   mobile: false,
@@ -276,7 +277,7 @@ const tick_after = function() {
   mouse.newtaps = []; // mouse.newtaps.filter((t) => t.active);
   // do a save every 1 second?
   if (v.time % 60 === 0) {
-    before_unload();
+    save_game();
   }
   for (const id in mouse.start_point) {
     mouse.hold_time[id] = (mouse.hold_time[id] ?? 0) + 1;
@@ -364,9 +365,15 @@ const scroll_handler = function(event) {
   return false;
 };
 
-const before_unload = function(event) {
+const save_game = function() {
   const raw_save = map.save();
   localStorage.setItem("save", raw_save);
+  return;
+};
+
+const before_unload = function(event) {
+  save_game();
+  firebase.remove("/quad/positions/" + the_id);
 };
 
 // window handlers

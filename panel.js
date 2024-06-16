@@ -45,6 +45,7 @@ panel.init = function() {
   map.panel_ref = panel;
   map.player_ref = player;
   map.util_ref = util;
+  map.v_ref = v;
 };
 
 panel.activate = function() {
@@ -542,7 +543,9 @@ symbol_functions.arrow_right = function() {
 };
 
 symbol_functions.save = function() {
-  window.prompt("saved! copy this:", temp.save());
+  if (window.confirm("create a new save?")) {
+    window.prompt("saved! copy this:", temp.save());
+  }
 };
 
 symbol_functions.load = function() {
