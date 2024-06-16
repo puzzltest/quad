@@ -154,6 +154,12 @@ camera.draw = function() {
     draw.set_font(view.size * 0.045, "bold");
     ctx.fillText(`⭐ ${map.stars_collected.length}`, view.cx - view.size * 0.58, view.cy - view.size * 0.56);
   }
+  const players = Object.keys(player?.others ?? {})?.length ?? 0;
+  if (players > 1) {
+    ctx.textAlign = "right";
+    draw.set_font(view.size * 0.045, "bold");
+    ctx.fillText(`⬜ ${players}`, view.cx + view.size * 0.58, view.cy + view.size * 0.56);
+  }
 };
 
 export const theme = {
