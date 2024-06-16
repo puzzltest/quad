@@ -1,8 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-database.js";
-import { map } from "/map.js";
-import { player } from "/player.js";
 import { util } from "/util.js";
 
 const url = "https://hwrnmdsdjevfcvgpablf.supabase.co";
@@ -29,8 +27,9 @@ function connect() {
   firebase.increment("/quad/connections", 1);
   firebase.disconnect_increment("/quad/connections", -1);
   firebase.listen("/quad/positions/", function(positions) {
-    player.others = positions;
+    firebase.others = positions;
   });
+  /*
   firebase.listen("/quad/timestamp/", function(now) {
       if (firebase.time - firebase.update2_time < 2000) return;
       firebase.update2_time = firebase.time;
@@ -40,7 +39,7 @@ function connect() {
           firebase.remove("/quad/positions/" + other_id);
         }
       }
-  });
+  });*/
   firebase.disconnect_remove("/quad/positions/" + the_id);
 };
 
@@ -140,18 +139,6 @@ firebase.tick = function(time) {
   if (time - firebase.update_time < 30) return;
   firebase.update_time = time;
   firebase.send();
-};
-
-firebase.send = function() {
-  firebase.set("/quad/timestamp", serverTimestamp());
-  firebase.set("/quad/positions/" + the_id, {
-    id: the_id,
-    x: util.round_to(player.x, 100),
-    y: util.round_to(player.y, 100),
-    z: player.z,
-    t: serverTimestamp(),
-    p: map.panel_ref.total_solved,
-  });
 };
 
 

@@ -2,7 +2,8 @@ import { canvas, ctx, v, view, mouse } from "./index.js";
 import { maps, map, objects } from "./map.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
-import { util, draw } from "./util.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 export const panel = {
   x: 0,

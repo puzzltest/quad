@@ -3,7 +3,8 @@ import { the_id } from "./database.js";
 import { maps, map } from "./map.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
-import { util, draw } from "./util.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 export const camera = {
   cx: 0,

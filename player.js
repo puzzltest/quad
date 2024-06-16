@@ -1,8 +1,11 @@
 import { camera } from "./camera.js";
+import { firebase, the_id } from "./database.js";
 import { map, tiledef } from "./map.js";
 import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { physics, player_bodies } from "./physics.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 export const player = {
   x: map.start_point.x,
@@ -15,7 +18,21 @@ export const player = {
   size: 0.75,
   mode: "normal",
   others: {},
+  init: function() {
+    firebase.send = function() {
+      // firebase.set("/quad/timestamp", serverTimestamp());
+      firebase.set("/quad/positions/" + the_id, {
+        id: the_id,
+        x: util.round_to(player.x, 100),
+        y: util.round_to(player.y, 100),
+        z: player.z,
+        // t: serverTimestamp(),
+        p: map.panel_ref.total_solved,
+      });
+    };
+  },
   tick: function() {
+    player.others = firebase.others;
     player.move();
     const z = player.z;
     let {x, y} = player_bodies[z].getPosition();
@@ -220,4 +237,3 @@ export const player = {
     physics.teleport_player(x_, y_, z_, (old_z !== z_) ? player_bodies[old_z].v : undefined);
   },
 };
-

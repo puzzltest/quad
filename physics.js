@@ -1,7 +1,8 @@
 const { World, Shape, Fixture, Body, Contact, Vec2, Box, Circle } = planck;
 import { map, tiles, tilemap, tiledef, objects } from "./map.js";
 import { player } from "./player.js";
-import { util, draw } from "./util.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 export const physics = {
   

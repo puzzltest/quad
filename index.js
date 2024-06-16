@@ -6,7 +6,8 @@ import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
-import { util, draw } from "./util.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 export const canvas = document.querySelector("canvas");
 export const ctx = canvas.getContext("2d");
@@ -44,6 +45,7 @@ export const mouse = {
 const init = function() {
   map.init();
   firebase.init();
+  player.init();
   camera.init();
   physics.init();
   physics.tick();

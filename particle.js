@@ -1,6 +1,7 @@
 import { camera } from "./camera.js";
 import { canvas, ctx, v, view } from "./index.js";
-import { util, draw } from "./util.js";
+import { util } from "./util.js";
+import { draw } from "./draw.js";
 
 let particles = [];
 export const particle = {

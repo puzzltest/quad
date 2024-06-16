@@ -290,7 +290,7 @@ export const objects_temp = [
     type: "sign",
     sign: "picture",
     title: "hint for that door",
-    content: "IA",
+    content: "IA", // IA IA finger up safe tilt check
   }, // 48,3 sign
   {
     x: 41,
@@ -4115,7 +4115,7 @@ export const objects_temp = [
       type: "binary",
       map: `
       222
-      212
+      222
       222`,
       ruin: "00\n0.",
       symbols: {
