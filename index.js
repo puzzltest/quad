@@ -435,6 +435,7 @@ const before_unload = function(event) {
 window.addEventListener("load", init);
 window.addEventListener("resize", resize);
 window.addEventListener("keydown", keydown);
+window.addEventListener("keyup", keyup);
 window.addEventListener("touchstart", touchstart_handler);
 window.addEventListener("touchstart", touch_handler);
 window.addEventListener("touchmove", touch_handler);

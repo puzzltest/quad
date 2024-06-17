@@ -276,7 +276,16 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     if (s == 0)
       return util.compare_shape(util.bfs_to_shape(util.bfs(p.state, x, y)), p.ruin);
     else if (s == 1) {
-      // todo
+      let bfs_result = util.bfs(p.state, x, y);
+      if (bfs_result.length !== util.size_of_shape(p.ruin)) return false;
+      for (let i = 0; i < 4; i++) {
+        if (util.compare_shape(util.bfs_to_shape(bfs_result), p.ruin)) {
+          return true;
+        } else {
+          bfs_result = util.rotate_bfs_result(bfs_result);
+        }
+      }
+      return false;
     }
   }
   else { // unknown symbol name

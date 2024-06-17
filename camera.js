@@ -264,6 +264,7 @@ export const theme = {
       }
       ctx.shadowColor = undefined;
       ctx.shadowBlur = 0;
+      /*
       particle.create({
         type: "star",
         x: o.x,
@@ -279,7 +280,7 @@ export const theme = {
         va: 0.01, // 0.1
         rva: 0,
         fill: "#bef3",
-      });
+      });*/
     },
     ["wire"]: function(x, y, w, h, o) {
       if (o.rule == undefined) return;

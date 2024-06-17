@@ -92,11 +92,27 @@ export const util = {
     }
     return result;
   },
-  rotate_shape: function(shape) {
-    // todo
+  rotate_bfs_result: function(bfs_result) {
+    const new_result = [];
+    for (const { x, y } of bfs_result) {
+      new_result.push({
+        x: y,
+        y: -x,
+      });
+    }
+    return new_result;
   },
   compare_shape: function(shape1, shape2) {
     return (shape1.join("\n") === shape2.join("\n"));
+  },
+  size_of_shape: function(shape) {
+    let size = 0;
+    for (const line of shape) {
+      for (const char of line) {
+        if (char === "0") size++;
+      }
+    }
+    return size;
   },
   copy: function(text) {
     function fallbackCopyTextToClipboard(text) {

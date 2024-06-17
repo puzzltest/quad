@@ -74,7 +74,9 @@ window.addEventListener("load", function(event) {
       const link = document.getElementById("save_" + id);
       link.href = "#";
       link.addEventListener("click", function(event) {
-        firebase.remove("/quad/save/" + id);
+        if (window.confirm("remove " + id + "?")) {
+          firebase.remove("/quad/save/" + id);
+        }
       });
     }
   });
