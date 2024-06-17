@@ -96,7 +96,7 @@ export const player = {
   move: function() {
     if (!player.can_move) return;
     if (player.move_x === 0 && player.move_y === 0) return;
-    if (player.move_r2 < 20 * 20) return;
+    if (player.move_r2 < 25 * 25) return;
     const dx = player.move_nx;
     const dy = player.move_ny;
     /*

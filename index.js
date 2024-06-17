@@ -21,6 +21,7 @@ export const v = {
   realtime: 0,
   button_press: {},
   button_time: {},
+  keys: {},
 };
 
 export const view = {
@@ -269,6 +270,7 @@ const tick = function(time) {
   particle.tick();
   firebase.tick(time);
   maindraw();
+  key_tick();
   tick_after();
   requestAnimationFrame(tick);
 };
@@ -384,22 +386,33 @@ const mouseup_handler = function(event) {
 };
 
 const keydown = function(event) {
+  if (event.repeat) return;
+  v.keys[event.code] = true;
+};
+
+const keyup = function(event) {
+  v.keys[event.code] = false;
+};
+
+const key_tick = function(event) {
   let dx = 0;
   let dy = 0;
-  if (event.code === "ArrowLeft" || event.code === "KeyA") {
+  if (v.keys.ArrowLeft || v.keys.KeyA) {
     dx -= 1;
-  } else if (event.code === "ArrowRight" || event.code === "KeyD") {
+  }
+  if (v.keys.ArrowRight || v.keys.KeyD) {
     dx += 1;
-  
-  } else if (event.code === "ArrowUp" || event.code === "KeyW") {
+  }
+  if (v.keys.ArrowUp || v.keys.KeyW) {
     dy -= 1;
-  
-  } else if (event.code === "ArrowDown" || event.code === "KeyS") {
+  }
+  if (v.keys.ArrowDown || v.keys.KeyS) {
     dy += 1;
-  } else if (event.code === "Space" || event.code === "Enter") {
+  }
+  if (v.keys.Space || v.keys.Enter) {
     player.act();
   }
-  player.pre_move(dx * 1000, dy * 1000);
+  player.pre_move(dx * 100, dy * 100);
 };
 
 const scroll_handler = function(event) {
