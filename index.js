@@ -55,6 +55,9 @@ const init = function() {
   canvas_init();
   resize();
   v.time = 0;
+  if (window.location.hostname === "qat.pages.dev") {
+    temp.load();
+  }
   requestAnimationFrame(tick);
   // load
   const raw_save = localStorage.getItem("save");
@@ -396,7 +399,3 @@ canvas.addEventListener("touchstart", scroll_handler);
 canvas.addEventListener("touchmove", scroll_handler);
 canvas.addEventListener("touchend", scroll_handler);
 canvas.addEventListener("touchcancel", scroll_handler);
-
-if (window.location.hostname === "qat.pages.dev") {
-  temp.load();
-}
