@@ -337,6 +337,16 @@ const touchstart_handler = function(event) {
   }
 };
 
+const mousedown_handler = function(event) {
+  const o = {
+    x: event.clientX * v.ratio,
+    y: event.clientY * v.ratio,
+    active: true,
+  };
+  mouse.newtaps.push(o);
+  mouse.start_point[-1] = o;
+};
+
 const touch_handler = function(event) {
   event.preventDefault();
   mouse.touches = [];
@@ -354,11 +364,23 @@ const touch_handler = function(event) {
   }
 };
 
+const mouse_handler = function(event) {
+  mouse.touches = [[event.clientX * v.ratio, event.clientY * v.ratio, -1]];
+  mouse.x = mouse.touches[0][0];
+  mouse.y = mouse.touches[0][1];
+  mouse.id = mouse.touches[0][2];
+};
+
 const touchend_handler = function(event) {
   for (const touch of event.changedTouches) {
     delete mouse.start_point[touch.identifier];
     delete mouse.hold_time[touch.identifier];
   }
+};
+
+const mouseup_handler = function(event) {
+  delete mouse.start_point[-1];
+  delete mouse.hold_time[-1];
 };
 
 const keydown = function(event) {
@@ -377,7 +399,7 @@ const keydown = function(event) {
   } else if (event.code === "Space" || event.code === "Enter") {
     player.act();
   }
-  player.pre_move(dx, dy);
+  player.pre_move(dx * 1000, dy * 1000);
 };
 
 const scroll_handler = function(event) {
@@ -405,6 +427,11 @@ window.addEventListener("touchstart", touch_handler);
 window.addEventListener("touchmove", touch_handler);
 window.addEventListener("touchend", touch_handler);
 window.addEventListener("touchend", touchend_handler);
+window.addEventListener("mousedown", mousedown_handler);
+window.addEventListener("mousedown", mouse_handler);
+window.addEventListener("mousemove", mouse_handler);
+window.addEventListener("mouseup", mouseup_handler);
+window.addEventListener("mouseup", mouse_handler);
 window.addEventListener("beforeunload", before_unload);
 
 // this is me spamming to fix the funny canvas sliding problem on iOS
