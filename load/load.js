@@ -54,7 +54,7 @@ window.addEventListener("load", function(event) {
       const o = data[id];
       s += `<p>p: ${o.p} | x: ${o.x} | y: ${o.y} | z: ${o.z} | <a id="${id}">go</a></p><br>`;
     }
-    div.innerHTML = `total: ${Object.keys(data).length}<br>` + s;
+    div.innerHTML = `total: ${Object.keys(data ?? {}).length}<br>` + s;
     for (const id in data) {
       const o = data[id];
       const link = document.getElementById(id);

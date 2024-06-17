@@ -82,7 +82,8 @@ const joybutton_mouse = function(x, y, id) {
 v.button_press.lock = false;
 v.button_time.lock = -1;
 const lock_button_mouse = function(x, y, id) {
-  if (ctx.isPointInPath(x, y)) {
+  const s = mouse.start_point[id] ?? { x, y };
+  if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     /*
     if (v.button_press.lock) return;
     v.button_press.lock = true;
@@ -99,7 +100,8 @@ const lock_button_mouse = function(x, y, id) {
 };
 
 const clear_button_mouse = function(x, y, id) {
-  if (ctx.isPointInPath(x, y)) {
+  const s = mouse.start_point[id] ?? { x, y };
+  if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     const t = mouse.hold_time[id];
     if (t === 80) {
       panel.clearstate();
@@ -360,7 +362,22 @@ const touchend_handler = function(event) {
 };
 
 const keydown = function(event) {
+  let dx = 0;
+  let dy = 0;
+  if (event.code === "ArrowLeft" || event.code === "KeyA") {
+    dx -= 1;
+  } else if (event.code === "ArrowRight" || event.code === "KeyD") {
+    dx += 1;
   
+  } else if (event.code === "ArrowUp" || event.code === "KeyW") {
+    dy -= 1;
+  
+  } else if (event.code === "ArrowDown" || event.code === "KeyS") {
+    dy += 1;
+  } else if (event.code === "Space" || event.code === "Enter") {
+    player.act();
+  }
+  player.pre_move(dx, dy);
 };
 
 const scroll_handler = function(event) {
