@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 80305;
+export const VERSION = 80306;
 const version = VERSION;
 
 let already_ran_connect = false;
