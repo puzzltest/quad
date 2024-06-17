@@ -748,7 +748,7 @@ export const maps = [
     z: 1,
     scale: 4.5,
     theme: "wood",
-    name: "tiny rooms",
+    name: "tiny rooms (todo)",
     map: `
 0000000000,00
 0000000000.00
