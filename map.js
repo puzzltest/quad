@@ -636,7 +636,7 @@ export const maps = [
     map: `
 0..0..0
 00...00
-.......,
+.......0
 00...00
 0..0..0
 .000000
@@ -880,6 +880,41 @@ export const maps = [
 0000000
     `,
   }, // 22,4,1 room
+  {
+    x: 25,
+    y: 12,
+    z: 1,
+    scale: 6,
+    theme: "wood",
+    name: "ringed rings",
+    map: `
+    000000000.000
+    0.....0.....0
+    0.....0.....0
+    0...........0
+    0.....0.....0
+    0.....0.....0
+    0000000000000
+    `,
+  }, // 25,12,1 ringed rings
+  {
+    x: 29,
+    y: 4,
+    z: 1,
+    scale: 7.5,
+    theme: "wood",
+    name: "more donuts",
+    map: `
+    000000000
+    ........0
+    ........0
+    ........0
+    ........0
+    ........0
+    ........0
+    ........0
+    `,
+  },
   
   {
     x: -10,
@@ -1169,6 +1204,16 @@ export const map = {
   },
   
   load: function(raw) {
+    try {
+      map.load_(raw);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  },
+  
+  load_: function(raw) {
     const save = zipson.parse(raw);
     map.player_ref.load(save.player);
     for (const pid in panel_lookup) {

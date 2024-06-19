@@ -294,9 +294,10 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   }
   else if (name === "donut") {
     const bfs_result = util.bfs(p.state, x, y);
-    if (bfs_result.length === 1) return true;
     let compare = util.rotate_bfs_result(util.rotate_bfs_result(bfs_result));
-    return util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
+    let yes = util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
+    if (s == 1 || s == 3) yes = !yes;
+    return yes;
   }
   else if (name === "squaring") {
     const shape = util.bfs_to_shape(util.bfs(p.state, x, y));
@@ -416,6 +417,37 @@ panel_symbols.ruing = function(s, x, y, w, h, state) {
     ctx.stroke();
     // draw.rect_angle(x, y, w * 0.32, h * 0.32, Math.PI / 4, true);
     // draw.rect_angle(x, y, w * 0.32, h * 0.32, v.time * 0.03, true);
+  }
+};
+
+panel_symbols.squaring = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.065;
+  ctx.lineCap = "square";
+  draw.circle(x, y, w * 0.34);
+  ctx.stroke();
+  if (s == 0) {
+    draw.polygon(4, x, y, w * 0.28, Math.PI / 6);
+    ctx.stroke();
+  }
+};
+
+panel_symbols.donut = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.055;
+  draw.circle(x, y, w * 0.34);
+  ctx.stroke();
+  if (s == 0 || s == 1) {
+    draw.circle(x, y, w * 0.2);
+    ctx.stroke();
+  } else if (s == 2 || s == 3) {
+    ctx.fillStyle = ctx.strokeStyle;
+    draw.circle(x, y, w * 0.2);
+    ctx.fill();
+  }
+  if (s == 1 || s == 3) {
+    draw.line(x + w * 0.24, y + h * 0.24, x - w * 0.24, y - h * 0.24);
+    draw.line(x + w * 0.24, y - h * 0.24, x - w * 0.24, y + h * 0.24);
   }
 };
 

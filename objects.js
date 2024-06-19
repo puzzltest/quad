@@ -3408,6 +3408,18 @@ export const objects_temp = [
       },
     },
   }, // 27,17 panel bring_triangle
+  {
+    x: 28,
+    y: 15,
+    z: 0,
+    type: "portal",
+    portal: {
+      flip: true,
+      x: 28,
+      y: 15,
+      z: 1,
+    },
+  }, // 28,15 portal to z=1
   
   
   // @ z = 1
@@ -5234,6 +5246,322 @@ export const objects_temp = [
       z: 0,
     },
   }, // 27,11 portal to z=0
+  
+  // room: ringed rings
+  {
+    x: 28,
+    y: 15,
+    z: 1,
+    type: "portal",
+    portal: {
+      flip: true,
+      x: 28,
+      y: 15,
+      z: 0,
+    },
+  }, // 28,15 portal to z=0
+  {
+    x: 31,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_0",
+      name: "donut shaped?",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      122
+      222
+      222`,
+      symbols: {
+        donut: `
+        ...
+        .0.
+        ...`,
+      },
+    },
+  }, // 31,15 panel donut_0
+  {
+    x: 33,
+    y: 14,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_1",
+      name: "donut 1",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        ...
+        .0.
+        ...`,
+        circle: `
+        2..
+        0.2
+        ..0`,
+      },
+    },
+  }, // 33,14 panel donut_1_1
+  {
+    x: 34,
+    y: 14,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_2",
+      name: "donut 2",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        0.0
+        ...
+        0.0`,
+        ringnumber: `
+        ...
+        .5.
+        ...`,
+        ring: `
+        ...
+        0.0
+        ...`,
+      },
+    },
+  }, // 34,14 panel donut_1_2
+  {
+    x: 35,
+    y: 14,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_3",
+      name: "donut 3",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        donut: `
+        0...0
+        .0.0.
+        .....
+        .0.0.
+        0...0`,
+        ringnumber: `
+        .....
+        .....
+        ..e..
+        .....
+        .....`,
+        ring: `
+        .....
+        ..0..
+        .0.0.
+        .....
+        .....`,
+      },
+    },
+  }, // 35,14 panel donut_1_3
+  {
+    x: 33,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_4",
+      name: "donut 4",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      122
+      220
+      012`,
+      symbols: {
+        donut: `
+        000
+        000
+        000`,
+      },
+    },
+  }, // 33,15 panel donut_1_4
+  {
+    x: 35,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_5",
+      name: "donut 5",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      022222
+      122222
+      022222
+      122222
+      022222
+      122222`,
+      symbols: {
+        donut: `
+        0.0...
+        0.0...
+        0.0...
+        0.0...
+        0.0...
+        .00...`,
+        circle: `
+        .....1
+        ......
+        ......
+        ......
+        ......
+        1.....`,
+        ring: `
+        .0....
+        .0....
+        .0....
+        .0....
+        .0....
+        ......`,
+      },
+    },
+  }, // 35,15 panel donut_1_5
+  {
+    x: 33,
+    y: 16,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_6",
+      name: "donut 6",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        donut: `
+        .00.
+        0..0
+        0..0
+        .00.`,
+        ring: `
+        0..0
+        .00.
+        .00.
+        0..0`,
+      },
+    },
+  }, // 33,16 panel donut_1_6
+  {
+    x: 34,
+    y: 16,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_7",
+      name: "donut 7",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        donut: `
+        .0.0.
+        0...0
+        ..0..
+        0...0
+        .0.0.`,
+        number: `
+        ..3..
+        .333.
+        33.33
+        .333.
+        ..3..`,
+        circle: `
+        0...0
+        .....
+        .....
+        .....
+        0...0`,
+      },
+    },
+  }, // 34,16 panel donut_1_7
+  {
+    x: 35,
+    y: 16,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_1_8",
+      name: "donut 8",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        donut: `
+        .0.0.
+        0.0.0
+        .0.0.
+        0.0.0
+        .0.0.`,
+        ringnumber: `
+        7...6
+        .....
+        .....
+        .....
+        ..4..`,
+      },
+    },
+  }, // 35,16 panel donut_1_8
+  {
+    x: 34,
+    y: 12,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_donut_1",
+      rule: "solved",
+      at_least: 5,
+      countdown: true,
+      panels: ["donut_1_1", "donut_1_2", "donut_1_3", "donut_1_4", "donut_1_5", "donut_1_6", "donut_1_7", "donut_1_8"],
+    },
+  }, // 34,12 door door_donut_1
+  
   
   // @ z = -99
   

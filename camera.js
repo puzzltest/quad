@@ -328,6 +328,7 @@ export const theme = {
       else if ((o.portal.z - o.z) % 1 === 0) {
         if (o.portal.z < o.z) {
           theme[map.z_themes[o.portal.z]]["."](x, y, w, h, o);
+          if (o.portal?.flip) w = -w;
           x -= w / 2;
           y -= h / 2;
           // ctx.fillStyle = "#111";
@@ -341,6 +342,7 @@ export const theme = {
           }
         } else {
           this["."](x, y, w, h, o);
+          if (o.portal?.flip) w = -w;
           x -= w / 2;
           y -= h / 2;
           for (let i = 0; i < 5; i++) {
