@@ -292,11 +292,18 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       return false;
     }
   }
-  else if (name === "squaring") {
+  else if (name === "donut") {
     const bfs_result = util.bfs(p.state, x, y);
     if (bfs_result.length === 1) return true;
     let compare = util.rotate_bfs_result(util.rotate_bfs_result(bfs_result));
     return util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
+  }
+  else if (name === "squaring") {
+    const shape = util.bfs_to_shape(util.bfs(p.state, x, y));
+    for (const char of shape.join("")) {
+      if (char === ".") return false;
+    }
+    return true;
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);

@@ -2329,6 +2329,153 @@ export const objects_temp = [
     },
   }, // 58,6 door door_trial_overview
   {
+    x: 58,
+    y: 8,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "trial_overview_2",
+      name: "combined: walls",
+      w: 8,
+      h: 8,
+      type: "binary",
+      map: `
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222`,
+      answer: `
+      01100111
+      10011100
+      10011111
+      01100101
+      11110010
+      11110111
+      11110010
+      11110000
+      `,
+    },
+  }, // 58,8 panel trial_overview_2
+  {
+    x: 60,
+    y: 8,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_overview_2",
+      rule: "solved",
+      at_least: 1,
+      panels: ["trial_overview_2"],
+    },
+  }, // 60,8 door door_trial_overview_2
+  {
+    x: 62,
+    y: 8,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "trial_overview_3",
+      name: "now XOR",
+      w: 8,
+      h: 8,
+      type: "binary",
+      map: `
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222`,
+      answer: `
+      00000000
+      00100000
+      10110000
+      11110000
+      01011101
+      11101110
+      10111011
+      00101111
+      `,
+    },
+  }, // 62,8 panel trial_overview_3
+  {
+    x: 64,
+    y: 8,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_overview_3",
+      rule: "solved",
+      at_least: 1,
+      panels: ["trial_overview_3"],
+    },
+  }, // 64,8 door door_trial_overview_3
+  {
+    x: 66,
+    y: 8,
+    z: 0,
+    type: "star",
+    star: {
+      id: "trial_1",
+    },
+  }, // 66,8 star trial_1
+  {
+    x: 68,
+    y: 8,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "trial_shortcut_star",
+      name: "link",
+      w: 8,
+      h: 8,
+      type: "binary",
+      map: `
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222`,
+      ruin: `
+      ..0
+      000
+      ..0`,
+      symbols: {
+        ruing: `
+        1......1
+        .1....1.
+        ..1..1..
+        ...11...
+        ...11...
+        ..1..1..
+        .1....1.
+        1......1
+        `,
+      },
+    },
+  }, // 68,8 panel trial_shortcut_star
+  {
+    x: 68,
+    y: 6,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_trial_shortcut_star",
+      rule: "solved",
+      at_least: 1,
+      panels: ["trial_shortcut_star"],
+    },
+  }, // 68,6 door door_trial_shortcut_star
+  {
     x: 54,
     y: 4,
     z: 0,
@@ -2454,7 +2601,6 @@ export const objects_temp = [
       panels: ["trial_shortcut_2"],
     },
   }, // 69,1 door door_trial_shortcut_2_2
-  
   // room: westward
   {
     x: 17,
@@ -4298,6 +4444,18 @@ export const objects_temp = [
       panels: ["circnum_7_1", "circnum_7_2"],
     },
   }, // 6,29 panel circnum_8
+  {
+    x: 6,
+    y: 26,
+    z: 1,
+    type: "portal",
+    portal: {
+      type: "warp",
+      x: 9,
+      y: 0,
+      z: -99,
+    },
+  }, // 6,26 portal to z=-99
   // room: circle test
   {
     x: 66,
@@ -5142,6 +5300,18 @@ export const objects_temp = [
     fontcolor: "#eee",
   }, // 5,-3 sign for warp 1
   {
+    x: 9,
+    y: 0,
+    z: -99,
+    type: "portal",
+    portal: {
+      type: "warp",
+      x: 6,
+      y: 26,
+      z: 1,
+    },
+  }, // 9,0 portal to z=1
+  {
     x: 7,
     y: 0,
     z: -99,
@@ -5154,7 +5324,6 @@ export const objects_temp = [
       type: "binary",
       map: "2",
       answer: "1",
-      unsolvable: true,
     },
   }, // 7,0 panel warp_2
   {
@@ -5169,6 +5338,18 @@ export const objects_temp = [
       panels: ["warp_2"],
     },
   }, // 5,0 door door_warp_2
+  {
+    x: 5,
+    y: 1,
+    z: -99,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "warp 2",
+    content: "circled numbers",
+    fontsize: 0.12,
+    fontcolor: "#eee",
+  }, // 5,1 sign for warp 2
   {
     x: 7,
     y: 4,
@@ -5397,9 +5578,11 @@ export const wires_def = [
     map: `
     +
     0
-    +`,
-    rules: [["trial_overview"]],
-  }, // 58,4,0 room: overview
+    +
+    .
+    +1+.+2+`,
+    rules: [["trial_overview"], ["trial_overview_2"], ["trial_overview_3"]],
+  }, // 58,4,0 room: overview (trial)
   {
     x: 67,
     y: 1,
@@ -5408,9 +5591,13 @@ export const wires_def = [
     ..+
     .+0
     +0
-    ..`,
-    rules: [["trial_shortcut_2"]],
-  }, // 67,1,0 room: overview
+    ..
+    ..
+    .+
+    .1
+    .+`,
+    rules: [["trial_shortcut_2"], ["trial_shortcut_star"]],
+  }, // 67,1,0 room: overview (link)
   {
     x: 17,
     y: 3,
