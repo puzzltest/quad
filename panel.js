@@ -273,6 +273,10 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return has_same;
   }
   else if (name === "ruing") {
+    if (!p.ruin) {
+      console.warn("no ruin shape!")
+      return false;
+    }
     if (s == 0)
       return util.compare_shape(util.bfs_to_shape(util.bfs(p.state, x, y)), p.ruin);
     else if (s == 1) {
@@ -287,6 +291,12 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       }
       return false;
     }
+  }
+  else if (name === "squaring") {
+    const bfs_result = util.bfs(p.state, x, y);
+    if (bfs_result.length === 1) return true;
+    let compare = util.rotate_bfs_result(util.rotate_bfs_result(bfs_result));
+    return util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);

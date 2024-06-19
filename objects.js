@@ -1328,6 +1328,17 @@ export const objects_temp = [
     },
   }, // 27,11 portal to z=-1
   {
+    x: 23,
+    y: 11,
+    z: 0,
+    type: "portal",
+    portal: {
+      x: 27,
+      y: 11,
+      z: 1,
+    },
+  }, // 23,11 portal to z=1
+  {
     x: 26,
     y: 5,
     z: 0,
@@ -2906,6 +2917,351 @@ export const objects_temp = [
       z: 1,
     },
   }, // 17,26 portal to z=1
+  // room: bring
+  {
+    x: 24,
+    y: 15,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_0",
+      name: "bring: W",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        number: `
+        2..
+        .2.
+        ..2`,
+        ring: `
+        ..0
+        0.0
+        0..
+        `,
+      }
+    },
+  }, // 24,15 panel bring_0
+  {
+    x: 24,
+    y: 14,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_1_1",
+      name: "bring: NW",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        .3.3
+        3.3.
+        .3.3
+        3.3.`,
+        ring: `
+        0...
+        .0..
+        ..0.
+        ...0
+        `,
+      }
+    },
+  }, // 24,14 panel bring_1_1
+  {
+    x: 24,
+    y: 16,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_1_2",
+      name: "bring: SW",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        .2.2
+        2.2.
+        .2.2
+        2.2.`,
+        ring: `
+        0.0.
+        .0.0
+        0.0.
+        .0.0
+        `,
+      }
+    },
+  }, // 24,16 panel bring_1_2
+  {
+    x: 25,
+    y: 14,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_2_1",
+      name: "bring: N",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        .....
+        ...4.
+        .4.4.
+        .4...
+        .....`,
+        ring: `
+        0.0..
+        .0..0
+        ..0..
+        0..0.
+        ..0.0
+        `,
+      }
+    },
+  }, // 25,14 panel bring_2_1
+  {
+    x: 25,
+    y: 16,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_2_2",
+      name: "bring: S",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        .....
+        .333.
+        .3.3.
+        .333.
+        .....`,
+        ring: `
+        000.0
+        ....0
+        0.0.0
+        0....
+        0.000
+        `,
+      }
+    },
+  }, // 25,16 panel bring_2_2
+  {
+    x: 25,
+    y: 15,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_centre",
+      name: "bring: centre",
+      w: 9,
+      h: 9,
+      type: "binary",
+      map: `
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222`,
+      symbols: {
+        ringnumber: `
+        i.......j
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        l.......k`,
+        number: `
+        .3333333.
+        1......31
+        .......31
+        13.....31
+        13.....31
+        13.....31
+        13.......
+        13......1
+        .3333333.`,
+      }
+    },
+  }, // 25,15 panel bring_centre
+  {
+    x: 26,
+    y: 14,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_3_1",
+      name: "bring: NE",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        2....
+        ...3.
+        .3.3.
+        .3...
+        ....2`,
+        ring: `
+        .00.0
+        .0..0
+        0.0.0
+        0..0.
+        0.00.
+        `,
+      }
+    },
+  }, // 26,14 panel bring_3_1
+  {
+    x: 26,
+    y: 16,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_3_2",
+      name: "bring: SE",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        .....
+        .444.
+        .4.4.
+        .444.
+        .....`,
+        ring: `
+        0.0.0
+        .....
+        ..0..
+        .....
+        0...0
+        `,
+      }
+    },
+  }, // 26,16 panel bring_3_2
+  {
+    x: 26,
+    y: 15,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_4",
+      name: "bring: E",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        number: `
+        1.1.1
+        .1.1.
+        1.1.1
+        .1.1.
+        1.1.1`,
+        ring: `
+        .0.0.
+        0.0.0
+        .0.0.
+        0.0.0
+        .0.0.`,
+      }
+    },
+  }, // 26,15 panel bring_4
+  {
+    x: 27,
+    y: 17,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "bring_triangle",
+      name: "bring: triangle?",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      ruin: `
+      ....00
+      ..0..0
+      000000`,
+      symbols: {
+        ruing: `
+        1.....
+        ......
+        ......
+        ......
+        ......
+        .....1`,
+        ring: `
+        .....0
+        ....0.
+        ...0..
+        ..0...
+        .0....
+        0.....`,
+      },
+    },
+  }, // 27,17 panel bring_triangle
   
   
   // @ z = 1
@@ -4708,7 +5064,18 @@ export const objects_temp = [
       id: "ruing_1",
     },
   }, // 70,13 star ruing_1
-  
+  // room: room
+  {
+    x: 27,
+    y: 11,
+    z: 1,
+    type: "portal",
+    portal: {
+      x: 23,
+      y: 11,
+      z: 0,
+    },
+  }, // 27,11 portal to z=0
   
   // @ z = -99
   

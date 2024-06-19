@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 80501;
+export const VERSION = 80701;
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -231,12 +231,16 @@ temp.save = function() {
 temp.load = function(code = false) {
   if (!code && params.get("save")) {
     firebase.get("/quad/" + params.get("save"), (data) => {
+      if (data == null) {
+        alert("error: no such save code?");
+        return;
+      }
       const raw = zipson.stringify(JSON.parse(data));
       if (raw) {
         localStorage.setItem("save", raw);
         map.load(raw);
         map.save();
-        setTimeout(() => window.location.href = "/", 100);
+        setTimeout(() => window.location.href = "/", 200);
       }
     });
   } else if ((code?.length ?? 0) === 10) {
@@ -253,12 +257,12 @@ temp.load = function(code = false) {
           alert("loaded!");
           setTimeout(() => window.location.href = "/", 250);
         } else {
-          alert("error: ?");
+          alert("error: ???");
         }
       }
     });
   } else {
-    // alert("error: ???");
+    // alert("error: ?????");
     return;
   }
 };

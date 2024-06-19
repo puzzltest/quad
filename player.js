@@ -239,5 +239,6 @@ export const player = {
     this.y = y_;
     this.z = z_;
     physics.teleport_player(x_, y_, z_, (old_z !== z_) ? player_bodies[old_z].v : undefined);
+    camera.tick();
   },
 };
