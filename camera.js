@@ -142,7 +142,7 @@ camera.draw = function() {
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#000";
     ctx.font = `${Math.round(view.size * 0.03)}px roboto mono`;
-    ctx.fillText(`(${player.xyz.x},${player.xyz.y})`, view.cx - view.size * 0.59, view.cy + view.size * 0.565);
+    ctx.fillText(`(${player.xyz.x},${player.xyz.y},${player.z})`, view.cx - view.size * 0.59, view.cy + view.size * 0.565);
   }
   if (map.panel_ref.total_solved > 0) {
     ctx.textAlign = "right";
@@ -175,7 +175,8 @@ export const theme = {
       ctx.fill();
     },
     ["+"]: function(x, y, w, h) {
-      
+      // nothing for now
+      // todo?
     },
     ["#"]: function(x, y, w, h) {
       ctx.fillStyle = "#597";

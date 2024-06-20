@@ -1056,6 +1056,9 @@ export const map = {
   levels: [],
   solvable_panels: 0,
   stars_collected: [],
+  get total_stars() {
+    return this.stars_collected.length;
+  },
   z_themes: {
     [-99]: "warp",
     [-1]: "grey",

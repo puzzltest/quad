@@ -23,7 +23,13 @@ const setpos = function(o) {
   setTimeout(() => window.location.href = "/", 500);
 };
 
-window.addEventListener("load", function(event) {
+window.addEventListener("load", async function(event) {
+  const password = window.prompt("password?");
+  const hi = await sha256(password);
+  console.log(hi);
+  if (hi !== "26a08721ac62bc4dd61f69ba877d91cf979c10589e90dcd49324fbeedef28f41") {
+    return;
+  }
   const raw = localStorage.getItem("save");
   const a = document.querySelector("textarea");
   const b = document.getElementById("load");
@@ -40,7 +46,7 @@ window.addEventListener("load", function(event) {
   });
   const v = document.getElementById("version");
   v.addEventListener("click", async function(event) {
-    alert(1);
+    alert("hello");
     const password = window.prompt("password?");
     const hi = await sha256(password);
     console.log(hi);
@@ -64,10 +70,11 @@ window.addEventListener("load", function(event) {
       });
     }
   });
-  firebase.listen("/quad/save/", function(data) {
+  firebase.listen("/quad/save/", async function(data) {
+    const savestats = (await firebase.promise_get("/quad/savestats/")) ?? {};
     let s = "";
     for (const id in data) {
-      s += `<a id="save_${id}">${id}</a>, `;
+      s += `<p>${savestats[id]?.puzzles ?? 0}/${savestats[id]?.stars ?? 0} | <a id="save_${id}">${id}</a></p>`;
     }
     span.innerHTML = s;
     for (const id in data) {
@@ -76,6 +83,7 @@ window.addEventListener("load", function(event) {
       link.addEventListener("click", function(event) {
         if (window.confirm("remove " + id + "?")) {
           firebase.remove("/quad/save/" + id);
+          firebase.remove("/quad/savestats/" + id);
         }
       });
     }

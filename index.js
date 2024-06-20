@@ -104,7 +104,7 @@ const clear_button_mouse = function(x, y, id) {
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     const t = mouse.hold_time[id];
-    if (t === 80) {
+    if (t === 60) {
       panel.clearstate();
     }
     return t;
@@ -150,9 +150,13 @@ const maindraw = function() {
         if (panel.lock_mode) {
           draw.rect(x - r, y - r + hh, r * 2, r * 2 - hh);
           ctx.fill();
+          ctx.fillStyle = "#eeea";
+          draw.svg("lock_puzzle", x, y, r);
         } else {
           draw.rect(x - r, y - r, r * 2, hh);
           ctx.fill();
+          ctx.fillStyle = "#eeea";
+          draw.svg("unlock_puzzle", x, y, r);
         }
         ctx.restore();
       }
@@ -176,10 +180,12 @@ const maindraw = function() {
         ctx.save();
         ctx.clip();
         ctx.fillStyle = "#b8d7";
-        let hh = r * 2 * m / 80;
-        if (m >= 80) hh = r * 2;
+        let hh = r * 2 * m / 60;
+        if (m >= 60) hh = r * 2;
         draw.rect(x - r, y + r - hh, r * 2, hh);
         ctx.fill();
+        ctx.fillStyle = "#eeea";
+        draw.svg("clear_puzzle", x, y, r);
         ctx.restore();
       }
     } else {

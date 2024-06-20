@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 6 🧩 138",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 165",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -5561,6 +5561,112 @@ export const objects_temp = [
       panels: ["donut_1_1", "donut_1_2", "donut_1_3", "donut_1_4", "donut_1_5", "donut_1_6", "donut_1_7", "donut_1_8"],
     },
   }, // 34,12 door door_donut_1
+  // room: more donuts
+  {
+    x: 34,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_2_0",
+      name: "antidonut",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        ...
+        .1.
+        ...`,
+      },
+    },
+  }, // 34,10 panel donut_2_0
+  {
+    x: 33,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_2_6",
+      name: "antidonut 6",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        ...
+        .1.
+        ...`,
+        ringnumber: `
+        ...
+        4..
+        ...`,
+        ring: `
+        .0.
+        ..0
+        .0.`,
+      },
+    },
+  }, // 33,8 panel donut_2_6
+  {
+    x: 34,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_2_7",
+      name: "antidonut 7",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        111
+        111
+        111`,
+      },
+    },
+  }, // 34,8 panel donut_2_7
+  {
+    x: 35,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_2_8",
+      name: "antidonut 8",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        donut: `
+        ...
+        .1.
+        ...`,
+        ring: `
+        000
+        ...
+        0.0
+        `,
+      },
+    },
+  }, // 35,8 panel donut_2_8
   
   
   // @ z = -99

@@ -306,6 +306,34 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
     return true;
   }
+  else if (name === "copyright") {
+    const x_ = (x + 1 >= p.w) ? 0 : (x + 1);
+    const bfs_left = util.bfs(p.state, x, y);
+    const shape_left = util.bfs_to_shape(bfs_left);
+    for (const o of bfs_left) {
+      if (o.x === x_ && o.y === y) {
+        return false;
+      }
+    }
+    const bfs_right = util.bfs(p.state, x_, y);
+    const shape_right = util.bfs_to_shape(bfs_right);
+    if (s == 0) {
+      return util.compare_shape(shape_left, shape_right);
+    } else if (s == 1) {
+      if (bfs_left.length !== bfs_right.length) return false;
+      let bfs_result = bfs_left;
+      for (let i = 0; i < 4; i++) {
+        if (util.compare_shape(util.bfs_to_shape(bfs_result), shape_right)) {
+          return true;
+        } else {
+          bfs_result = util.rotate_bfs_result(bfs_result);
+        }
+      }
+      return false;
+    } else { // s isn't 0 or 1
+      return false;
+    }
+  }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
   }

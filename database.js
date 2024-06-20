@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 80801;
+export const VERSION = 80802;
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -223,6 +223,10 @@ temp.save = function() {
     nice = zipson.parse(nice);
     nice = JSON.stringify(nice);
     firebase.set("/quad/save/" + the_id, nice);
+    firebase.set("/quad/savestats/" + code, {
+      puzzles: map.panel_ref.total_solved,
+      stars: map.total_stars,
+    });
   } else {
     alert("error: no save data?");
   }
@@ -254,6 +258,10 @@ temp.load = function(code = false) {
           localStorage.setItem("save", raw);
           map.load(raw);
           map.save();
+          firebase.set("/quad/savestats/" + code, {
+            puzzles: map.panel_ref.total_solved,
+            stars: map.total_stars,
+          });
           alert("loaded!");
           setTimeout(() => window.location.href = "/", 250);
         } else {
