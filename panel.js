@@ -334,6 +334,27 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       return false;
     }
   }
+  else if (name === "balance") {
+    const bfs_result = util.bfs(p.state, x, y);
+    let total_x = 0;
+    let total_y = 0;
+    let max_y = Number.NEGATIVE_INFINITY;
+    for (const o of bfs_result) {
+      total_x += o.x;
+      total_y += o.y;
+      max_y = Math.max(max_y, o.y);
+    }
+    let min_x = Number.POSITIVE_INFINITY;
+    let max_x = Number.NEGATIVE_INFINITY;
+    for (const o of bfs_result) {
+      if (o.y === max_y) {
+        min_x = Math.min(min_x, o.x);
+        max_x = Math.max(max_x, o.x);
+      }
+    }
+    const average_x = Math.round(total_x / bfs_result.length);
+    return min_x <= average_x && average_x <= max_x;
+  }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
   }
@@ -454,10 +475,8 @@ panel_symbols.squaring = function(s, x, y, w, h, state) {
   ctx.lineCap = "square";
   draw.circle(x, y, w * 0.34);
   ctx.stroke();
-  if (s == 0) {
-    draw.polygon(4, x, y, w * 0.28, Math.PI / 6);
-    ctx.stroke();
-  }
+  draw.polygon(4, x, y, w * 0.28, (s == 0) ? Math.PI / 4 : 0);
+  ctx.stroke();
 };
 
 panel_symbols.donut = function(s, x, y, w, h, state) {
@@ -477,6 +496,18 @@ panel_symbols.donut = function(s, x, y, w, h, state) {
     draw.line(x + w * 0.24, y + h * 0.24, x - w * 0.24, y - h * 0.24);
     draw.line(x + w * 0.24, y - h * 0.24, x - w * 0.24, y + h * 0.24);
   }
+};
+
+panel_symbols.copyright = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.055;
+  draw.circle(x, y, w * 0.35);
+  ctx.stroke();
+  ctx.fillStyle = (state) ? "#111" : "#eee";
+  draw.set_font(w * 0.36, "bold");
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("C", x, y + 1);
 };
 
 sign_pictures.text = function(x, y, w, h, o) {

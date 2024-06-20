@@ -3053,6 +3053,48 @@ export const objects_temp = [
     },
   }, // 18,23 panel stairing_2
   {
+    x: 20,
+    y: 20,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "stairing_3",
+      name: "where does this lead",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringnumber: `
+        5.5.5.
+        .5.5.5
+        5.5.5.
+        .5.5.5
+        5.5.5.
+        .5.5.5
+        `,
+      }
+    },
+  }, // 20,20 panel stairing_3
+  {
+    x: 22,
+    y: 18,
+    z: 0,
+    type: "portal",
+    portal: {
+      flip: true,
+      x: 24,
+      y: 18,
+      z: 1,
+    },
+  }, // 22,18 portal to z=1
+  {
     x: 17,
     y: 26,
     z: 0,
@@ -5261,6 +5303,17 @@ export const objects_temp = [
     },
   }, // 28,15 portal to z=0
   {
+    x: 30,
+    y: 13,
+    z: 1,
+    type: "sign",
+    sign: "text",
+    title: "warning?",
+    content: "this symbol is quite hard?\nclue: rotation",
+    fontsize: 0.11,
+    fontcolor: "#eee",
+  }, // 30,13 sign
+  {
     x: 31,
     y: 15,
     z: 1,
@@ -5667,6 +5720,179 @@ export const objects_temp = [
       },
     },
   }, // 35,8 panel donut_2_8
+  // room: middle room
+  {
+    x: 24,
+    y: 18,
+    z: 1,
+    type: "portal",
+    portal: {
+      flip: true,
+      x: 22,
+      y: 18,
+      z: 0,
+    },
+  }, // 24,18 portal to z=0
+  {
+    x: 27,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_0",
+      name: "rectangles?",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      122
+      222
+      222`,
+      symbols: {
+        squaring: `
+        ...
+        .0.
+        ...`,
+      },
+    },
+  }, // 27,20 panel squaring_0
+  {
+    x: 29,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_1",
+      name: "squaring 1",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        squaring: `
+        0.0
+        .0.
+        0.0`,
+        ringnumber: `
+        .3.
+        ...
+        ...
+        `,
+      },
+    },
+  }, // 29,20 panel squaring_1
+  {
+    x: 30,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_2",
+      name: "squaring 2",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2120
+      0202
+      1212
+      2021`,
+      symbols: {
+        squaring: `
+        0..0
+        ....
+        ....
+        0..0`,
+        ringnumber: `
+        ....
+        ....
+        ....
+        ....
+        `,
+      },
+    },
+  }, // 30,20 panel squaring_2
+  {
+    x: 29,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_3",
+      name: "squaring 3",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        squaring: `
+        0..0
+        ....
+        ....
+        0..0`,
+        ringnumber: `
+        ..7.
+        ....
+        ....
+        .7..
+        `,
+      },
+    },
+  }, // 29,21 panel squaring_3
+  {
+    x: 30,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_4",
+      name: "squaring 4",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        squaring: `
+        0...0
+        .0.0.
+        ..0..
+        .0.0.
+        0...0`,
+        ringnumber: `
+        .....
+        ..8..
+        .....
+        ..4..
+        .....
+        `,
+      },
+    },
+  }, // 30,21 panel squaring_4
+  {
+    x: 32,
+    y: 22,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_squaring",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["squaring_1", "squaring_2", "squaring_3", "squaring_4"],
+    },
+  }, // 32,22 door door_squaring
   
   
   // @ z = -99

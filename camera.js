@@ -152,7 +152,7 @@ camera.draw = function() {
   if (map.stars_collected.length > 0) {
     ctx.textAlign = "left";
     draw.set_font(view.size * 0.045, "bold");
-    ctx.fillText(`⭐ ${map.stars_collected.length}`, view.cx - view.size * 0.58, view.cy - view.size * 0.56);
+    ctx.fillText(`⭐ ${map.total_stars}`, view.cx - view.size * 0.58, view.cy - view.size * 0.56);
   }
   const players = Object.keys(player?.others ?? {})?.length ?? 0;
   if (players > 0) {
