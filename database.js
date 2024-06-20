@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 80901;
+export const VERSION = 81000;
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -149,15 +149,15 @@ firebase.init = function() {
 };
 
 firebase.time = 0;
-firebase.update_time = 0;
-firebase.update2_time = 0;
+firebase.update_time = 30; // 0
+firebase.update2_time = -30000; // 0
 firebase.tick = function(time) {
   firebase.time = time;
   if (time - firebase.update_time > 30) {
     firebase.update_time = time;
     firebase.send();
   }
-  if (time - firebase.update2_time > 60000) {
+  if (time - firebase.update2_time > 30000) {
     firebase.update2_time = time;
     firebase.clear();
     firebase.send();
@@ -165,6 +165,7 @@ firebase.tick = function(time) {
 };
 
 firebase.clear = function() {
+  // console.log("cleared :}");
   firebase.remove("/quad/positions/");
 };
 

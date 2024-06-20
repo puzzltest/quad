@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 165",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 175",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -5893,6 +5893,140 @@ export const objects_temp = [
       panels: ["squaring_1", "squaring_2", "squaring_3", "squaring_4"],
     },
   }, // 32,22 door door_squaring
+  {
+    x: 34,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_5",
+      name: "squaring 5",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        squaring: `
+        .0.0.
+        0...0
+        .....
+        0...0
+        .0.0.`,
+        ringnumber: `
+        .....
+        .6.4.
+        ..5..
+        .2.3.
+        .....
+        `,
+      },
+    },
+  }, // 34,20 panel squaring_5
+  {
+    x: 35,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_6",
+      name: "squaring 6",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        squaring: `
+        .1.1.
+        0...0
+        ..0..
+        1...0
+        .0.0.`,
+        ringnumber: `
+        ..b..
+        .....
+        .....
+        .....
+        .....
+        `,
+      },
+    },
+  }, // 35,20 panel squaring_6
+  {
+    x: 34,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_7",
+      name: "squaring 7",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        squaring: `
+        ...
+        .1.
+        ...`,
+      },
+    },
+  }, // 34,21 panel squaring_7
+  {
+    x: 35,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "squaring_8",
+      name: "squaring 8",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        squaring: `
+        1.1.
+        .1.1
+        1.1.
+        .1.1`,
+        ring: `
+        .0.0
+        0.0.
+        .0.0
+        0.0.`,
+      },
+    },
+  }, // 35,21 panel squaring_8
+  {
+    x: 37,
+    y: 19,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_squaring_2",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["squaring_5", "squaring_6", "squaring_7", "squaring_8"],
+    },
+  }, // 37,19 door door_squaring_2
   
   
   // @ z = -99

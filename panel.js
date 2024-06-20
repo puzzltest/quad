@@ -302,9 +302,9 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   else if (name === "squaring") {
     const shape = util.bfs_to_shape(util.bfs(p.state, x, y));
     for (const char of shape.join("")) {
-      if (char === ".") return false;
+      if (char === ".") return (s == 1);
     }
-    return true;
+    return (s == 0);
   }
   else if (name === "copyright") {
     const x_ = (x + 1 >= p.w) ? 0 : (x + 1);
@@ -475,8 +475,12 @@ panel_symbols.squaring = function(s, x, y, w, h, state) {
   ctx.lineCap = "square";
   draw.circle(x, y, w * 0.34);
   ctx.stroke();
-  draw.polygon(4, x, y, w * 0.28, (s == 0) ? Math.PI / 4 : 0);
+  draw.polygon(4, x, y, w * 0.28, (s == 0 || s == 1) ? Math.PI / 4 : 0);
   ctx.stroke();
+  if (s == 1 || s == 3) {
+    draw.line(x + w * 0.24, y + h * 0.24, x - w * 0.24, y - h * 0.24);
+    draw.line(x + w * 0.24, y - h * 0.24, x - w * 0.24, y + h * 0.24);
+  }
 };
 
 panel_symbols.donut = function(s, x, y, w, h, state) {
