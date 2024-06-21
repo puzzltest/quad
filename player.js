@@ -88,10 +88,10 @@ export const player = {
     player.move_y += dy;
   },
   get paused() {
-    return panel.active || panel.sign.active;
+    return panel.active || panel.sign.active || panel.map.active;
   },
   get can_move() {
-    return !(panel.active || panel.sign.active);
+    return !this.paused;
   },
   move: function() {
     if (!player.can_move) return;

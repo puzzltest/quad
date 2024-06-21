@@ -1,4 +1,5 @@
 import { canvas, ctx, v, view, mouse } from "./index.js";
+import { camera, mini_theme } from "./camera.js";
 import { maps, map, objects } from "./map.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
@@ -22,6 +23,13 @@ export const panel = {
     o: null,
     type: "",
     text: "",
+  },
+  map: {
+    active: false,
+    time: 0,
+    x: 0,
+    y: 0,
+    z: map.start_point.z, // a bit unnecessary...
   },
 };
 
@@ -175,6 +183,59 @@ panel.draw = function() {
       }
     } else {
       panel.sign.time = 0;
+    }
+    if (panel.map.active) {
+      ctx.fillStyle = "#e8dde8f9";
+      ctx.strokeStyle = "#eaf";
+      x = view.cx;
+      y = view.cy;
+      const z = panel.map.z;
+      w = view.size * 0.85;
+      h = view.size * 0.85;
+      ctx.lineWidth = w * 0.02;
+      draw.rectangle(x, y, w, h);
+      ctx.fill();
+      ctx.stroke();
+      if ("map movement" && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
+        const dx = player.move_nx;
+        const dy = player.move_ny;
+        const speed = 0.5;
+        panel.map.x += dx * speed;
+        panel.map.y += dy * speed;
+        player.move_x = 0;
+        player.move_y = 0;
+      }
+      if ("draw map") {
+        ctx.save();
+        draw.rectangle(x, y, w * 0.92, h * 0.92);
+        ctx.clip();
+        const scale = 50;
+        const size = view.size / scale + 1;
+        for (let x = Math.floor(panel.map.x - scale / 2); x <= panel.map.x + scale / 2 + 1; x++) {
+          for (let y = Math.floor(panel.map.y - scale / 2); y <= panel.map.y + scale / 2 + 1; y++) {
+            const m = map.get_map(x, y, z);
+            // if (!m) continue;
+            const s = map.get_tile(x, y, z) ?? ".";
+            const o = map.get_object(x, y, z);
+            const t = m?.theme ?? map.z_themes[z] ?? "normal";
+            let xx = view.cx + (x - panel.map.x) * view.size / scale;
+            let yy = view.cy + (y - panel.map.y) * view.size / scale;
+            let fill = mini_theme[t][o?.type] ?? mini_theme.normal[o?.type] ?? mini_theme[t][s] ?? mini_theme.normal[s];
+            if (!fill) continue;
+            if (typeof fill === "function") {
+              fill = fill(o);
+              if (fill.length === 1) {
+                if (fill === " ") fill = s;
+                fill = mini_theme[t][fill] ?? mini_theme.normal[fill];
+              }
+            }
+            ctx.fillStyle = fill;
+            draw.rectangle(xx, yy, size + 1, size + 1);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      }
     }
   }
 };
@@ -672,6 +733,13 @@ symbol_functions.save = function() {
 symbol_functions.load = function() {
   const code = window.prompt("load from 10-letter code:");
   temp.load(code);
+};
+
+symbol_functions.map = function() {
+  panel.map.active = !panel.map.active;
+  panel.map.x = player.x;
+  panel.map.y = player.y;
+  panel.map.z = player.z;
 };
 
 door_custom.door_0_1234 = function(door) {

@@ -29,7 +29,7 @@ export const camera = {
     this.cy = y + this.scale / 2;
   },
   get size() {
-    return Math.ceil(view.size / camera.scale) + 1;
+    return view.size / camera.scale + 1;
   },
 };
 
@@ -52,10 +52,10 @@ camera.jump = function() {
   camera.cy = player.y;
 };
 
-camera.convert = function(x, y) {
+camera.convert = function(x, y, scale = camera.scale) {
   return [
-    Math.floor(view.cx + (x - camera.cx) * view.size / camera.scale),
-    Math.floor(view.cy + (y - camera.cy) * view.size / camera.scale)
+    view.cx + (x - camera.cx) * view.size / scale,
+    view.cy + (y - camera.cy) * view.size / scale
   ];
 };
 
@@ -194,6 +194,7 @@ export const theme = {
       draw.rectangle(x, y, w, h);
       ctx.fill();
     },
+    // objects
     ["link"]: function(x, y, w, h) {
       ctx.fillStyle = "#fff0";
       draw.rectangle(x, y, w, h);
@@ -471,6 +472,51 @@ export const theme = {
       draw.rectangle(x, y, w * t, h * t);
       ctx.stroke();
     },
+  },
+};
+
+// to do, for minimap/map
+export const mini_theme = {
+  normal: {
+    [""]: "#f00", // very error
+    ["."]: "#f00", // error
+    ["0"]: "#f00", // error
+    [","]: "#56c",
+    ["+"]: "#0000",
+    // objects
+    ["panel"]: function(o) {
+      if (o.door) {
+        if (!o.door.open) return "#d89";
+      }
+      return o.panel?.solved ? "#8da" : "#baf";
+    },
+    ["door"]: function(o) {
+      if (!o?.door?.open) return "#eee";
+      return " ";
+    },
+    ["portal"]: "#b7a",
+    ["sign"]: "#a85",
+    ["star"]: "#7ab", // #bef?
+    ["symbol"]: () => " ",
+    ["link"]: "#0000",
+    ["wire"]: "#0000",
+  },
+  grey: {
+    ["."]: "#111",
+    ["0"]: "#888",
+  },
+  grass: {
+    ["."]: "#351",
+    ["0"]: "#842",
+  },
+  wood: {
+    ["."]: "#652",
+    ["0"]: "#ccc",
+  },
+  warp: {
+    ["."]: "#635",
+    ["0"]: "#b7a",
+    ["portal"]: "#eee",
   },
 };
 

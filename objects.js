@@ -1339,6 +1339,18 @@ export const objects_temp = [
     },
   }, // 23,11 portal to z=1
   {
+    x: 23,
+    y: 5,
+    z: 0,
+    type: "sign",
+    sign: "text",
+    title: "welcome",
+    content: "this is barely a house... at least there are some useful things here now (unlike the time when this place was completely empty)",
+    fontsize: 0.065,
+    fontcolor: "#eee",
+    textangle: 0,
+  }, // 23,5 sign
+  {
     x: 26,
     y: 5,
     z: 0,
@@ -1356,6 +1368,33 @@ export const objects_temp = [
       type: "load",
     },
   }, // 27,5 symbol load
+  {
+    x: 25,
+    y: 7,
+    z: -1,
+    type: "symbol",
+    symbol: {
+      type: "map",
+    },
+  }, // 25,7 symbol map
+  {
+    x: 25,
+    y: 7,
+    z: 0,
+    type: "symbol",
+    symbol: {
+      type: "map",
+    },
+  }, // 25,7 symbol map
+  {
+    x: 25,
+    y: 7,
+    z: 1,
+    type: "symbol",
+    symbol: {
+      type: "map",
+    },
+  }, // 25,7 symbol map
   // room: scattered
   {
     x: 29,
