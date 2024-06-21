@@ -80,6 +80,7 @@ const joybutton_mouse = function(x, y, id) {
     player.act();
     const t = mouse.hold_time[id];
     if (t === 60 && player.act_time >= 59) {
+      if (player.paused) return;
       panel.map.active = true;
       panel.map.z = player.z;
       panel.map.static = false;

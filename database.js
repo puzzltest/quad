@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 90003;
+export const VERSION = 90004;
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -259,7 +259,7 @@ temp.load = function(code = false) {
           // alert("loading...");
           localStorage.setItem("save", raw);
           map.load(raw);
-          map.save();
+          localStorage.setItem("save", map.save());
           firebase.set("/quad/savestats/" + code, {
             puzzles: map.panel_ref.total_solved,
             stars: map.total_stars,
