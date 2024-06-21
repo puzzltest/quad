@@ -204,7 +204,7 @@ panel.draw = function() {
         panel.map.y += dy * speed;
         player.move_x = 0;
         player.move_y = 0;
-      } else {
+      } else if (!panel.map.static) {
         panel.map.x = camera.x;
         panel.map.y = camera.y;
       }
