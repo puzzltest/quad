@@ -88,7 +88,7 @@ export const player = {
     player.move_y += dy;
   },
   get paused() {
-    return panel.active || panel.sign.active || panel.map.active;
+    return panel.active || panel.sign.active; // || panel.map.active;
   },
   get can_move() {
     return !this.paused;
@@ -136,6 +136,10 @@ export const player = {
     if (player.act_time > 120) return; // todo another function
     if (player.act_time > 0) return;
     // ok it's actually a new button press now
+    if (panel.map.active) {
+      panel.map.active = false;
+      return;
+    }
     const { x, y, z } = player.xyz;
     let do_check = true;
     if (player.dx || player.dy) do_check = !player.act_tile(x + player.dx, y + player.dy, z, false, true);

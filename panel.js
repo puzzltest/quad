@@ -189,14 +189,14 @@ panel.draw = function() {
       ctx.strokeStyle = "#eaf";
       x = view.cx;
       y = view.cy;
-      const z = panel.map.z;
+      const z = player.z;
       w = view.size * 0.85;
       h = view.size * 0.85;
       ctx.lineWidth = w * 0.02;
       draw.rectangle(x, y, w, h);
       ctx.fill();
       ctx.stroke();
-      if ("map movement" && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
+      if (panel.map.static && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
         const dx = player.move_nx;
         const dy = player.move_ny;
         const speed = 0.5;
@@ -204,6 +204,9 @@ panel.draw = function() {
         panel.map.y += dy * speed;
         player.move_x = 0;
         player.move_y = 0;
+      } else {
+        panel.map.x = camera.x;
+        panel.map.y = camera.y;
       }
       if ("draw map") {
         ctx.save();
@@ -234,6 +237,15 @@ panel.draw = function() {
             ctx.fill();
           }
         }
+        let px = view.cx + (player.x - panel.map.x) * view.size / scale;
+        let py = view.cy + (player.y - panel.map.y) * view.size / scale;
+        ctx.globalAlpha = 0.5 + 0.5 * util.bounce(v.time, 20);
+        ctx.fillStyle = "#e54f";
+        ctx.strokeStyle = "#ffff";
+        ctx.lineWidth = size * 0.05;
+        draw.circle(px, py, size * 0.5);
+        ctx.fill();
+        ctx.stroke();
         ctx.restore();
       }
     }
@@ -740,6 +752,7 @@ symbol_functions.map = function() {
   panel.map.x = player.x;
   panel.map.y = player.y;
   panel.map.z = player.z;
+  panel.map.static = true;
 };
 
 door_custom.door_0_1234 = function(door) {

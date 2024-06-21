@@ -75,8 +75,15 @@ const joystick_mouse = function(x, y, id) {
 };
 
 const joybutton_mouse = function(x, y, id) {
-  if (ctx.isPointInPath(x, y)) {
+  const s = mouse.start_point[id] ?? { x, y };
+  if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     player.act();
+    const t = mouse.hold_time[id];
+    if (t === 60) {
+      panel.map.active = true;
+      panel.map.z = player.z;
+      panel.map.static = false;
+    }
   }
 };
 
