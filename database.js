@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 90004;
+export const VERSION = 90101;
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -225,9 +225,10 @@ temp.save = function() {
     nice = zipson.parse(nice);
     nice = JSON.stringify(nice);
     firebase.set("/quad/save/" + the_id, nice);
-    firebase.set("/quad/savestats/" + code, {
+    firebase.set("/quad/savestats/" + the_id, {
       puzzles: map.panel_ref.total_solved,
       stars: map.total_stars,
+      time: serverTimestamp(),
     });
   } else {
     alert("error: no save data?");

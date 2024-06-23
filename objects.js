@@ -2330,7 +2330,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "trial_overview",
-      name: "combined",
+      name: "combined: answers",
       w: 8,
       h: 8,
       type: "binary",
@@ -4359,6 +4359,74 @@ export const objects_temp = [
     },
   }, // 14,37 panel circnum_lost_3
   {
+    x: 16,
+    y: 37,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circnum_lost_link",
+      name: "what is this",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        4.5.5
+        .4.5.
+        4...5
+        .4.5.
+        4.5.5
+        `,
+      },
+    },
+  }, // 16,37 panel circnum_lost_link
+  {
+    x: 16,
+    y: 36,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_circnum_lost_link",
+      rule: "correct",
+      at_least: 2,
+      panels: ["circnum_lost_link", "circnum_lost_link_2"],
+    },
+  }, // 16,36 door door_circnum_lost_link
+  {
+    x: 16,
+    y: 35,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circnum_lost_link_2",
+      name: "what is this too",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        4.4.5
+        .4.5.
+        4...5
+        .4.5.
+        4.4.5
+        `,
+      },
+    },
+  }, // 16,35 panel circnum_lost_link_2
+  {
     x: 6,
     y: 34,
     z: 1,
@@ -5348,7 +5416,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "warning?",
-    content: "this symbol is quite hard?\nclue: rotation",
+    content: "this symbol is quite hard?\nclue: rotation?",
     fontsize: 0.11,
     fontcolor: "#eee",
   }, // 30,13 sign
@@ -5375,6 +5443,38 @@ export const objects_temp = [
       },
     },
   }, // 31,15 panel donut_0
+  {
+    x: 29,
+    y: 13,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_hint",
+      name: "donut hint",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      0002222
+      0022122
+      0111122
+      2221222
+      2211120
+      2212200
+      1112000
+      `,
+      symbols: {
+        donut: `
+        .......
+        .......
+        .......
+        ...0...
+        .......
+        .......
+        .......`,
+      },
+    },
+  }, // 29,13 panel donut_hint
   {
     x: 33,
     y: 14,
