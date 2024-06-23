@@ -5444,8 +5444,20 @@ export const objects_temp = [
     },
   }, // 31,15 panel donut_0
   {
-    x: 29,
-    y: 13,
+    x: 37,
+    y: 17,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "warning!",
+    content: "obvious (?) hint ahead! if you have already figured out what this symbol means or if you are stuck on this symbol, then try this puzzle",
+    fontsize: 0.08,
+    fontcolor: "#fcc",
+  }, // 37,17 sign
+  {
+    x: 38,
+    y: 17,
     z: 1,
     type: "panel",
     panel: {
@@ -5474,7 +5486,7 @@ export const objects_temp = [
         .......`,
       },
     },
-  }, // 29,13 panel donut_hint
+  }, // 38,17 panel donut_hint
   {
     x: 33,
     y: 14,
