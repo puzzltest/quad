@@ -1,4 +1,6 @@
+
 const round = Math.round;
+
 export const util = {
   dir4: [[1, 0], [0, 1], [-1, 0], [0, -1]],
   dir5: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -36,6 +38,9 @@ export const util = {
       result += "abcdefghijklmnopqrstuvwxyz"[util.randint(0, 25)];
     }
     return result;
+  },
+  to_component: function(a) {
+    return Math.floor(a).toString(16).padStart(2, "0");
   },
   radius2: function(x, y) {
     return x * x + y * y;

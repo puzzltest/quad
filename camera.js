@@ -377,23 +377,24 @@ export const theme = {
     },
   },
   grey: {
-    ["."]: function(x, y, w, h) {
-      ctx.fillStyle = "#111";
+    ["."]: function(x, y, w, h, o) {
+      const c = draw.noise3(o.x / 10, o.y / 10, v.time / 220);
+      ctx.fillStyle = "#" + util.to_component(16 + c * 12).repeat(3);
       draw.rectangle(x, y, w, h);
       ctx.fill();
     },
-    ["0"]: function(x, y, w, h) {
-      ctx.fillStyle = "#888";
+    ["0"]: function(x, y, w, h, o) {
+      const c = draw.noise2(o.x / 5, o.y / 5);
+      ctx.fillStyle = "#" + util.to_component(128 + c * 13).repeat(3);
       draw.rectangle(x, y, w, h);
       ctx.fill();
-      return;
-      ctx.fillStyle = "#222";
+      /*ctx.fillStyle = "#222";
       if (util.randreal(0, 1) < 0.2)
       for (let i = 0; i < 1; i++) {
         const xx = util.randint(0, 9);
         const yy = util.randint(0, 9);
         ctx.fillRect(x + xx * w / 10, y + yy * w / 10, w / 10, h / 10);
-      }
+      }*/
     },
     ["1"]: function(x, y, w, h) {
       ctx.fillStyle = "#888";
@@ -402,10 +403,26 @@ export const theme = {
     },
   },
   grass: {
-    ["."]: function(x, y, w, h) {
+    ["."]: function(x, y, w, h, o) {
       ctx.fillStyle = "#351";
       draw.rectangle(x, y, w, h);
       ctx.fill();
+      const f_yellow = draw.noise3(o.x / 5, o.y / 5, 0);
+      if (f_yellow > 0.8) {
+        const dx = draw.noise3(o.x / 5, o.y / 5, 10) / 2;
+        const dy = draw.noise3(o.x / 5, o.y / 5, 20) / 2;
+        ctx.fillStyle = "#cc5";
+        draw.rectangle(x - w * dx, y - h * dy, w * 0.08, h * 0.08);
+        ctx.fill();
+      }
+      const f_pink= draw.noise3(o.x / 5, o.y / 5, 1);
+      if (f_pink > 0.8) {
+        const dx = draw.noise3(o.x / 5, o.y / 5, 110) / 2;
+        const dy = draw.noise3(o.x / 5, o.y / 5, 120) / 2;
+        ctx.fillStyle = "#e69";
+        draw.rectangle(x - w * dx, y - h * dy, w * 0.08, h * 0.08);
+        ctx.fill();
+      }
     },
     ["0"]: function(x, y, w, h, o) {
       ctx.fillStyle = "#842";

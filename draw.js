@@ -1,8 +1,17 @@
 import { canvas, ctx, v, view, mouse } from "./index.js";
 import { util } from "./util.js";
+import { createNoise2D, createNoise3D, createNoise4D } from "https://cdn.jsdelivr.net/npm/simplex-noise@4.0.1/+esm";
 
 const round = Math.round;
+export const noise2 = createNoise2D();
+export const noise3 = createNoise3D();
+export const noise4  = createNoise4D();
+
 export const draw = {
+  
+  noise2: noise2,
+  noise3: noise3,
+  noise4: noise4,
   
   line: function(x1, y1, x2, y2) {
     ctx.beginPath();
