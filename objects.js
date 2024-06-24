@@ -2614,6 +2614,7 @@ export const objects_temp = [
         ..........
         `,
       },
+      revoke: true,
     },
   }, // 67,3 panel trial_shortcut_2
   {
@@ -3924,6 +3925,418 @@ export const objects_temp = [
       }
     },
   }, // 15,26 panel circnum_0
+  {
+    x: 25,
+    y: 26,
+    z: 1,
+    type: "symbol",
+    symbol: {
+      type: "arrow_up",
+    },
+  }, // 25,26 symbol arrow_up
+  {
+    x: 17,
+    y: 28,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_circnum_unlock_1",
+      rule: "solved",
+      at_least: 1,
+      panels: ["circnum_unlock"],
+    },
+  }, // 17,28 door door_circnum_unlock_1
+  {
+    x: 19,
+    y: 26,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_circnum_unlock_2",
+      rule: "solved",
+      at_least: 1,
+      panels: ["circnum_unlock"],
+    },
+  }, // 19,26 door door_circnum_unlock_2
+  {
+    x: 25,
+    y: 23,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_tinyrooms_last",
+      rule: "solved",
+      at_least: 1,
+      panels: ["tinyrooms_last"],
+    },
+  }, // 25,23 door door_tinyrooms_last
+  {
+    x: 25,
+    y: 24,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_last",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      20002
+      20002
+      20002
+      22222`,
+      symbols: {
+        ringnumber: `
+        .....
+        .....
+        ..9..
+        .....
+        .....
+        `,
+      }
+    },
+  }, // 25,24 panel tinyrooms_last
+  {
+    x: 23,
+    y: 26,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_23",
+      name: "",
+      w: 8,
+      h: 8,
+      type: "binary",
+      map: `
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222`,
+      symbols: {
+        ringnumber: `
+        2......a
+        .3......
+        ..4.....
+        ...5....
+        ....6...
+        .....7..
+        ......8.
+        1......9
+        `,
+      }
+    },
+  }, // 23,26 panel tinyrooms_23
+  {
+    x: 21,
+    y: 28,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_25",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        3....
+        .5...
+        ..4..
+        ...6.
+        ....7
+        `,
+      }
+    },
+  }, // 21,28 panel tinyrooms_25
+  {
+    x: 25,
+    y: 28,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_36",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        .5.5.
+        5.5.5
+        .5.5.
+        5.5.5
+        .5.3.
+        `,
+      }
+    },
+  }, // 25,28 panel tinyrooms_36
+  {
+    x: 19,
+    y: 30,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_45",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        2....
+        .3...
+        ..4..
+        ...5.
+        1...6
+        `,
+      }
+    },
+  }, // 19,30 panel tinyrooms_45
+  {
+    x: 17,
+    y: 32,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_47",
+      name: "",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        2...
+        .3..
+        ..4.
+        1..5
+        `,
+      }
+    },
+  }, // 17,32 panel tinyrooms_47
+  {
+    x: 23,
+    y: 30,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_56",
+      name: "",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringnumber: `
+        3.....
+        .4....
+        ..5...
+        ...6..
+        ....7.
+        .....8`,
+      }
+    },
+  }, // 23,30 panel tinyrooms_56
+  {
+    x: 21,
+    y: 32,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_58",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        ....9
+        ...7.
+        ..7..
+        .7...
+        .2...
+        `,
+        circle: `
+        .....
+        .....
+        2...2
+        .....
+        .....
+        `,
+      }
+    },
+  }, // 21,32 panel tinyrooms_58
+  {
+    x: 21,
+    y: 33,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_59",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        ....9
+        ...7.
+        ..7..
+        27...
+        .....
+        `,
+        circle: `
+        .....
+        .....
+        2...2
+        .....
+        .....
+        `,
+      }
+    },
+  }, // 21,33 panel tinyrooms_59
+  {
+    x: 25,
+    y: 32,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_69",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        .7.7.
+        7.7.7
+        .7.7.
+        7.7.7
+        .7.7.`,
+        ring: `
+        ....0
+        ...0.
+        ..0..
+        .0...
+        0....
+        `,
+      },
+    },
+  }, // 25,32 panel tinyrooms_69
+  {
+    x: 19,
+    y: 34,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_78",
+      name: "",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        3...
+        .4..
+        ..4.
+        ...5
+        `,
+      }
+    },
+  }, // 19,34 panel tinyrooms_78
+  {
+    x: 23,
+    y: 34,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "tinyrooms_89",
+      name: "",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringnumber: `
+        7.7.7.
+        .7.7.7
+        7.7.7.
+        .7.7.7
+        7.7.7.
+        .7.7.7`,
+        ring: `
+        .....0
+        ....0.
+        ...0..
+        ..0...
+        .0....
+        0.....`,
+      }
+    },
+  }, // 23,34 panel tinyrooms_89
   // room: circled numbers
   {
     x: 13,
@@ -4337,7 +4750,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "circnum_lost_3",
-      name: "12 sevens",
+      name: "13 sevens",
       w: 5,
       h: 5,
       type: "binary",
@@ -4353,9 +4766,10 @@ export const objects_temp = [
         .7.7.
         7.7.7
         .7.7.
-        7...7
+        7.7.7
         `,
       },
+      revoke: true,
     },
   }, // 14,37 panel circnum_lost_3
   {
@@ -4617,6 +5031,34 @@ export const objects_temp = [
       z: -99,
     },
   }, // 6,26 portal to z=-99
+  {
+    x: 8,
+    y: 26,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circnum_unlock",
+      name: "tiny rooms unlocked!",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        13579
+        .....
+        .....
+        .....
+        .....
+        `,
+      }
+    },
+  }, // 8,26 panel circnum_unlock
   // room: circle test
   {
     x: 66,
@@ -6590,7 +7032,7 @@ export const wires_def = [
     map: `
 ........+
 ........+
-........+0+
+.....+8.+0+
 ........+
 ........+
 ..6+7..+1
@@ -6601,8 +7043,8 @@ export const wires_def = [
 ..3+3.2..
 ......+..
     `,
-    rules: [["circnum_1"], ["door_circnum_2"], ["door_circnum_4"], ["circnum_5"], ["circnum_6_1"], ["circnum_6_2"], ["circnum_7_1"], ["circnum_7_2"]],
-  }, // 8,24,1 room: circled numbers
+    rules: [["circnum_1"], ["door_circnum_2"], ["door_circnum_4"], ["circnum_5"], ["circnum_6_1"], ["circnum_6_2"], ["circnum_7_1"], ["circnum_7_2"], ["circnum_unlock"]],
+  }, // 3,24,1 room: circled numbers
   {
     x: 61,
     y: -1,

@@ -736,6 +736,14 @@ symbol_functions.arrow_right = function() {
   map.physics_ref.move_player(50 * player.speed, 0);
 };
 
+symbol_functions.arrow_up = function() {
+  map.physics_ref.move_player(0, -50 * player.speed);
+};
+
+symbol_functions.arrow_down = function() {
+  map.physics_ref.move_player(0, 50 * player.speed);
+};
+
 symbol_functions.save = function() {
   if (window.confirm("create a new save?")) {
     window.prompt("saved! copy this:", temp.save());

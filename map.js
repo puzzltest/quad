@@ -751,9 +751,9 @@ export const maps = [
     z: 1,
     scale: 4.5,
     theme: "wood",
-    name: "tiny rooms (todo)",
+    name: "tiny rooms",
     map: `
-0000000000,00
+0000000000.00
 0000000000.00
 0...0...0...0
 ............0
@@ -1285,7 +1285,7 @@ export const map = {
         }
       }
       map.panel_ref.update_panel(pid);
-      if (!p?.solved && s?.solved) {
+      if (!p?.solved && !p?.revoke && s?.solved) {
         p.solved = true;
         map.panel_ref.total_solved++;
       }
@@ -1388,5 +1388,3 @@ for (let wi = 0; wi < start_wires.length; wi++) {
   }
 }
 */
-
-// console.log(wires);
