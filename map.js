@@ -1203,6 +1203,7 @@ export const map = {
     return (open !== old);
   },
   str2vec: function(s) {
+    return tile_reverse_memo[s];
     /*
     const splat = s.split(",");
     return {
@@ -1211,7 +1212,6 @@ export const map = {
       z: +splat[2],
     };
     */
-    return tile_reverse_memo[s];
   },
   vec2str: function(x, y, z) {
     return x + "," + y + "," + z;

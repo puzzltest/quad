@@ -396,10 +396,11 @@ export const theme = {
         ctx.fillRect(x + xx * w / 10, y + yy * w / 10, w / 10, h / 10);
       }*/
     },
-    ["1"]: function(x, y, w, h) {
-      ctx.fillStyle = "#888";
-      draw.rectangle(x, y, w, h);
-      ctx.fill();
+    ["1"]: function(x, y, w, h, o) {
+      this["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      this["."](x, y, w, h, o);
     },
   },
   grass: {
@@ -441,6 +442,12 @@ export const theme = {
         draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
       }
     },
+    ["1"]: function(x, y, w, h, o) {
+      this["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      this["."](x, y, w, h, o);
+    },
   },
   wood: {
     ["."]: function(x, y, w, h) {
@@ -471,10 +478,18 @@ export const theme = {
         draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
       }
     },
+    ["1"]: function(x, y, w, h, o) {
+      this["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      this["."](x, y, w, h, o);
+    },
   },
   warp: {
-    ["."]: function(x, y, w, h) {
-      ctx.fillStyle = "#635";
+    ["."]: function(x, y, w, h, o) {
+      const c = draw.noise3(o.x / 10, o.y / 10, v.time / 220);
+      ctx.fillStyle = "#" + util.to_component(102 + c * 18) + util.to_component(51 + c * 9) + util.to_component(85 + c * 15);
+      // ctx.fillStyle = "#635";
       draw.rectangle(x, y, w, h);
       ctx.fill();
     },
@@ -488,6 +503,12 @@ export const theme = {
       t = 0.3 + 0.4 * t;
       draw.rectangle(x, y, w * t, h * t);
       ctx.stroke();
+    },
+    ["1"]: function(x, y, w, h, o) {
+      this["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      this["."](x, y, w, h, o);
     },
   },
 };

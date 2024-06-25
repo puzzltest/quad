@@ -6304,13 +6304,14 @@ export const objects_temp = [
         donut: `
         ...
         .1.
-        ...`,
+        .0.`,
         ring: `
         000
         ...
         0.0
         `,
       },
+      revoke: true,
     },
   }, // 35,8 panel donut_2_8
   // room: middle room

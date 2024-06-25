@@ -23,6 +23,16 @@ export const util = {
   round_to: function(n, mult) {
     return Math.round((n + Number.EPSILON) * mult) / mult;
   },
+  seed: function(o) {
+    if (o) {
+      Math.seedrandom(o);
+    } else {
+      Math.seedrandom();
+    }
+  },
+  rng: function(o) {
+    return new Math.seedrandom(o);
+  },
   rand: function() {
     return Math.random();
   },

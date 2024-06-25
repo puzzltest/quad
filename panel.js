@@ -4,7 +4,7 @@ import { maps, map, objects } from "./map.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
 import { util } from "./util.js";
-import { temp } from "./database.js";
+import { temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
 
 export const panel = {
@@ -31,6 +31,7 @@ export const panel = {
     y: 0,
     z: map.start_point.z, // a bit unnecessary...
   },
+  randomizer: {},
 };
 
 export const panels = {};
@@ -237,15 +238,28 @@ panel.draw = function() {
             ctx.fill();
           }
         }
-        let px = view.cx + (player.x - panel.map.x) * view.size / scale;
-        let py = view.cy + (player.y - panel.map.y) * view.size / scale;
         ctx.globalAlpha = 0.5 + 0.5 * util.bounce(v.time, 20);
+        let px = view.cx + (player.x - panel.map.x - 0.2) * view.size / scale;
+        let py = view.cy + (player.y - panel.map.y - 0.2) * view.size / scale;
         ctx.fillStyle = "#e54f";
         ctx.strokeStyle = "#ffff";
         ctx.lineWidth = size * 0.05;
         draw.circle(px, py, size * 0.5);
         ctx.fill();
         ctx.stroke();
+        ctx.globalAlpha *= 0.5;
+        for (const ok in player.others) {
+          const op = player.others[ok];
+          if (ok === the_id) continue;
+          px = view.cx + (op.x - panel.map.x) * view.size / scale;
+          py = view.cy + (op.y - panel.map.y) * view.size / scale;
+          ctx.fillStyle = "#5e4f";
+          ctx.strokeStyle = "#ffff";
+          ctx.lineWidth = size * 0.05;
+          draw.circle(px, py, size * 0.3);
+          ctx.fill();
+          ctx.stroke();
+        }
         ctx.restore();
       }
     }
@@ -585,6 +599,36 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText("C", x, y + 1);
+};
+
+// todo balance
+
+panel.randomizer.random = function(size, type, seed = util.randletters()) {
+  const o = {};
+  // generate panel answer (yes repetition)
+  const rng = util.rng(type + "|" + seed);
+  const answer = [];
+  o.id = type + seed;
+  if ("generate panel answer") {
+    o.type = "binary";
+    const temp_map = [];
+    for (let i = 0; i < size; i++) {
+      temp_map.push("2".repeat(size));
+    }
+    o.map = temp_map;
+    for (let i = 0; i < size; i++) {
+      const temp_answer = [];
+      for (let j = 0; j < size; j++) {
+        temp_answer.push(util.randint(0, 1));
+      }
+      answer.push(temp_answer);
+    }
+    
+  }
+  if (type === "number_easy") {
+    
+  }
+  o.type = "binary";
 };
 
 sign_pictures.text = function(x, y, w, h, o) {
