@@ -100,7 +100,7 @@ const lock_button_mouse = function(x, y, id) {
     if (v.button_time.lock > 0) return;
     */
     const t = mouse.hold_time[id];
-    if (t === 30) {
+    if (t === 1) {
       panel.lock_mode = !panel.lock_mode;
     }
     return t;
@@ -153,8 +153,8 @@ const maindraw = function() {
         ctx.save();
         ctx.clip();
         ctx.fillStyle = "#b8d7";
-        let hh = r * 2 * m / 30;
-        if (m >= 30) hh = 0;
+        let hh = r * 2 * m / 1;
+        if (m >= 1) hh = 0;
         if (panel.lock_mode) {
           draw.rect(x - r, y - r + hh, r * 2, r * 2 - hh);
           ctx.fill();

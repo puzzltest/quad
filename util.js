@@ -23,15 +23,15 @@ export const util = {
   round_to: function(n, mult) {
     return Math.round((n + Number.EPSILON) * mult) / mult;
   },
-  seed: function(o) {
-    if (o) {
-      Math.seedrandom(o);
+  seed: function(seed) {
+    if (seed) {
+      Math.seedrandom(seed);
     } else {
       Math.seedrandom();
     }
   },
-  rng: function(o) {
-    return new Math.seedrandom(o);
+  rng: function(seed) {
+    return new Math.seedrandom(seed);
   },
   rand: function() {
     return Math.random();
@@ -61,6 +61,18 @@ export const util = {
   xy2str: function(x, y) {
     return x + "," + y;
   },
+  // constructs a 2d square matrix (arrays) based on function f
+  construct: function(size, f) {
+    const result = [];
+    for (let i = 0; i < size; i++) {
+      const temp = [];
+      for (let j = 0; j < size; j++) {
+        temp.push(f(j, i)); // f(x, y)
+      }
+      result.push(temp);
+    }
+    return result;
+  },
   bfs: function(a, x, y) {
     const result = [];
     const the = a[y][x];
@@ -72,7 +84,7 @@ export const util = {
         const xx = b.x + dx;
         const yy = b.y + dy;
         if (a[yy] == undefined || a[yy][xx] == undefined) continue;
-        if (the === a[yy][xx] && !visited[util.xy2str(xx, yy)]) {
+        if (the == a[yy][xx] && !visited[util.xy2str(xx, yy)]) {
           visited[util.xy2str(xx, yy)] = true;
           q.push({ x: xx, y: yy });
         }

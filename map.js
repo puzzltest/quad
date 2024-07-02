@@ -869,8 +869,8 @@ export const maps = [
     theme: "wood",
     name: "room",
     map: `
-0000000
-0.....0
+..00000
+......0
 0.....0
 0.....0
 0.....0
@@ -880,6 +880,32 @@ export const maps = [
 0000000
     `,
   }, // 22,4,1 room
+  {
+    x: 15,
+    y: -7,
+    z: 1,
+    w: 7,
+    h: 6,
+    scale: 6.5,
+    theme: "wood",
+    name: "random",
+    map: `
+0000000....
+0.0.0.0....
+0.0.0.0....
+0.0.0.0....
+0.0.0.00000
+0.........0
+0.....00000
+0.........0
+0.....00000
+0......00
+00000...00
+....00...
+.....00..
+......0
+    `,
+  }, // 15,-3,1 random
   {
     x: 25,
     y: 12,
@@ -1235,6 +1261,9 @@ export const map = {
       if (p.lock.flat().includes(1)) {
         panelsave.lock = p.lock;
       }
+      if (p.solvecount) {
+        panelsave.solvecount = p.solvecount;
+      }
       save.panels[pid] = panelsave;
     }
     const zipped = zipson.stringify(save);
@@ -1284,11 +1313,14 @@ export const map = {
           p.lock.push(temp);
         }
       }
-      map.panel_ref.update_panel(pid);
       if (!p?.solved && !p?.revoke && s?.solved) {
         p.solved = true;
         map.panel_ref.total_solved++;
       }
+      if (s?.solvecount) {
+        p.solvecount = s.solvecount;
+      }
+      map.panel_ref.update_panel(pid);
     }
     map.panel_ref.update_doors(Object.values(panel_lookup));
     map.panel_ref.update_doors(Object.values(door_lookup));

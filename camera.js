@@ -218,6 +218,14 @@ export const theme = {
       draw.rectangle(x, y, w * 0.6, h * 0.6);
       if (o.panel?.correct) ctx.stroke();
       else ctx.fill();
+      if (o.panel?.solvecount) {
+        ctx.fillStyle = "#1116";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const sc = "" + o.panel?.solvecount
+        draw.set_font(sc.length === 1 ? w * 0.41 : (sc.length === 2 ? w * 0.35 : w * 0.27));
+        ctx.fillText(sc || 0, x, y, w, h);
+      }
     },
     ["door"]: function(x, y, w, h, o) {
       ctx.fillStyle = "#eee";

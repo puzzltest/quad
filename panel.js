@@ -58,9 +58,12 @@ panel.init = function() {
 };
 
 panel.activate = function() {
-  // const p = panel.o.panel;
+  const p = panel.o.panel;
   // panel.initstate(p.w, p.h, p.initial);
   panel.lock_mode = false;
+  if (p.random || (p.randomtype && p.correct)) {
+    panel.randomizer.set(p.id);
+  }
 };
 
 panel.clearstate = function() {
@@ -299,6 +302,7 @@ panel.update_panel = function(optional_pid) {
 panel.check_correct = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
   const p = o.panel;
+  if (p.random) return p.solved;
   if (p.answer) {
     return panel.check_answer(p.state, p.answer);
   }
@@ -322,7 +326,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     let total = 0;
     for (const [dx, dy] of util.dir5) {
       const n = (p.state[y + dy] == undefined || p.state[y + dy][x + dx] == undefined) ? 0 : p.state[y + dy][x + dx];
-      if (n) total++;
+      if (+n) total++;
     }
     return (total === +s);
   }
@@ -330,7 +334,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     let total = 0;
     for (const [dx, dy] of util.dir5x) {
       const n = (p.state[y + dy] == undefined || p.state[y + dy][x + dx] == undefined) ? 0 : p.state[y + dy][x + dx];
-      if (n) total++;
+      if (+n) total++;
     }
     return (total === +s);
   }
@@ -455,6 +459,10 @@ panel.update_correct = function(optional_pid) {
     panel.total_correct++;
     if (!p.solved) panel.total_solved++;
     p.solved = true;
+    if (p.fresh) {
+      p.solvecount = (p.solvecount ?? 0) + 1;
+      p.fresh = false; // no longer can be solved for the first time
+    }
     f?.setFilterData({
       groupIndex: 0,
       categoryBits: 0,
@@ -601,21 +609,25 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
   ctx.fillText("C", x, y + 1);
 };
 
-// todo balance
+// todo symbols.balance
 
-panel.randomizer.random = function(size, type, seed = util.randletters()) {
+panel.randomizer.random = function(size, type, seed = generateSlug()) {
   const o = {};
+  o.id = type + "_" + seed;
+  o.name = seed;
+  o.seed = seed;
+  o.fullseed = type + "|" + seed;
+  o.randomtype = type;
+  o.w = size;
+  o.h = size;
+  o.fresh = true;
+  // use deterministic random number generator, so that the next time the seed is provided the exact same puzzle can be generated
+  const rng = util.rng(o.fullseed);
   // generate panel answer (yes repetition)
-  const rng = util.rng(type + "|" + seed);
   const answer = [];
-  o.id = type + seed;
-  if ("generate panel answer") {
+  if ("generate answer") {
     o.type = "binary";
-    const temp_map = [];
-    for (let i = 0; i < size; i++) {
-      temp_map.push("2".repeat(size));
-    }
-    o.map = temp_map;
+    o.map = util.construct(size, () => 2);
     for (let i = 0; i < size; i++) {
       const temp_answer = [];
       for (let j = 0; j < size; j++) {
@@ -623,12 +635,163 @@ panel.randomizer.random = function(size, type, seed = util.randletters()) {
       }
       answer.push(temp_answer);
     }
-    
+    o.symbols = {};
   }
   if (type === "number_easy") {
-    
+    o.symbols.number = util.construct(size, function(x, y) {
+      let num = 0;
+      for (let [dx, dy] of util.dir5) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
   }
-  o.type = "binary";
+  else if (type === "ring_easy") {
+    const memo = util.construct(size, () => false);
+    const rings = util.construct(size, () => ".");
+    util.construct(size, function(x, y) {
+      if (memo[y][x]) return 0;
+      const bfs_result = util.bfs(answer, x, y);
+      for (const o of bfs_result) {
+        memo[o.y][o.x] = true;
+      }
+      const rand = util.randint(0, bfs_result.length - 1);
+      const ringpos = bfs_result[rand];
+      rings[ringpos.y][ringpos.x] = "0";
+      return 1;
+    });
+    o.symbols.ring = rings;
+    util.construct(size, function(x, y) {
+      if (util.rand() < 0.4) {
+        o.map[y][x] = answer[y][x];
+      }
+    });
+  }
+  else if (type === "ringnumber") {
+    const rings = util.construct(size, () => ".");
+    util.construct(size, function(x, y) {
+      if (util.rand() < 0.65) return 0;
+      const bfs_result = util.bfs(answer, x, y);
+      const rand = util.randint(0, bfs_result.length - 1);
+      const ringpos = bfs_result[rand];
+      rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
+      return 1;
+    });
+    o.symbols.ringnumber = rings;
+    util.construct(size, function(x, y) {
+      if (util.rand() < 0.4) {
+        o.map[y][x] = answer[y][x];
+      }
+    });
+  }
+  else if (type === "ring_and_number") {
+    const memo = util.construct(size, () => false);
+    const rings = util.construct(size, () => ".");
+    util.construct(size, function(x, y) {
+      if (memo[y][x]) return 0;
+      const bfs_result = util.bfs(answer, x, y);
+      for (const o of bfs_result) {
+        memo[o.y][o.x] = true;
+      }
+      const rand = util.randint(0, bfs_result.length - 1);
+      const ringpos = bfs_result[rand];
+      rings[ringpos.y][ringpos.x] = "0";
+      return 1;
+    });
+    o.symbols.ring = rings;
+    /*util.construct(size, function(x, y) {
+      if (util.rand() < 0.4) {
+        o.map[y][x] = answer[y][x];
+      }
+    });*/
+    o.symbols.number = util.construct(size, function(x, y) {
+      if (rings[y][x] == "0") return ".";
+      if (util.rand() < 0.5) return ".";
+      let num = 0;
+      for (let [dx, dy] of util.dir5) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
+  }
+  else if (type === "ringnumber_and_number") {
+    const rings = util.construct(size, () => ".");
+    util.construct(size, function(x, y) {
+      if (util.rand() < 0.65) return 0;
+      const bfs_result = util.bfs(answer, x, y);
+      const rand = util.randint(0, bfs_result.length - 1);
+      const ringpos = bfs_result[rand];
+      rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
+      return 1;
+    });
+    o.symbols.ringnumber = rings;
+    /*util.construct(size, function(x, y) {
+      if (util.rand() < 0.4) {
+        o.map[y][x] = answer[y][x];
+      }
+    })*/
+    o.symbols.number = util.construct(size, function(x, y) {
+      if (rings[y][x] != ".") return ".";
+      if (util.rand() < 0.5) return ".";
+      let num = 0;
+      for (let [dx, dy] of util.dir5) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
+  }
+  else if (type === "diagonal_easy") {
+    o.symbols.diagonal = util.construct(size, function(x, y) {
+      let num = 0;
+      for (let [dx, dy] of util.dir5x) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
+  }
+  else if (type === "diagonal_number") {
+    o.symbols.number = util.construct(size, function(x, y) {
+      if (util.rand() < 0.5) return ".";
+      let num = 0;
+      for (let [dx, dy] of util.dir5) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
+    o.symbols.diagonal = util.construct(size, function(x, y) {
+      if (o.symbols.number[y][x] != ".") return ".";
+      let num = 0;
+      for (let [dx, dy] of util.dir5x) {
+        if (answer[y + dy] == undefined) continue;
+        if (answer[y + dy][x + dx]) num++;
+      }
+      return "" + num;
+    });
+  }
+  if ("generate state") {
+    o.state = util.construct(size, (x, y) => {
+      return o.map[y][x] == "2" ? "0" : o.map[y][x];
+    });
+    o.lock = util.construct(size, () => 0);
+  }
+  return o;
+};
+
+panel.randomizer.set = function(id) {
+  const o = map.get_panel(id);
+  if (!o || !o?.panel) return false;
+  const solved = o.panel.solved;
+  const solvecount = o.panel.solvecount;
+  o.panel = panel.randomizer.random(o.panel.w, o.panel.randomtype, o.panel.randomseed);
+  o.panel.id = id;
+  o.panel.solved = solved;
+  o.panel.solvecount = solvecount;
+  return true;
 };
 
 sign_pictures.text = function(x, y, w, h, o) {

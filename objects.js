@@ -5837,6 +5837,175 @@ export const objects_temp = [
       z: 0,
     },
   }, // 27,11 portal to z=0
+  {
+    x: 22,
+    y: 5,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_test",
+      w: 3,
+      random: true,
+      randomtype: "number_easy",
+    },
+  }, // 22,5 panel random_entrance_1
+  {
+    x: 23,
+    y: 4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_entrance_2",
+      w: 4,
+      random: true,
+      randomtype: "ring_easy",
+    },
+  }, // 23,4 panel random_entrance_2
+  // room: random
+  {
+    x: 21,
+    y: 4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_entrance_3",
+      w: 4,
+      random: true,
+      randomtype: "ringnumber",
+    },
+  }, // 21,4 panel random_entrance_3
+  {
+    x: 22,
+    y: 3,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_entrance_4",
+      w: 4,
+      random: true,
+      randomtype: "ring_and_number",
+    },
+  }, // 22,3 panel random_entrance_4
+  {
+    x: 20,
+    y: 3,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_entrance_5",
+      w: 4,
+      random: true,
+      randomtype: "diagonal_easy",
+    },
+  }, // 20,3 panel random_entrance_5
+  {
+    x: 21,
+    y: 2,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_entrance_6",
+      w: 4,
+      random: true,
+      randomtype: "ringnumber_and_number",
+    },
+  }, // 21,2 panel random_entrance_6
+  {
+    x: 21,
+    y: 0,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: numbers",
+    content: "numbers",
+    fontsize: 0.15,
+    fontcolor: "#eee",
+  }, // 21,0 sign
+  {
+    x: 22,
+    y: 0,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_number_4",
+      w: 4,
+      random: true,
+      randomtype: "number_easy",
+    },
+  }, // 22,0 panel random_number_4
+  {
+    x: 23,
+    y: 0,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_number_5",
+      w: 5,
+      random: true,
+      randomtype: "number_easy",
+    },
+  }, // 23,0 panel random_number_5
+  {
+    x: 24,
+    y: 0,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_number_6",
+      w: 6,
+      random: true,
+      randomtype: "number_easy",
+    },
+  }, // 24,0 panel random_number_6
+  {
+    x: 21,
+    y: -2,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: rings",
+    content: "rings",
+    fontsize: 0.15,
+    fontcolor: "#eee",
+  }, // 21,-2 sign
+  {
+    x: 22,
+    y: -2,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_rings_6",
+      w: 6,
+      random: true,
+      randomtype: "ring_easy",
+    },
+  }, // 22,-2 panel random_rings_6
+  {
+    x: 23,
+    y: -2,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_rings_8",
+      w: 8,
+      random: true,
+      randomtype: "ring_easy",
+    },
+  }, // 23,-2 panel random_rings_8
+  {
+    x: 24,
+    y: -2,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_rings_10",
+      w: 10,
+      random: true,
+      randomtype: "ring_easy",
+    },
+  }, // 24,-2 panel random_rings_10
   
   // room: ringed rings
   {
