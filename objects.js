@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 191",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 203",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -1407,7 +1407,7 @@ export const objects_temp = [
       w: 3,
       h: 3,
       type: "binary",
-      map: "020\n222\n020",
+      map: "222\n222\n222",
       symbols: {
         number: "...\n.5.\n...",
       },

@@ -6,6 +6,7 @@ export const util = {
   dir5: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
   dir8: [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]],
   dir9: [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]],
+  dir4x: [[1, 1], [-1, 1], [-1, -1], [1, -1]],
   dir5x: [[0, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]],
   pi: Math.PI,
   sqrt2: Math.sqrt(2.0),
@@ -93,6 +94,25 @@ export const util = {
       result.push(b);
     }
     return result;
+  },
+  bfs_aabb: function(bfs_result) {
+    const xs = [];
+    const ys = [];
+    for (const { x, y } of bfs_result) {
+      xs.push(x);
+      ys.push(y);
+    }
+    const min_x = Math.min(...xs);
+    const max_x = Math.max(...xs);
+    const min_y = Math.min(...ys);
+    const max_y = Math.max(...ys);
+    return {
+      min_x, max_x, min_y, max_y,
+      x: min_x,
+      y: min_y,
+      w: max_x - min_x,
+      h: max_y - min_y,
+    };
   },
   bfs_to_shape: function(bfs_result) {
     if (bfs_result.length === 1) return ["0"];

@@ -668,6 +668,29 @@ panel.randomizer.random = function(size, type, seed = generateSlug()) {
       }
     });
   }
+  else if (type === "ring_circle") {
+    const memo = util.construct(size, () => false);
+    const rings = util.construct(size, () => ".");
+    const circles = util.construct(size, () => ".");
+    util.construct(size, function(x, y) {
+      if (memo[y][x]) return 0;
+      const bfs_result = util.bfs(answer, x, y);
+      for (const o of bfs_result) {
+        memo[o.y][o.x] = true;
+      }
+      const rand = util.randint(0, bfs_result.length - 1);
+      const ringpos = bfs_result[rand];
+      rings[ringpos.y][ringpos.x] = "0";
+      return 1;
+    });
+    o.symbols.ring = rings;
+    o.symbols.circle = circles;
+    util.construct(size, function(x, y) {
+      if (util.rand() < 0.4) {
+        o.map[y][x] = answer[y][x];
+      }
+    });
+  }
   else if (type === "ringnumber") {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
