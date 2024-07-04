@@ -5911,6 +5911,28 @@ export const objects_temp = [
     },
   }, // 21,2 panel random_entrance_6
   {
+    x: 18,
+    y: 3,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: loader",
+    content: "you can load any randomized puzzle from just its name! format is #-word-word-word",
+    fontsize: 0.08,
+    fontcolor: "#eee",
+  }, // 18,3 sign
+  {
+    x: 18,
+    y: 4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_loader_0",
+      random: true,
+    },
+  }, // 18,4 panel random_loader_0
+  {
     x: 21,
     y: 0,
     z: 1,
@@ -6006,6 +6028,54 @@ export const objects_temp = [
       randomtype: "ring_easy",
     },
   }, // 24,-2 panel random_rings_10
+  {
+    x: 20,
+    y: -3,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: ringed numbers",
+    content: "ring numbers",
+    fontsize: 0.14,
+    fontcolor: "#eee",
+  }, // 20,-3 sign
+  {
+    x: 20,
+    y: -4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ringnumber_5",
+      w: 5,
+      random: true,
+      randomtype: "ringnumber",
+    },
+  }, // 20,-4 panel random_ringnumber_5
+  {
+    x: 20,
+    y: -5,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ringnumber_6",
+      w: 6,
+      random: true,
+      randomtype: "ringnumber",
+    },
+  }, // 20,-5 panel random_ringnumber_6
+  {
+    x: 20,
+    y: -6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ringnumber_7",
+      w: 7,
+      random: true,
+      randomtype: "ringnumber",
+    },
+  }, // 20,-6 panel random_ringnumber_7
   
   // room: ringed rings
   {

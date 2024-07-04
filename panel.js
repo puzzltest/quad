@@ -6,6 +6,8 @@ import { sound } from "./sfx.js";
 import { util } from "./util.js";
 import { temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
+// import { generate, count } from 'https://cdn.jsdelivr.net/npm/random-words@2.0.1/+esm'
+import { english10, english20, english35, english40, english50 } from 'https://cdn.jsdelivr.net/npm/wordlist-js@2.0.0/+esm';
 
 export const panel = {
   x: 0,
@@ -55,14 +57,24 @@ panel.init = function() {
   map.player_ref = player;
   map.util_ref = util;
   map.v_ref = v;
+  panel.randomizer.init();
 };
 
 panel.activate = function() {
   const p = panel.o.panel;
   // panel.initstate(p.w, p.h, p.initial);
   panel.lock_mode = false;
-  if (p.random || (p.randomtype && p.correct)) {
+  if (p.randomtype && (p.random || p.correct)) {
     panel.randomizer.set(p.id);
+  }
+  else if (!p.randomtype && (p.random || (p.fullseed && p.correct))) {
+    if (!panel.randomizer.load(p.id)) {
+      panel.active = false;
+      panel.deactivate();
+      // panel.o.panel.correct = false;
+      // panel.update_correct();
+      // panel.o = null;
+    }
   }
 };
 
@@ -611,10 +623,30 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
 
 // todo symbols.balance
 
-panel.randomizer.random = function(size, type, seed = generateSlug()) {
+const wordlist = [];
+panel.randomizer.init = function() {
+  for (const english of [english10, english20, english35, english40]) {
+    for (const w of english) {
+      if (w.length <= 6) {
+        wordlist.push(w);
+      }
+    }
+  }
+  console.log(wordlist.length);
+};
+
+panel.randomizer.random = function(size, type, seed) {
+  if (seed === undefined) {
+    util.seed();
+    seed = panel.randomizer.words(type);
+  }
+  if (type === undefined) {
+    type = panel.randomizer.seed2type(seed);
+  }
   const o = {};
   o.id = type + "_" + seed;
-  o.name = seed;
+  o.name = size + "-" + seed;
+  // console.log(seed);
   o.seed = seed;
   o.fullseed = type + "|" + seed;
   o.randomtype = type;
@@ -622,7 +654,7 @@ panel.randomizer.random = function(size, type, seed = generateSlug()) {
   o.h = size;
   o.fresh = true;
   // use deterministic random number generator, so that the next time the seed is provided the exact same puzzle can be generated
-  const rng = util.rng(o.fullseed);
+  util.seed(o.fullseed);
   // generate panel answer (yes repetition)
   const answer = [];
   if ("generate answer") {
@@ -810,11 +842,61 @@ panel.randomizer.set = function(id) {
   if (!o || !o?.panel) return false;
   const solved = o.panel.solved;
   const solvecount = o.panel.solvecount;
-  o.panel = panel.randomizer.random(o.panel.w, o.panel.randomtype, o.panel.randomseed);
+  o.panel = panel.randomizer.random(o.panel.w, o.panel.randomtype);
   o.panel.id = id;
   o.panel.solved = solved;
   o.panel.solvecount = solvecount;
   return true;
+};
+
+panel.randomizer.load = function(id) {
+  const o = map.get_panel(id);
+  if (!o || !o?.panel) return false;
+  const solved = o.panel.solved;
+  const solvecount = o.panel.solvecount;
+  let name = prompt("name of puzzle?");
+  if (name == undefined || !name) return false;
+  name = name.replaceAll(" ", "-");
+  const splat = name.split("-");
+  if (splat.length < 2) return false;
+  if (!splat[0].length) return false;
+  const size = +splat[0];
+  const seed = splat.slice(1).join("-");
+  if (size == undefined || seed == undefined || !size || !seed || size < 0 || size > 20) return false;
+  o.panel = panel.randomizer.random(size, undefined, seed);
+  // o.panel.random = true;
+  delete o.panel.randomtype;
+  o.panel.id = id;
+  o.panel.solved = solved;
+  o.panel.solvecount = solvecount;
+  return true;
+};
+
+panel.randomizer.types = ["number_easy", "ring_easy", "ring_circle", "ringnumber", "ring_and_number", "ringnumber_and_number", "diagonal_easy", "diagonal_number"];
+const typecount_limit = 50;
+panel.randomizer.words = function(type) {
+  const l = wordlist.length;
+  const bucket = Math.floor(l / typecount_limit);
+  const i = panel.randomizer.types.indexOf(type);
+  if (i === -1) {
+    console.error("invalid randomizer type");
+    return "";
+  }
+  const index = util.randrange(bucket * i, Math.min(l, bucket * (i + 1)));
+  const result = [wordlist[index], wordlist[util.randrange(0, l)], wordlist[util.randrange(0, l)]].join("-")
+  return result;
+};
+
+panel.randomizer.seed2type = function(words) {
+  const l = wordlist.length;
+  const bucket = Math.floor(l / typecount_limit);
+  const word = words.split("-")[0];
+  const i = wordlist.indexOf(word);
+  if (i === -1) return "number_easy";
+  const index = Math.floor(i / bucket);
+  console.log(i, bucket, index);
+  const type = panel.randomizer.types[index];
+  return type ?? "number_easy";
 };
 
 sign_pictures.text = function(x, y, w, h, o) {

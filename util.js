@@ -38,10 +38,13 @@ export const util = {
     return Math.random();
   },
   randreal: function(a, b) {
-    return a + Math.random() * b;
+    return a + Math.random() * (b - a);
   },
   randint: function(a, b) {
     return Math.floor(util.randreal(a, b + 1));
+  },
+  randrange: function(a, b) {
+    return Math.floor(util.randreal(a, b));
   },
   randletters: function(l = 10) {
     let result = "";
