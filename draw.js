@@ -19,6 +19,11 @@ export const draw = {
     ctx.lineTo(x2 ?? x1, y2 ?? y1);
     ctx.stroke();
   },
+  arc: function(x, y, r, start_angle, end_angle) {
+    ctx.beginPath();
+    //ctx.moveTo(x + r, y);
+    ctx.arc(x, y, r, start_angle, end_angle);
+  },
   circle: function(x, y, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);

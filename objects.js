@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 207",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 217",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -6661,6 +6661,149 @@ export const objects_temp = [
       z: 0,
     },
   }, // 24,18 portal to z=0
+  {
+    x: 23,
+    y: 16,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_trial_1",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        .8.8.
+        8.8.8
+        .8.8.
+        8.8.8
+        .8.8.`,
+        donut: `
+        .....
+        .....
+        ..0..
+        .....
+        .....`,
+      },
+    },
+  }, // 23,16 panel copyright_trial_1
+  {
+    x: 23,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_trial_2",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        .356.
+        .....
+        .....
+        .....
+        ..7..`,
+        squaring: `
+        .....
+        .1.1.
+        ..0..
+        .1.1.
+        .....`,
+      },
+    },
+  }, // 23,15 panel copyright_trial_2
+  {
+    x: 23,
+    y: 14,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_trial_3",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        .....
+        .....
+        45454
+        .....
+        .....`,
+        ring: `
+        ...0.
+        ...0.
+        .....
+        .0...
+        .0...`,
+        circle: `
+        .1...
+        .1...
+        .....
+        ...1.
+        ...1.`
+      },
+    },
+  }, // 23,14 panel copyright_trial_3
+  {
+    x: 21,
+    y: 15,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_copyright",
+      rule: "solved",
+      at_least: 2,
+      countdown: true,
+      panels: ["copyright_trial_1", "copyright_trial_2", "copyright_trial_3"],
+    },
+  }, // 21,15 door door_copyright
+  {
+    x: 19,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_0",
+      name: "",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        copyright: `
+        ...
+        .0.
+        ...`,
+      },
+    },
+  }, // 19,15 panel copyright_0
+  
+  // room: squaring
   {
     x: 27,
     y: 20,

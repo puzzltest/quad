@@ -611,14 +611,18 @@ panel_symbols.donut = function(s, x, y, w, h, state) {
 
 panel_symbols.copyright = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
-  ctx.lineWidth = w * 0.055;
-  draw.circle(x, y, w * 0.35);
+  ctx.lineWidth = w * 0.07;
+  draw.circle(x, y, w * 0.33);
   ctx.stroke();
+  draw.arc(x, y, w * 0.18, 0.6, -0.6);
+  ctx.stroke();
+  /*
   ctx.fillStyle = (state) ? "#111" : "#eee";
-  draw.set_font(w * 0.36, "bold");
+  draw.set_font(w * 0.44, "bold");
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("C", x, y + 1);
+  ctx.fillText("c", x, y);
+  */
 };
 
 // todo symbols.balance
