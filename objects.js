@@ -7533,6 +7533,13 @@ export const wires_def = [
     0+`,
     rules: [["amazing_link"], ["amazing_1"]],
   }, // 61,-1,-1 room: amazing link
+  {
+    x: 21,
+    y: 15,
+    z: 1,
+    map: `+0+`,
+    rules: [["door_copyright"]],
+  }, // 21,15 room: middle room
   
 ];
 
