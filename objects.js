@@ -1300,7 +1300,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 203",
+    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 207",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -6076,7 +6076,102 @@ export const objects_temp = [
       randomtype: "ringnumber",
     },
   }, // 20,-6 panel random_ringnumber_7
-  
+  {
+    x: 18,
+    y: -3,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: ring + numbers",
+    content: "ring + numbers",
+    fontsize: 0.13,
+    fontcolor: "#eee",
+  }, // 18,-3 sign
+  {
+    x: 18,
+    y: -4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ring_and_number_5",
+      w: 5,
+      random: true,
+      randomtype: "ring_and_number",
+    },
+  }, // 18,-4 panel random_ring_and_number_5
+  {
+    x: 18,
+    y: -5,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ringnumber_and_number_5",
+      w: 5,
+      random: true,
+      randomtype: "ringnumber_and_number",
+    },
+  }, // 18,-5 panel random_ringnumber_and_number_5
+  {
+    x: 18,
+    y: -6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_ringnumber_and_number_6",
+      w: 6,
+      random: true,
+      randomtype: "ringnumber_and_number",
+    },
+  }, // 18,-6 panel random_ringnumber_and_number_6
+  {
+    x: 16,
+    y: -3,
+    z: 1,
+    type: "sign",
+    physics: "empty",
+    sign: "text",
+    title: "random: diagonals",
+    content: "diagonals",
+    fontsize: 0.13,
+    fontcolor: "#eee",
+  }, // 16,-3 sign
+  {
+    x: 16,
+    y: -4,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_diagonal_number_3",
+      w: 3,
+      random: true,
+      randomtype: "diagonal_number",
+    },
+  }, // 16,-4 panel random_diagonal_number_3
+  {
+    x: 16,
+    y: -5,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_diagonal_number_4",
+      w: 4,
+      random: true,
+      randomtype: "diagonal_number",
+    },
+  }, // 16,-5 panel random_diagonal_number_4
+  {
+    x: 16,
+    y: -6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "random_diagonal_number_5",
+      w: 5,
+      random: true,
+      randomtype: "diagonal_number",
+    },
+  }, // 16,-6 panel random_diagonal_number_5
   // room: ringed rings
   {
     x: 28,

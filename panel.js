@@ -1000,8 +1000,10 @@ sign_pictures.IA = function(x, y, w, h) {
   ctx.strokeStyle = "#eee";
   ctx.lineWidth = 0.05;
   ctx.shadowColor = "#fff";
-  ctx.shadowBlur = Math.round(r * 0.075);
+  ctx.shadowBlur = Math.round(r * 0.2 * util.bounce(v.time, 60));
   for (const line of lines_IA) {
+    draw.line(line[0], line[1], line[2], line[3]);
+    draw.line(line[0], line[1], line[2], line[3]);
     draw.line(line[0], line[1], line[2], line[3]);
     ctx.stroke();
   }

@@ -1285,42 +1285,46 @@ export const map = {
     const save = zipson.parse(raw);
     map.player_ref.load(save.player);
     for (const pid in panel_lookup) {
-      const o = map.get_panel(pid);
-      const p = o.panel;
-      const s = save?.panels[pid];
-      if (s) o.seen = true;
-      if (s?.state != undefined) {
-        p.state = [];
-        for (let y = 0; y < p.h; y++) {
-          const temp = [];
-          for (let x = 0; x < p.w; x++) {
-            if (+p.map[y][x] != 2) {
-              temp.push(+p.map[y][x]);
-            } else {
-              temp.push(s?.state[y] ? +(s?.state[y][x] ?? 0) : 0);
+      try {
+        const o = map.get_panel(pid);
+        const p = o.panel;
+        const s = save?.panels[pid];
+        if (s) o.seen = true;
+        if (s?.state != undefined) {
+          p.state = [];
+          for (let y = 0; y < p.h; y++) {
+            const temp = [];
+            for (let x = 0; x < p.w; x++) {
+              if (+p.map[y][x] != 2) {
+                temp.push(+p.map[y][x]);
+              } else {
+                temp.push(s?.state[y] ? +(s?.state[y][x] ?? 0) : 0);
+              }
             }
+            p.state.push(temp);
           }
-          p.state.push(temp);
         }
-      }
-      if (s?.lock != undefined) {
-        p.lock = [];
-        for (let y = 0; y < o.panel.h; y++) {
-          const temp = [];
-          for (let x = 0; x < o.panel.w; x++) {
-            temp.push(s?.lock[y] ? +s?.lock[y][x] ?? 0 : 0);
+        if (s?.lock != undefined) {
+          p.lock = [];
+          for (let y = 0; y < o.panel.h; y++) {
+            const temp = [];
+            for (let x = 0; x < o.panel.w; x++) {
+              temp.push(s?.lock[y] ? +s?.lock[y][x] ?? 0 : 0);
+            }
+            p.lock.push(temp);
           }
-          p.lock.push(temp);
         }
+        if (!p?.solved && !p?.revoke && s?.solved) {
+          p.solved = true;
+          map.panel_ref.total_solved++;
+        }
+        if (s?.solvecount) {
+          p.solvecount = s.solvecount;
+        }
+        map.panel_ref.update_panel(pid);
+      } catch (e) {
+        console.error(e);
       }
-      if (!p?.solved && !p?.revoke && s?.solved) {
-        p.solved = true;
-        map.panel_ref.total_solved++;
-      }
-      if (s?.solvecount) {
-        p.solvecount = s.solvecount;
-      }
-      map.panel_ref.update_panel(pid);
     }
     map.panel_ref.update_doors(Object.values(panel_lookup));
     map.panel_ref.update_doors(Object.values(door_lookup));
