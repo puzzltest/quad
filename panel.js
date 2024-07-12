@@ -420,9 +420,9 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
     const bfs_right = util.bfs(p.state, x_, y);
     const shape_right = util.bfs_to_shape(bfs_right);
-    if (s == 0) {
+    if (false) {
       return util.compare_shape(shape_left, shape_right);
-    } else if (s == 1) {
+    } else if (true) {
       if (bfs_left.length !== bfs_right.length) return false;
       let bfs_result = bfs_left;
       for (let i = 0; i < 4; i++) {

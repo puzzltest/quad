@@ -6802,6 +6802,146 @@ export const objects_temp = [
       },
     },
   }, // 19,15 panel copyright_0
+  {
+    x: 18,
+    y: 14,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_1",
+      name: "",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      1022
+      2222
+      2222
+      2222`,
+      symbols: {
+        copyright: `
+        0...
+        ....
+        ....
+        ....`,
+        ringnumber: `
+        .8..
+        8...
+        ....
+        ....
+        `,
+      },
+    },
+  }, // 18,14 panel copyright_1
+  {
+    x: 18,
+    y: 16,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_2",
+      name: "",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        copyright: `
+        ....
+        ....
+        ..0.
+        ....`,
+        number: `
+        .2..
+        ...0
+        ....
+        ..4.`,
+      },
+    },
+  }, // 18,16 panel copyright_2
+  {
+    x: 17,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_3",
+      name: "",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      1010101
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        copyright: `
+        .......
+        .......
+        .......
+        ...0...
+        .......
+        .......
+        .......`,
+        circle: `
+        .......
+        .......
+        .......
+        01..01.
+        .......
+        .......
+        .......`,
+      },
+    },
+  }, // 17,15 panel copyright_3
+  {
+    x: 18,
+    y: 15,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_4",
+      name: "",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        copyright: `
+        ..0.
+        ..0.
+        0...
+        0...`,
+        circle: `
+        ...0
+        ....
+        ....
+        .0..`,
+        ring: `
+        0...
+        .0..
+        ..0.
+        ...0`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 4,
+      panels: ["copyright_0", "copyright_1", "copyright_2", "copyright_3"],
+    },
+  }, // 18,15 panel copyright_4
   
   // room: squaring
   {

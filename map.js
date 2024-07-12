@@ -992,7 +992,7 @@ export const maps = [
     0.....
     0.....
     `,
-  }, // 15,12,1 squaring
+  }, // 15,12,1 copyright
   
   
   {
