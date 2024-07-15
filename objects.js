@@ -6938,7 +6938,7 @@ export const objects_temp = [
     },
     door: {
       rule: "solved",
-      at_least: 4,
+      at_least: 2,
       panels: ["copyright_0", "copyright_1", "copyright_2", "copyright_3"],
     },
   }, // 18,15 panel copyright_4
