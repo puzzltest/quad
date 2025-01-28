@@ -8,8 +8,14 @@ export const objects_temp = [
     x: 0,
     y: 0,
     z: -1,
-    type: "link",
+    type: "portal", // link
     content: "/changelog/",
+    portal: {
+      type: "up",
+      x: 0,
+      y: 0,
+      z: 1000,
+    },
   }, // 0,0 link
   // room: first puzzle
   {
@@ -7469,6 +7475,20 @@ export const objects_temp = [
   }, // -4,5 door door_warp_6
   
   
+  // @ z = 1000
+  
+  {
+    x: 0,
+    y: 0,
+    z: 1000,
+    type: "portal", // link
+    portal: {
+      type: "down",
+      x: 0,
+      y: 0,
+      z: -1,
+    },
+  }, // 0,0 link
   
   
 ];

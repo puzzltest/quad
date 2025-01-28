@@ -1034,6 +1034,28 @@ export const maps = [
     `,
   }, // -10,-10,-99 warp zone
   
+  {
+    x: -3,
+    y: -4,
+    z: 1000,
+    w: 8,
+    h: 9,
+    scale: 7.25,
+    theme: "grey",
+    name: "the origin",
+    map: `
+........
+00000000
+0.....0.
+0.......
+0..#....
+0.......
+0.....0.
+00000000
+........
+  `,
+  }, // -3,-4,-1 the origin
+  
 ];
 
 export const objects = objects_temp;
@@ -1150,6 +1172,7 @@ export const map = {
     [-1]: "grey",
     [0]: "grass",
     [1]: "wood",
+    [1000]: "grey",
   },
   init: function() {
     for (const pid in panel_lookup) {
