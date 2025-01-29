@@ -1073,6 +1073,12 @@ symbol_functions.load = function() {
   temp.load(code);
 };
 
+symbol_functions.account = function() {
+  if (window.confirm("open google pop-up?")) {
+    // todo
+  }
+};
+
 symbol_functions.map = function() {
   panel.map.active = !panel.map.active;
   panel.map.x = player.x;

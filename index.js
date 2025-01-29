@@ -359,8 +359,12 @@ const mousedown_handler = function(event) {
     y: event.clientY * v.ratio,
     active: true,
   };
-  mouse.newtaps.push(o);
-  mouse.start_point[-1] = o;
+  /*if (!panel.active && event.buttons & 1) {
+    player.act();
+  } else {*/
+    mouse.newtaps.push(o);
+    mouse.start_point[-1] = o;
+  // }
 };
 
 const touch_handler = function(event) {
@@ -463,6 +467,7 @@ window.addEventListener("mouseup", mouse_handler);
 window.addEventListener("beforeunload", before_unload);
 
 // this is me spamming to fix the funny canvas sliding problem on iOS
+window.addEventListener("contextmenu", scroll_handler);
 window.addEventListener("wheel", scroll_handler);
 window.addEventListener("mousewheel", scroll_handler);
 window.addEventListener("scroll", scroll_handler);

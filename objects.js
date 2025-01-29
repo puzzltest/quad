@@ -7489,6 +7489,33 @@ export const objects_temp = [
       z: -1,
     },
   }, // 0,0 link
+  {
+    x: -2,
+    y: -2,
+    z: 1000,
+    type: "symbol",
+    symbol: {
+      type: "save",
+    },
+  }, // -2,-2 symbol save
+  {
+    x: -1,
+    y: -2,
+    z: 1000,
+    type: "symbol",
+    symbol: {
+      type: "load",
+    },
+  }, // -1,-2 symbol load
+  {
+    x: 2,
+    y: -2,
+    z: 1000,
+    type: "symbol",
+    symbol: {
+      type: "account",
+    },
+  }, // 2,-2 symbol account
   
   
 ];

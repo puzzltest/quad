@@ -1042,19 +1042,19 @@ export const maps = [
     h: 9,
     scale: 7.25,
     theme: "grey",
-    name: "the origin",
+    name: "main menu",
     map: `
 ........
 00000000
 0.....0.
-0.......
+0.....0.
 0..#....
-0.......
+0.....0.
 0.....0.
 00000000
 ........
   `,
-  }, // -3,-4,-1 the origin
+  }, // -3,-4,1000 the origin
   
 ];
 
