@@ -9,14 +9,13 @@ export const maps = [
     w: 8,
     h: 9,
     scale: 7.25,
-    theme: "grey",
     name: "the origin",
     map: `
 ........
 00000000
 0.....0.
 0.......
-0..#....
+0.......
 0.......
 0.....0.
 00000000
@@ -31,7 +30,7 @@ export const maps = [
     h: 9,
     scale: 7.5,
     theme: "grey",
-    name: "first 'puzzle'",
+    name: "first puzzle",
     map: `
 .......
 0000000
@@ -1001,6 +1000,91 @@ export const maps = [
     `,
   }, // 15,12,1 copyright
   
+  {
+    x: 22,
+    y: 4,
+    z: 2,
+    w: 7,
+    h: 9,
+    scale: 6.5,
+    theme: "wood2",
+    name: "rooom",
+    map: `
+00...00
+0.....0
+,.....,
+0.....0
+,,.....
+0,....0
+0,.0.00
+0.....0
+0000000
+    `,
+  }, // 22,4,2 rooom
+  {
+    x: 16,
+    y: 7,
+    z: 2,
+    w: 6,
+    h: 6,
+    scale: 7,
+    theme: "wood2",
+    name: "waterlogged",
+    map: `
+000000
+0.....
+0.....
+0.....
+0.....
+0.....
+0.....0
+0.....0
+0000000
+    `,
+  }, // 15,4,2 waterlogged
+  {
+    x: 21,
+    y: -4,
+    z: 2,
+    w: 9,
+    h: 9,
+    scale: 8.5,
+    theme: "wood2",
+    name: "challenges",
+    map: `
+000000000
+0.......0
+0.......0
+0.......0
+0.......0
+0.......0
+0.....+.0
+0.......0
+000+++000
+    `,
+  }, // 20,-6,2 challenges
+  {
+    x: 28,
+    y: 7,
+    z: 2,
+    w: 11,
+    h: 7,
+    scale: 8,
+    theme: "wood2",
+    name: "libra",
+    map: `
+00000000000
++.....+...0
+0.....0.+.0
+00+0+00.+.0
+0.....0.+.0
+0.+.+.0.+.0
+0.....0...0
+0.+.+.00000
+0..........,
+00000000000
+    `,
+  }, // 28,7,2 libra
   
   {
     x: -10,
@@ -1045,16 +1129,16 @@ export const maps = [
     name: "main menu",
     map: `
 ........
-00000000
+0000000.
 0.....0.
+0.....00
+0.....#0
+0.....00
 0.....0.
-0..#....
-0.....0.
-0.....0.
-00000000
+0000000.
 ........
-  `,
-  }, // -3,-4,1000 the origin
+    `,
+  }, // -3,-4,1000 main menu
   
 ];
 
@@ -1167,18 +1251,19 @@ export const map = {
   get total_stars() {
     return this.stars_collected.length;
   },
-  z_themes: {
-    [-99]: "warp",
-    [-1]: "grey",
-    [0]: "grass",
-    [1]: "wood",
-    [1000]: "grey",
-  },
   init: function() {
     for (const pid in panel_lookup) {
       if (panel_lookup[pid].panel.unsolvable) continue;
       map.solvable_panels++;
     }
+  },
+  z_themes: {
+    [-99]: "warp",
+    [-1]: "grey",
+    [0]: "grass",
+    [1]: "wood",
+    [2]: "wood2",
+    [1000]: "grey",
   },
   point_in_map: function(m, x, y, z) {
     return m.z === z && m.x <= x && m.y <= y && m.x + m.w > x && m.y + m.h > y;

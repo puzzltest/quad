@@ -8,8 +8,7 @@ export const objects_temp = [
     x: 0,
     y: 0,
     z: -1,
-    type: "portal", // link
-    content: "/changelog/",
+    type: "portal",
     portal: {
       type: "up",
       x: 0,
@@ -1306,7 +1305,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! thank you for testing!\n\nfull completion: ⭐ 7 🧩 221",
+    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 7 🧩 240",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -1351,10 +1350,10 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome",
-    content: "this is barely a house... at least there are some useful things here now (unlike the time when this place was completely empty)",
-    fontsize: 0.065,
-    fontcolor: "#eee",
-    textangle: 0,
+    content: "welcome!\n\nthere are 2 floors above you and 2 floors below you",
+    fontsize: 0.09,
+    fontcolor: "#afa",
+    textangle: 0.1,
   }, // 23,5 sign
   {
     x: 26,
@@ -5844,6 +5843,17 @@ export const objects_temp = [
     },
   }, // 27,11 portal to z=0
   {
+    x: 23,
+    y: 11,
+    z: 1,
+    type: "portal",
+    portal: {
+      x: 27,
+      y: 11,
+      z: 2,
+    },
+  }, // 23,11 portal to z=2
+  {
     x: 22,
     y: 5,
     z: 1,
@@ -7246,6 +7256,659 @@ export const objects_temp = [
   }, // 37,19 door door_squaring_2
   
   
+  
+  // @ z = 2
+  
+  // room: room (level 2)
+  {
+    x: 27,
+    y: 11,
+    z: 2,
+    type: "portal",
+    portal: {
+      x: 23,
+      y: 11,
+      z: 1,
+    },
+  }, // 27,11 portal to z=1
+  {
+    x: 25,
+    y: 7,
+    z: 2,
+    type: "symbol",
+    symbol: {
+      type: "map",
+    },
+  }, // 25,7 symbol map
+  {
+    x: 24,
+    y: 10,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_1",
+      name: "gate",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      ruin: "00\n.0\n.0",
+      symbols: {
+        ruing: `
+        1...1
+        .1.1.
+        .....
+        ..1..
+        .....`,
+        ringnumber: `
+        .....
+        .....
+        ..3..
+        .....
+        .....`
+      },
+    },
+  }, // 24,10 panel rooom_1
+  {
+    x: 26,
+    y: 10,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_2_0",
+      name: "gate",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        circle: `
+        ....1
+        .....
+        .....
+        .....
+        1....`,
+        ringnumber: `
+        ...9.
+        ....9
+        .....
+        .....
+        .....`,
+        number: `
+        1....
+        .....
+        ..1..
+        .....
+        ....1`,
+      },
+    },
+  }, // 26,10 panel rooom_2_0
+  {
+    x: 24,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_3",
+      name: "entrance",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        number: `
+        111
+        111
+        1.1`,
+      },
+    },
+  }, // 24,4 panel rooom_3
+  {
+    x: 25,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_4",
+      name: "entrance",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        number: `
+        222
+        222
+        22.`,
+      },
+    },
+  }, // 25,4 panel rooom_4
+  {
+    x: 26,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_5",
+      name: "entrance",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        number: `
+        333
+        3.3
+        333`,
+      },
+    },
+  }, // 26,4 panel rooom_5
+  // room: challenges
+  {
+    x: 27,
+    y: 2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "rooom_2",
+      name: "best puzzle ever?",
+      w: 9,
+      h: 9,
+      type: "binary",
+      map: `
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222`,
+      symbols: {
+        circle: `
+        1.....1.0
+        .........
+        ........2
+        .........
+        .........
+        .........
+        .........
+        .........
+        0.......2`,
+        ringnumber: `
+        .....c.h.
+        ........h
+        .........
+        ........c
+        .........
+        .........
+        9........
+        .........
+        ..9......`
+      },
+    },
+  }, // 27,2 panel rooom_2 (challenge #7)
+  // room: libra
+  {
+    x: 28,
+    y: 8,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_0",
+      name: "hmmm",
+      w: 5,
+      h: 3,
+      type: "binary",
+      map: `
+      22222
+      11122
+      00100`,
+      symbols: {
+        balance: `
+        .....
+        .....
+        ..0..`,
+      },
+    },
+  }, // 28,8 panel balance_0
+  {
+    x: 30,
+    y: 10,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_1_1",
+      name: "top",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      20022
+      11102
+      00100`,
+      symbols: {
+        balance: `
+        .....
+        .....
+        .....
+        .....
+        ..0..`,
+      },
+    },
+  }, // 30,10 panel balance_1_1
+  {
+    x: 32,
+    y: 10,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_1_2",
+      name: "ple",
+      w: 7,
+      h: 3,
+      type: "binary",
+      map: `
+      2222222
+      1110111
+      1002001`,
+      symbols: {
+        balance: `
+        .......
+        .......
+        0.....0`,
+      },
+    },
+  }, // 32,10 panel balance_1_2
+  {
+    x: 30,
+    y: 12,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_2_1",
+      name: "top left",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      1111111
+      0100000`,
+      symbols: {
+        balance: `
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......
+        .0.....`,
+      },
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["balance_1_1"],
+    },
+  }, // 30,12 panel balance_2_1
+  {
+    x: 30,
+    y: 14,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_2_2",
+      name: "ple left",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      0100000`,
+      symbols: {
+        balance: `
+        .......
+        .......
+        .......
+        .......
+        .......
+        .0.....
+        .......`,
+        circle: `
+        ......1
+        .......
+        .......
+        .......
+        .......
+        .......
+        .1.....`,
+      },
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["balance_2_1"],
+    },
+  }, // 30,14 panel balance_2_2
+  {
+    x: 32,
+    y: 12,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_2_3",
+      name: "top right",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222022
+      2200222
+      2022222
+      2022221
+      2011111
+      1010000`,
+      symbols: {
+        balance: `
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......
+        0.0....`,
+      },
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["balance_1_2"],
+    },
+  }, // 32,12 panel balance_2_3
+  {
+    x: 32,
+    y: 14,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_2_4",
+      name: "ple right",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222221
+      0010000`,
+      symbols: {
+        balance: `
+        .0.....
+        .......
+        .......
+        .......
+        .......
+        .......
+        ..0....`,
+        circle: `
+        2.....0
+        .......
+        .......
+        .......
+        ...2...
+        ..0...0
+        .......`,
+      },
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["balance_1_2"],
+    },
+  }, // 32,14 panel balance_2_4
+  {
+    x: 34,
+    y: 8,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_3_0",
+      name: "not",
+      w: 5,
+      h: 3,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222`,
+      symbols: {
+        balance: `
+        .....
+        ..1..
+        .....`,
+      },
+    },
+  }, // 34,8 panel balance_3_0
+  {
+    x: 36,
+    y: 9,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_3_1",
+      name: "not 1",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        balance: `
+        1.0.1
+        .....
+        .....
+        .....
+        0.1.0`,
+      },
+    },
+  }, // 36,9 panel balance_3_1
+  {
+    x: 36,
+    y: 10,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_3_2",
+      name: "not 2",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        balance: `
+        .....
+        .....
+        ..1..
+        .....
+        .....`,
+        ringnumber: `
+        .....
+        ..7..
+        .3.6.
+        ..5..
+        .....`
+      },
+    },
+  }, // 36,10 panel balance_3_2
+  {
+    x: 36,
+    y: 11,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_3_3",
+      name: "not 3",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        balance: `
+        .....
+        .....
+        ..1..
+        .....
+        .....`,
+        ring: `
+        .00..
+        ..0.0
+        00.00
+        0.0..
+        ..00.`,
+      },
+    },
+  }, // 36,11 panel balance_3_3
+  {
+    x: 36,
+    y: 12,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_3_4",
+      name: "not 4",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        circle: `
+        0....0
+        ......
+        1....1
+        ......
+        2....2
+        ......`,
+        balance: `
+        ..11..
+        ......
+        1.00.1
+        ......
+        ..11..
+        ......`,
+      },
+    },
+  }, // 36,12 panel balance_3_4
+  {
+    x: 34,
+    y: 15,
+    z: 2,
+    type: "door",
+    door: {
+      id: "door_balance_2",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["balance_2_1", "balance_2_2", "balance_2_3", "balance_2_4"],
+    },
+  }, // 34,15 door door_balance_2
+  {
+    x: 37,
+    y: 15,
+    z: 2,
+    type: "door",
+    door: {
+      id: "door_balance_3",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["balance_3_1", "balance_3_2", "balance_3_3", "balance_3_4"],
+    },
+  }, // 37,15 door door_balance_3
+  {
+    x: 38,
+    y: 15,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "balance_4_0",
+      name: "spinny",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        balance: `
+        .....
+        .....
+        ..3..
+        .....
+        .....`,
+      },
+    },
+  }, // 38,15 panel balance_4_0
+  
+  
   // @ z = -99
   
   {
@@ -7490,6 +8153,17 @@ export const objects_temp = [
     },
   }, // 0,0 link
   {
+    x: 0,
+    y: -1,
+    z: 1000,
+    type: "sign",
+    sign: "text",
+    title: "answer :)",
+    content: "hi, this is the main menu!\n\ngo back down to continue the game\n\n\nP.S. account system isn't done yet :(",
+    fontsize: 0.08,
+    fontcolor: "#eee",
+  }, // 0,-1 sign
+  {
     x: -2,
     y: -2,
     z: 1000,
@@ -7516,6 +8190,13 @@ export const objects_temp = [
       type: "account",
     },
   }, // 2,-2 symbol account
+  {
+    x: 3,
+    y: 0,
+    z: 1000,
+    type: "link",
+    content: "/changelog/",
+  }, // 3,0 link
   
   
 ];
@@ -7726,7 +8407,30 @@ export const wires_def = [
     z: 1,
     map: `+0+`,
     rules: [["door_copyright"]],
-  }, // 21,15 room: middle room
+  }, // 21,15,1 room: middle room
+  {
+    x: 23,
+    y: 2,
+    z: 2,
+    map: `
+      +.+.+
+      00122
+      .+++.`,
+    rules: [["rooom_3"], ["rooom_4"], ["rooom_5"]],
+  }, // 23,2,2 room: challenges
+  {
+    x: 30,
+    y: 10,
+    z: 2,
+    map: `
+      +.+.....
+      0.2.....
+      +.+...+.
+      1.3...55
+      +.+....5
+      4444+..+`,
+    rules: [["balance_1_1"], ["balance_2_1"], ["balance_1_2"], ["balance_2_3"], ["door_balance_2"], ["door_balance_3"]],
+  }, // 30,10,2 room: libra
   
 ];
 

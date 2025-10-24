@@ -493,6 +493,51 @@ export const theme = {
       this["."](x, y, w, h, o);
     },
   },
+  wood2: {
+    ["."]: function(x, y, w, h) {
+      ctx.fillStyle = "#256";
+      draw.rectangle(x, y, w, h);
+      ctx.fill();
+      ctx.strokeStyle = "#eee2";
+      ctx.lineWidth = w * 0.04;
+      ctx.lineCap = "round";
+      // draw.line(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
+      // draw.line(x - w / 2, y + h * 0.115, x + w * 0.115, y - h * 0.5);
+      // draw.line(x + w * 0.1, y + h * 0.5, x + w * 0.5, y + h * 0.1);
+      const density = 4;
+      for (let i = 0; i < density + 1; i++) {
+        const xx = x + w * (-0.5 + 1 / (density * 2 + 2) + 1 / (density + 1) * i);
+        draw.line(xx, y - h / 2, xx, y + h / 2);
+      }
+      for (let i = 0; i < density + 1; i++) {
+        const yy = y + h * (-0.5 + 1 / (density * 2 + 2) + 1 / (density + 1) * i);
+        draw.line(x - w / 2, yy, x + w / 2, yy);
+      }
+    },
+    ["0"]: function(x, y, w, h, o) {
+      ctx.fillStyle = "#ccc";
+      draw.rectangle(x, y, w, h);
+      ctx.fill();
+      ctx.strokeStyle = "#256";
+      ctx.lineWidth = w * 0.04;
+      const ys = [y - h / 2];
+      for (let i = -1.5; i < 2; i++) {
+        const yy = y + h * i / 4.2;
+        ys.push(yy);
+        draw.line(x - w / 2, yy, x + w / 2, yy);
+      }
+      ys.push(y + h / 2);
+      for (let i = 0; i < 5; i++) {
+        draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
+      }
+    },
+    ["1"]: function(x, y, w, h, o) {
+      this["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      this["."](x, y, w, h, o);
+    },
+  },
   warp: {
     ["."]: function(x, y, w, h, o) {
       const c = draw.noise3(o.x / 10, o.y / 10, v.time / 220);
@@ -557,6 +602,10 @@ export const mini_theme = {
   },
   wood: {
     ["."]: "#652",
+    ["0"]: "#ccc",
+  },
+  wood2: {
+    ["."]: "#256",
     ["0"]: "#ccc",
   },
   warp: {

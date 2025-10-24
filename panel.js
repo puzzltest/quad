@@ -438,25 +438,35 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "balance") {
-    const bfs_result = util.bfs(p.state, x, y);
-    let total_x = 0;
-    let total_y = 0;
-    let max_y = Number.NEGATIVE_INFINITY;
-    for (const o of bfs_result) {
-      total_x += o.x;
-      total_y += o.y;
-      max_y = Math.max(max_y, o.y);
-    }
-    let min_x = Number.POSITIVE_INFINITY;
-    let max_x = Number.NEGATIVE_INFINITY;
-    for (const o of bfs_result) {
-      if (o.y === max_y) {
-        min_x = Math.min(min_x, o.x);
-        max_x = Math.max(max_x, o.x);
+    let bfs_result = util.bfs(p.state, x, y);
+    const n = (s == 2 || s == 3) ? 4 : 1;
+    for (let i = 0; i < n; i++) {
+      let total_x = 0;
+      let total_y = 0;
+      let max_y = Number.NEGATIVE_INFINITY;
+      for (const o of bfs_result) {
+        total_x += o.x;
+        total_y += o.y;
+        max_y = Math.max(max_y, o.y);
       }
+      let min_x = Number.POSITIVE_INFINITY;
+      let max_x = Number.NEGATIVE_INFINITY;
+      for (const o of bfs_result) {
+        if (o.y === max_y) {
+          min_x = Math.min(min_x, o.x);
+          max_x = Math.max(max_x, o.x);
+        }
+      }
+      const average_x = (total_x / bfs_result.length);
+      const stable = min_x - 0.5001 <= average_x && average_x <= max_x + 0.5001;
+      if (s == 0 || s == 2) {
+        if (!stable) return false;
+      } else if (s == 1 || s == 3) {
+        if (stable) return false;
+      }
+      if (i + 1 < n) bfs_result = util.rotate_bfs_result(bfs_result);
     }
-    const average_x = Math.round(total_x / bfs_result.length);
-    return min_x <= average_x && average_x <= max_x;
+    return true;
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
@@ -625,7 +635,28 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
   */
 };
 
-// todo symbols.balance
+panel_symbols.balance = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.07;
+  draw.circle(x, y, w * 0.33);
+  ctx.stroke();
+  ctx.fillStyle = ctx.strokeStyle;
+  draw.set_font(w * 0.44, "bold");
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate((s == 2 || s == 3) ? v.time / 30 : 0);
+  ctx.fillText("♎︎", 0, 0);
+  if ((s == 1 || s == 3)) {
+    ctx.strokeStyle = (state) ? "#1119" : "#eee9";
+    draw.line(w * 0.24, h * 0.24, -w * 0.24, -h * 0.24);
+    draw.line(w * 0.24, -h * 0.24, -w * 0.24, h * 0.24);
+  }
+  ctx.restore();
+};
+
+// todo symbols.amogus
 
 const wordlist = [];
 panel.randomizer.init = function() {
