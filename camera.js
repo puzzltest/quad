@@ -92,6 +92,7 @@ camera.draw = function() {
   
   // draw objects
   for (const o of map.search_objects(Math.floor(camera.x) - 1.5, Math.floor(camera.y) - 1.5, z, Math.ceil(camera.scale) + 3, Math.ceil(camera.scale) + 3)) {
+    if (o.invisible) continue;
     const s = o.type;
     const t = o?.theme ?? "normal";
     let [xx, yy] = camera.convert(o.x, o.y);
@@ -437,7 +438,7 @@ export const theme = {
       ctx.fillStyle = "#842";
       draw.rectangle(x, y, w, h);
       ctx.fill();
-      ctx.strokeStyle = "#eee";
+      ctx.strokeStyle = "#cba";
       ctx.lineWidth = w * 0.04;
       const ys = [y - h / 2];
       for (let i = -1.5; i < 2; i++) {
@@ -470,7 +471,7 @@ export const theme = {
       draw.line(x + w * 0.1, y + h * 0.5, x + w * 0.5, y + h * 0.1);
     },
     ["0"]: function(x, y, w, h, o) {
-      ctx.fillStyle = "#ccc";
+      ctx.fillStyle = "#cba";
       draw.rectangle(x, y, w, h);
       ctx.fill();
       ctx.strokeStyle = "#652";
@@ -515,7 +516,7 @@ export const theme = {
       }
     },
     ["0"]: function(x, y, w, h, o) {
-      ctx.fillStyle = "#ccc";
+      ctx.fillStyle = "#abc";
       draw.rectangle(x, y, w, h);
       ctx.fill();
       ctx.strokeStyle = "#256";
@@ -595,18 +596,25 @@ export const mini_theme = {
   grey: {
     ["."]: "#111",
     ["0"]: "#888",
+    ["1"]: "#888",
   },
   grass: {
     ["."]: "#351",
     ["0"]: "#842",
+    ["1"]: "#842",
+    ["2"]: "#351",
   },
   wood: {
     ["."]: "#652",
-    ["0"]: "#ccc",
+    ["0"]: "#cba",
+    ["1"]: "#cba",
+    ["2"]: "#652",
   },
   wood2: {
     ["."]: "#256",
-    ["0"]: "#ccc",
+    ["0"]: "#abc",
+    ["1"]: "#cba",
+    ["2"]: "#256",
   },
   warp: {
     ["."]: "#635",

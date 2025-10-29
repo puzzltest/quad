@@ -6,9 +6,8 @@ import { map } from "./map.js";
 import { util } from "./util.js";
 
 const params = new URLSearchParams(document.location.search);
+const local = document.location.hostname === "localhost";
 
-const url = "https://hwrnmdsdjevfcvgpablf.supabase.co";
-const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3cm5tZHNkamV2ZmN2Z3BhYmxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgwNzkyOTQsImV4cCI6MjAzMzY1NTI5NH0.zYEJGqxrQYZoOensuJWG5NCyWC9vFhSbIvMVX3zVq5Y";
 const firebaseConfig = {
   apiKey: "AIzaSyCbkiYb_waAew2mLVr9ejn6FTGTr19Vi4A",
   authDomain: "four--4.firebaseapp.com",
@@ -23,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 91101;
+export const VERSION = 100101; // remember to change this
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -150,18 +149,23 @@ firebase.init = function() {
 };
 
 firebase.time = 0;
-firebase.update_time = 30; // 0
-firebase.update2_time = -30000; // 0
+firebase.update_time = 30;
+firebase.update2_time = -30000; // also do it at the start
+firebase.update3_time = 0;
 firebase.tick = function(time) {
   firebase.time = time;
-  if (time - firebase.update_time > 30) {
+  if (time - firebase.update_time > 30) { // ms
     firebase.update_time = time;
     firebase.send();
   }
-  if (time - firebase.update2_time > 30000) {
+  if (time - firebase.update2_time > 30000) { // ms
     firebase.update2_time = time;
     firebase.clear();
     firebase.send();
+  }
+  if (local && time - firebase.update3_time > 3000) {
+    firebase.update3_time = time;
+    temp.save("local");
   }
 };
 
@@ -172,61 +176,15 @@ firebase.clear = function() {
 
 
 
-export const database = {};
-let channel = null;
-// const supabase = createClient(url, api_key);
-
-database.subscribe = function() {
-  
-  return;
-  /*
-  channel.subscribe((status) => {
-    console.log(status);
-    if (status === "SUBSCRIBED") {
-      database.send();
-    } else if (status === "CLOSED") {
-      setTimeout(database.init, 1000);
-    } else if (status === "CHANNEL_ERROR") {
-      setTimeout(database.init, 5000);
-    } else {
-      
-    }
-  });*/
-  
-};
-database.time = 0;
-database.tick = function(time) {
-  return;
-  if (time - database.time < 30) return;
-  database.time = time;
-  // console.log(time);
-  database.send();
-};
-database.send = function() {
-  return;
-  /*
-  channel.send({
-    type: "broadcast",
-    event: "position",
-    payload: {
-      id: the_id,
-      x: player.x,
-      y: player.y,
-      z: player.z,
-      p: map.panel_ref.total_solved,
-    },
-  });*/
-};
-
 export const temp = {};
 
-temp.save = function() {
+temp.save = function(id = the_id) {
   let nice = localStorage.getItem("save");
   if (nice) {
     nice = zipson.parse(nice);
     nice = JSON.stringify(nice);
-    firebase.set("/quad/save/" + the_id, nice);
-    firebase.set("/quad/savestats/" + the_id, {
+    firebase.set("/quad/save/" + id, nice);
+    firebase.set("/quad/savestats/" + id, {
       puzzles: map.panel_ref.total_solved,
       stars: map.total_stars,
       time: serverTimestamp(),
@@ -234,7 +192,7 @@ temp.save = function() {
   } else {
     alert("error: no save data?");
   }
-  return the_id;
+  return id;
 };
 temp.load = function(code = false) {
   if (!code && params.get("save")) {
@@ -251,14 +209,13 @@ temp.load = function(code = false) {
         setTimeout(() => window.location.href = "/", 200);
       }
     });
-  } else if ((code?.length ?? 0) === 10) {
+  } else if ((code?.length ?? 0) > 0) {
     firebase.get("/quad/save/" + code, function(data) {
       if (data == null) {
         alert("error: no such save code?");
       } else {
         const raw = zipson.stringify(JSON.parse(data));
         if (raw) {
-          // alert("loading...");
           localStorage.setItem("save", raw);
           map.load(raw);
           localStorage.setItem("save", map.save());
@@ -266,7 +223,8 @@ temp.load = function(code = false) {
             puzzles: map.panel_ref.total_solved,
             stars: map.total_stars,
           });
-          alert("loaded!");
+          if (code !== "local") alert("loaded!");
+          else localStorage.setItem("local", VERSION);
           setTimeout(() => window.location.href = "/", 250);
         } else {
           alert("error: ???");
@@ -274,7 +232,7 @@ temp.load = function(code = false) {
       }
     });
   } else {
-    // alert("error: ?????");
+    // alert("error: invalid save code?");
     return;
   }
 };

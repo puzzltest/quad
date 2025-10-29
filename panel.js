@@ -121,17 +121,19 @@ panel.draw = function() {
   if (panel.active) {
     panel.time++;
     const p = panel.o.panel;
-    const size = panel.size * 0.85 / Math.max(p.w, p.h);
+    const size_ = panel.size / Math.max(p.w, p.h);
+    const size = size_ * 0.85;
     const gap = panel.size * 0.15 / (1 + Math.max(p.w, p.h));
-    if ("true") {
-      ctx.fillStyle = p.correct ? "#8dac" : "#bafc";
-      draw.rectangle(view.cx, view.cy, panel.size + gap * 2, panel.size + gap * 2);
-      ctx.fill();
-    }
+    const panel_w = size_ * p.w;
+    const panel_h = size_ * p.h;
+    ctx.fillStyle = p.correct ? "#8dac" : "#bafc";
+    draw.rectangle(view.cx, view.cy, panel_w + gap * 2, panel_h + gap * 2);
+    ctx.fill();
     ctx.fillStyle = p.correct ? "#111" : "#111";
-    ctx.fillRect(panel.x, panel.y, panel.size, panel.size);
-    x = panel.x + panel.size / 2 - (size * p.w + gap * p.w - gap) / 2;
-    y = panel.y + panel.size / 2 - (size * p.h + gap * p.h - gap) / 2;
+    draw.rectangle(view.cx, view.cy, panel_w, panel_h);
+    ctx.fill();
+    x = view.cx - (size * p.w + gap * p.w - gap) / 2;
+    y = view.cy - (size * p.h + gap * p.h - gap) / 2;
     for (let i = 0; i < p.w; i++) {
       for (let j = 0; j < p.h; j++) {
         let s = +p.state[j][i];
@@ -235,7 +237,8 @@ panel.draw = function() {
             const m = map.get_map(x, y, z);
             // if (!m) continue;
             const s = map.get_tile(x, y, z) ?? ".";
-            const o = map.get_object(x, y, z);
+            let o = map.get_object(x, y, z);
+            if (o?.invisible) o = undefined;
             const t = m?.theme ?? map.z_themes[z] ?? "normal";
             let xx = view.cx + (x - panel.map.x) * view.size / scale;
             let yy = view.cy + (y - panel.map.y) * view.size / scale;
@@ -410,15 +413,19 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return (s == 0);
   }
   else if (name === "copyright") {
-    const x_ = (x + 1 >= p.w) ? 0 : (x + 1);
+    let x_ = x, y_ = y;
+    if (s == 0) x_ = (x + 1 >= p.w) ? 0 : (x + 1);
+    else if (s == 1) y_ = (y + 1 >= p.w) ? 0 : (y + 1);
+    else if (s == 2) x_ = (x - 1 < 0) ? (p.w - 1) : (x - 1);
+    else if (s == 3) y_ = (y - 1 < 0) ? (p.h - 1) : (y - 1);
     const bfs_left = util.bfs(p.state, x, y);
     const shape_left = util.bfs_to_shape(bfs_left);
     for (const o of bfs_left) {
-      if (o.x === x_ && o.y === y) {
+      if (o.x === x_ && o.y === y_) {
         return false;
       }
     }
-    const bfs_right = util.bfs(p.state, x_, y);
+    const bfs_right = util.bfs(p.state, x_, y_);
     const shape_right = util.bfs_to_shape(bfs_right);
     if (false) {
       return util.compare_shape(shape_left, shape_right);
@@ -624,7 +631,7 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
   ctx.lineWidth = w * 0.07;
   draw.circle(x, y, w * 0.33);
   ctx.stroke();
-  draw.arc(x, y, w * 0.18, 0.6, -0.6);
+  draw.arc(x, y, w * 0.18, (0.6 + Math.PI / 2 * s) % (Math.PI * 2), (-0.6 + Math.PI / 2 * s) % (Math.PI * 2));
   ctx.stroke();
   /*
   ctx.fillStyle = (state) ? "#111" : "#eee";
@@ -1080,15 +1087,12 @@ sign_functions["answer :)"] = function(o) {
 symbol_functions.arrow_left = function() {
   map.physics_ref.move_player(-50 * player.speed, 0);
 };
-
 symbol_functions.arrow_right = function() {
   map.physics_ref.move_player(50 * player.speed, 0);
 };
-
 symbol_functions.arrow_up = function() {
   map.physics_ref.move_player(0, -50 * player.speed);
 };
-
 symbol_functions.arrow_down = function() {
   map.physics_ref.move_player(0, 50 * player.speed);
 };

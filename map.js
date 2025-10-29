@@ -705,7 +705,7 @@ export const maps = [
     theme: "wood",
     name: "staring (to the right)",
     map: `
-00000
+00.00
 0...0
 .....
 0...0
@@ -752,8 +752,8 @@ export const maps = [
     theme: "wood",
     name: "tiny rooms",
     map: `
-0000000000.00
-0000000000.00
+0011111110.00
+0010000000.00
 0...0...0...0
 ............0
 0...0...0...0
@@ -871,7 +871,7 @@ export const maps = [
 ..00000
 ......0
 0.....0
-0.....0
+......0
 0.....0
 0.....0
 000.000
@@ -916,7 +916,7 @@ export const maps = [
     000000000.000
     0.....0.....0
     0.....0.....0
-    0...........0
+    ............0
     0.....0.....000
     0.....0.......0
     000000000000000
@@ -951,7 +951,7 @@ export const maps = [
 0000000
 0...0..
 0...0..
-....0..
+.......
 0...0..
 0...0..
 000.000
@@ -1085,6 +1085,23 @@ export const maps = [
 00000000000
     `,
   }, // 28,7,2 libra
+  {
+    x: 21,
+    y: 21,
+    z: 2,
+    w: 5,
+    h: 5,
+    scale: 5,
+    theme: "wood2",
+    name: "wow secret!",
+    map: `
+000000000
+0...0...0
+0.......0
+0...0...0
+000000000
+    `,
+  }, // 21,21,2 wow secret!
   
   {
     x: -10,
@@ -1305,8 +1322,10 @@ export const map = {
     const result = [];
     for (const ws in wires) {
       const o = wires[ws];
-      if (map.point_in_area(o, x, y, z, w, h)) {
-        result.push(o);
+      const point = (Array.isArray(o)) ? o[0] : o;
+      if (map.point_in_area(point, x, y, z, w, h)) {
+        if (Array.isArray(o)) result.push(...o);
+        else result.push(o);
       }
     }
     return result;

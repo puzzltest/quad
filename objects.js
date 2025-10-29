@@ -1,6 +1,7 @@
 export const objects_temp = [
   
   
+  
   // @ z = -1
   
   // room: the origin
@@ -1284,6 +1285,7 @@ export const objects_temp = [
   }, // 62,0 door door_amazing_link
   
   
+  
   // @ z = 0
   
   // room: the beginning
@@ -1305,7 +1307,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 7 🧩 240",
+    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 8 🧩 254",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -3509,6 +3511,7 @@ export const objects_temp = [
   }, // 28,15 portal to z=1
   
   
+  
   // @ z = 1
   
   // room: staring (to the right)
@@ -3941,6 +3944,19 @@ export const objects_temp = [
   }, // 25,26 symbol arrow_up
   {
     x: 17,
+    y: 24,
+    z: 1,
+    type: "door",
+    invisible: true,
+    door: {
+      id: "door_circnum_unlock_0",
+      rule: "solved",
+      at_least: 1,
+      panels: ["circnum_unlock"],
+    },
+  }, // 17,24 door door_circnum_unlock_0
+  {
+    x: 17,
     y: 28,
     z: 1,
     type: "door",
@@ -3963,6 +3979,18 @@ export const objects_temp = [
       panels: ["circnum_unlock"],
     },
   }, // 19,26 door door_circnum_unlock_2
+  {
+    x: 23,
+    y: 23,
+    z: 1,
+    type: "portal",
+    invisible: true,
+    portal: {
+      x: 23,
+      y: 23,
+      z: 2,
+    },
+  }, // 23,23 portal to z=2 (secret)
   {
     x: 25,
     y: 23,
@@ -6202,6 +6230,91 @@ export const objects_temp = [
     },
   }, // 28,15 portal to z=0
   {
+    x: 26,
+    y: 13,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_shortcut_1",
+      name: "shortcut",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        donut: `
+        0...0.
+        .....0
+        ......
+        ......
+        0.....
+        .0...0`,
+        ringnumber: `
+        .3...4
+        9.....
+        ......
+        ......
+        .....3
+        4...9.`,
+      },
+    },
+  }, // 26,13 panel donut_shortcut_1
+  {
+    x: 26,
+    y: 17,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "donut_shortcut_2",
+      name: "shortcut",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        donut: `
+        0...0.
+        .....0
+        ......
+        ......
+        0.....
+        .0...0`,
+        ringnumber: `
+        .4...4
+        8.....
+        ......
+        ......
+        .....4
+        4...8.`,
+      },
+    },
+  }, // 26,17 panel donut_shortcut_2
+  {
+    x: 25,
+    y: 15,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_donut_shortcut",
+      rule: "solved",
+      at_least: 1,
+      countdown: true,
+      panels: ["donut_shortcut", "donut_shortcut_2"],
+    },
+  }, // 25,15 door door_donut_shortcut
+  {
     x: 30,
     y: 13,
     z: 1,
@@ -6958,7 +7071,464 @@ export const objects_temp = [
       panels: ["copyright_0", "copyright_1", "copyright_2", "copyright_3"],
     },
   }, // 18,15 panel copyright_4
-  
+  {
+    x: 18,
+    y: 12,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_copyright_1",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["copyright_1", "copyright_2", "copyright_3", "copyright_4", "copyright_5"],
+    },
+  }, // 18,12 door door_copyright_1
+  {
+    x: 17,
+    y: 18,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_copyright_shortcut",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["copyright_1", "copyright_2", "copyright_3", "copyright_4", "copyright_5"],
+    },
+  }, // 17,18 door door_copyright_shortcut
+  {
+    x: 19,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_5",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .....
+        ..1..
+        .0.2.
+        ..3..
+        .....`,
+      },
+    },
+  }, // 19,10 panel copyright_5
+  {
+    x: 18,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_6",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22200
+      22201
+      22211
+      22201
+      22200`,
+      symbols: {
+        copyright: `
+        .....
+        .....
+        ....0
+        .....
+        .....`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 2,
+      panels: ["copyright_0", "copyright_1", "copyright_2", "copyright_3"],
+    },
+  }, // 18,10 panel copyright_6
+  {
+    x: 17,
+    y: 10,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_7",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22200
+      22201
+      22111
+      22201
+      22200`,
+      symbols: {
+        copyright: `
+        .....
+        .....
+        ....0
+        .....
+        .....`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["copyright_6"],
+    },
+  }, // 17,10 panel copyright_7
+  {
+    x: 17,
+    y: 9,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_8",
+      name: "",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        copyright: `
+        ...1...
+        ...1...
+        .......
+        00....0
+        .......
+        .......
+        ...1...`,
+        ringnumber: `
+        4......
+        .......
+        ...4...
+        ..4....
+        .......
+        .......
+        .......`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 5,
+      countdown: true,
+      panels: ["copyright_5", "copyright_6", "copyright_7", "copyright_9", "copyright_10", "copyright_11"],
+    },
+  }, // 17,9 panel copyright_8
+  {
+    x: 17,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_9",
+      name: "",
+      w: 5,
+      h: 7,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .....
+        .....
+        .....
+        0.0.0
+        .....
+        .....
+        .....`,
+        ringnumber: `
+        .....
+        .....
+        .....
+        .8.8.
+        .....
+        .....
+        .....`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["copyright_10"],
+    },
+  }, // 17,8 panel copyright_9
+  {
+    x: 18,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_10",
+      name: "",
+      w: 5,
+      h: 7,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .....
+        .....
+        .....
+        0.0.0
+        .....
+        .....
+        .....`,
+        ringnumber: `
+        .....
+        .....
+        .....
+        .7.7.
+        .....
+        .....
+        .....`,
+      },
+    },
+  }, // 18,8 panel copyright_10
+  {
+    x: 19,
+    y: 8,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_11",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .....
+        .0.1.
+        .....
+        .3.2.
+        .....`,
+        ringnumber: `
+        .....
+        .....
+        .....
+        .....
+        ....2`,
+      },
+    },
+  }, // 19,8 panel copyright_11
+  {
+    x: 17,
+    y: 6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_side_1",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .3...
+        ....0
+        .....
+        2....
+        ...1.`,
+        ringnumber: `
+        ...1.
+        1....
+        .....
+        ....1
+        .1...`,
+      },
+    },
+  }, // 17,6 panel copyright_side_1
+  {
+    x: 18,
+    y: 6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_side_2",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .3...
+        ....0
+        .....
+        2....
+        ...1.`,
+        ringnumber: `
+        ...4.
+        4....
+        .....
+        ....4
+        .4...`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["copyright_side_1"],
+    },
+  }, // 18,6 panel copyright_side_2
+  {
+    x: 19,
+    y: 6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_side_3",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .3...
+        ....0
+        .....
+        2....
+        ...1.`,
+        ringnumber: `
+        ...6.
+        6....
+        .....
+        ....6
+        .6...`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["copyright_side_1"],
+    },
+  }, // 19,6 panel copyright_side_3
+  {
+    x: 20,
+    y: 6,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_side_4",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        .3...
+        ....0
+        .....
+        2....
+        ...1.`,
+        ringnumber: `
+        ...7.
+        7....
+        .....
+        ....7
+        .7...`,
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["copyright_side_1"],
+    },
+  }, // 20,6 panel copyright_side_4
+  {
+    x: 22,
+    y: 7,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "copyright_side_5",
+      name: "",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        copyright: `
+        ..1..
+        .....
+        2...2
+        .....
+        ..1..`,
+        ringnumber: `
+        .....
+        .....
+        ...5.
+        .....
+        .....`,
+      },
+    },
+  }, // 22,7 panel copyright_side_5
   // room: squaring
   {
     x: 27,
@@ -7430,7 +8000,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "rooom_2",
-      name: "best puzzle ever?",
+      name: "wow!",
       w: 9,
       h: 9,
       type: "binary",
@@ -7467,7 +8037,12 @@ export const objects_temp = [
         ..9......`
       },
     },
-  }, // 27,2 panel rooom_2 (challenge #7)
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["rooom_5"],
+    },
+  }, // 27,2 panel rooom_2 (challenge #3.1)
   // room: libra
   {
     x: 28,
@@ -7476,7 +8051,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "balance_0",
-      name: "hmmm",
+      name: "libra",
       w: 5,
       h: 3,
       type: "binary",
@@ -7699,9 +8274,22 @@ export const objects_temp = [
     door: {
       rule: "correct",
       at_least: 1,
-      panels: ["balance_1_2"],
+      panels: ["balance_2_3"],
     },
   }, // 32,14 panel balance_2_4
+  {
+    x: 34,
+    y: 15,
+    z: 2,
+    type: "door",
+    door: {
+      id: "door_balance_2",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["balance_2_1", "balance_2_2", "balance_2_3", "balance_2_4"],
+    },
+  }, // 34,15 door door_balance_2
   {
     x: 34,
     y: 8,
@@ -7855,19 +8443,6 @@ export const objects_temp = [
     },
   }, // 36,12 panel balance_3_4
   {
-    x: 34,
-    y: 15,
-    z: 2,
-    type: "door",
-    door: {
-      id: "door_balance_2",
-      rule: "solved",
-      at_least: 3,
-      countdown: true,
-      panels: ["balance_2_1", "balance_2_2", "balance_2_3", "balance_2_4"],
-    },
-  }, // 34,15 door door_balance_2
-  {
     x: 37,
     y: 15,
     z: 2,
@@ -7907,6 +8482,27 @@ export const objects_temp = [
       },
     },
   }, // 38,15 panel balance_4_0
+  // room: wow secret
+  {
+    x: 23,
+    y: 23,
+    z: 2,
+    type: "portal",
+    portal: {
+      x: 23,
+      y: 23,
+      z: 1,
+    },
+  }, // 23,23 portal to z=1
+  {
+    x: 27,
+    y: 23,
+    z: 2,
+    type: "star",
+    star: {
+      id: "secret_1",
+    },
+  }, // 27,23 star secret_1
   
   
   // @ z = -99
@@ -8138,6 +8734,7 @@ export const objects_temp = [
   }, // -4,5 door door_warp_6
   
   
+  
   // @ z = 1000
   
   {
@@ -8197,6 +8794,7 @@ export const objects_temp = [
     type: "link",
     content: "/changelog/",
   }, // 3,0 link
+  
   
   
 ];
@@ -8373,14 +8971,15 @@ export const wires_def = [
   }, // 3,19,1 room: circles
   {
     x: 3,
-    y: 24,
+    y: 23,
     z: 1,
     map: `
-........+
-........+
-.....+8.+0+
-........+
-........+
+......88888888888
+......8.......+.8
+......8.+.......8
+.....+8.+0+.....+
+........+.......8
+........+.....+88
 ..6+7..+1
 ..6.7....
 ..+.+....
@@ -8402,12 +9001,39 @@ export const wires_def = [
     rules: [["amazing_link"], ["amazing_1"]],
   }, // 61,-1,-1 room: amazing link
   {
-    x: 21,
+    x: 25,
+    y: 13,
+    z: 1,
+    map: `
+    .+
+    .0
+    +0`,
+    rules: [["donut_shortcut_1"]],
+  }, // 25,13,1 room: ringed rings 1
+  {
+    x: 25,
     y: 15,
     z: 1,
-    map: `+0+`,
-    rules: [["door_copyright"]],
-  }, // 21,15,1 room: middle room
+    map: `
+    +0
+    .0
+    .+`,
+    rules: [["donut_shortcut_2"]],
+  }, // 25,15,1 room: ringed rings 2
+  {
+    x: 17,
+    y: 12,
+    z: 1,
+    map: `
+    .+.....
+    .1.....
+    .+.....
+    ....+0+
+    .+
+    22
+    +`,
+    rules: [["door_copyright"], ["door_copyright_1"], ["door_copyright_shortcut"]],
+  }, // 21,15,1 room: copyright
   {
     x: 23,
     y: 2,
@@ -8518,8 +9144,11 @@ export const wires_temp = (function() {
         }
       }
       wow.dirs = dirs;
-      wires[ws] = wow;
-      // console.log(ws, wow);
+      if (wires[ws]) {
+        if (Array.isArray(wires[ws])) wires[ws].push(wow);
+        else wires[ws] = [wires[ws], wow];
+      }
+      else wires[ws] = wow;
     }
   }
   

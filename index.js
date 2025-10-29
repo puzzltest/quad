@@ -1,5 +1,5 @@
 import { camera } from "./camera.js";
-import { database, firebase, temp, the_id, VERSION } from "./database.js";
+import { firebase, temp, the_id, VERSION } from "./database.js";
 import { map } from "./map.js";
 import { physics } from "./physics.js";
 import { panel } from "./panel.js";
@@ -56,14 +56,18 @@ const init = function() {
   canvas_init();
   resize();
   v.time = 0;
-  if (window.location.hostname === "qat.pages.dev") {
-    temp.load();
-  }
   requestAnimationFrame(tick);
+//  if (window.location.hostname === "qat.pages.dev") {
+//    temp.load();
+//  }
   // load
-  const raw_save = localStorage.getItem("save");
-  if (raw_save) {
-    map.load(raw_save);
+  if (window.location.hostname === "localhost" && localStorage.getItem("local") != v.version.toString()) {
+    temp.load("local");
+  } else {
+    const raw_save = localStorage.getItem("save");
+    if (raw_save) {
+      map.load(raw_save);
+    }
   }
 };
 
