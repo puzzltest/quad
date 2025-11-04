@@ -346,8 +346,12 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return (total === +s);
   }
   else if (name === "diagonal") {
-    let total = 0;
-    for (const [dx, dy] of util.dir5x) {
+    let total = 0, dirs = util.dir5x;
+    if (parseInt(s, 36) > 9) {
+      s = parseInt(s, 36) - 9;
+      dirs = util.dir9;
+    }
+    for (const [dx, dy] of dirs) {
       const n = (p.state[y + dy] == undefined || p.state[y + dy][x + dx] == undefined) ? 0 : p.state[y + dy][x + dx];
       if (+n) total++;
     }
@@ -539,12 +543,17 @@ panel_symbols.number = function(s, x, y, w, h, state) {
 };
 
 panel_symbols.diagonal = function(s, x, y, w, h, state) {
-  ctx.fillStyle = (state) ? "#111" : "#eee"
+  ctx.fillStyle = (state) ? "#111" : "#eee";
   draw.set_font(w * 0.5);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.translate(x, y);
   ctx.rotate(-Math.PI / 4);
+  if (parseInt(s, 36) > 9) {
+    // rotating
+    s = parseInt(s, 36) - 9;
+    ctx.rotate(Math.PI / 4 + (Math.sin(v.time / 25)));
+  }
   ctx.fillText(s, 0, 0);
   draw.reset_transform();
 };

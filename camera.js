@@ -588,7 +588,7 @@ export const mini_theme = {
     },
     ["portal"]: "#b7a",
     ["sign"]: "#a85",
-    ["star"]: "#7ab", // #bef?
+    ["star"]: "#7ab", // #bef? todo function
     ["symbol"]: () => " ",
     ["link"]: "#0000",
     ["wire"]: "#0000",
