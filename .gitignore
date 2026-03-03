@@ -1,2 +1,4 @@
 CNAME
 auto.appcache
+.surgeignore
+.vscode

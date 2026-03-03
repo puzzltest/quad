@@ -6,7 +6,6 @@ import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
-import { util } from "./util.js";
 import { draw } from "./draw.js";
 
 export const canvas = document.querySelector("canvas");
@@ -358,6 +357,8 @@ const touchstart_handler = function(event) {
 };
 
 const mousedown_handler = function(event) {
+  if (event.buttons & 2) panel.lock_mode = true;
+  else panel.lock_mode = false;
   const o = {
     x: event.clientX * v.ratio,
     y: event.clientY * v.ratio,
@@ -433,6 +434,9 @@ const key_tick = function(event) {
   }
   if (v.keys.Space || v.keys.Enter) {
     player.act();
+  }
+  if (v.keys.KeyR || v.keys.KeyR) {
+    panel.clearstate();
   }
   player.pre_move(dx * 100, dy * 100);
 };
