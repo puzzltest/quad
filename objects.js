@@ -923,6 +923,28 @@ export const objects_temp = [
     },
   }, // 31,10 panel spinny_1_4
   {
+    x: 29,
+    y: 12,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "spinny_1_5",
+      name: "four quarters",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: "2222\n2222\n2222\n2222",
+      hide_symbols: true,
+      symbols: {
+        diagonal: `
+        aa..
+        aabb
+        .cd.
+        .c..`,
+      },
+    },
+  }, // 29,12 panel spinny_1_5
+  {
     x: 30,
     y: 6,
     z: -1,
