@@ -72,7 +72,7 @@ export const maps = [
     z: -1,
     w: 5,
     h: 5,
-    scale: 5,
+    scale: 6,
     theme: "grey",
     name: "a portal?",
     map: `
@@ -121,6 +121,9 @@ export const maps = [
 0.+.+.+.0
 0.......0
 000000000
+.........
+000000000
+........0
     `,
   }, // 41,2,-1 diagonal
   {
@@ -133,16 +136,52 @@ export const maps = [
     map: `
 00000000
 .......+
-0000+000
+0000.000
 0.......
 0.+.+.+.
 0.......
 0.+.+.+.
 0.......
 0000.000
-....,...
+........
+00000000
     `,
   }, // 32,2,-1 diagonal extras!
+  {
+    x: 28,
+    y: 5,
+    z: -1,
+    scale: 7,
+    theme: "grey",
+    name: "spinny numbers",
+    map: `
+0....0
+0....0
+0....0
+0....0
+0....0
+0....0
+0....+
+000000
+    `,
+  }, // 28,5,-1 spinny numbers
+  {
+    x: 27,
+    y: -2,
+    z: -1,
+    w: 5,
+    h: 5,
+    scale: 6,
+    theme: "grey",
+    name: "spinny star!",
+    map: `
+00000
+0...0
+0...0
+0...0
+00.00
+    `,
+  }, // 27,-2,-1 spinny star!
   {
     x: 50,
     y: 5,
@@ -157,7 +196,9 @@ export const maps = [
 .....0
 .....0
 0...00
-.000..
+,000,.
+,,,,,0
+000000
     `,
   }, // 50,5,-1 IA
   {
@@ -258,9 +299,9 @@ export const maps = [
     theme: "grey",
     name: "basement",
     map: `
-    .00.0000000
+    .00.000.000
     .0+........
-    000.0000000
+    000.000+000
     0.....0
     0.....0
     0.....0
@@ -705,7 +746,7 @@ export const maps = [
     theme: "wood",
     name: "staring (to the right)",
     map: `
-00000
+00.00
 0...0
 .....
 0...0
@@ -752,8 +793,8 @@ export const maps = [
     theme: "wood",
     name: "tiny rooms",
     map: `
-0000000000.00
-0000000000.00
+0011111110.00
+0010000000.00
 0...0...0...0
 ............0
 0...0...0...0
@@ -871,7 +912,11 @@ export const maps = [
 ..00000
 ......0
 0.....0
+<<<<<<< HEAD
 0......
+=======
+.......
+>>>>>>> refs/remotes/origin/main
 0.....0
 0.....0
 000.000
@@ -916,7 +961,7 @@ export const maps = [
     000000000.000
     0.....0.....0
     0.....0.....0
-    0...........0
+    ............0
     0.....0.....000
     0.....0.......0
     000000000000000
@@ -924,19 +969,20 @@ export const maps = [
   }, // 25,12,1 ringed rings
   {
     x: 29,
-    y: 4,
+    y: 3,
     z: 1,
     scale: 7.5,
     theme: "wood",
     name: "more donuts",
     map: `
-    000000000
+    ..,......
+    00.000000
     ........0
-    ........0
-    ........0
-    ........0
-    ........0
-    ........0
+    .00.....0
+    ..0.....0
+    0.0.....0
+    ..0.....0
+    .00.....0
     ........0
     `,
   }, // 29,4,1 more donuts
@@ -951,7 +997,7 @@ export const maps = [
 0000000
 0...0..
 0...0..
-....0..
+.......
 0...0..
 0...0..
 000.000
@@ -1085,6 +1131,23 @@ export const maps = [
 00000000000
     `,
   }, // 28,7,2 libra
+  {
+    x: 21,
+    y: 21,
+    z: 2,
+    w: 5,
+    h: 5,
+    scale: 5,
+    theme: "wood2",
+    name: "wow secret!",
+    map: `
+000000000
+0...0...0
+0.......0
+0...0...0
+000000000
+    `,
+  }, // 21,21,2 wow secret!
   
   {
     x: -10,
@@ -1305,8 +1368,10 @@ export const map = {
     const result = [];
     for (const ws in wires) {
       const o = wires[ws];
-      if (map.point_in_area(o, x, y, z, w, h)) {
-        result.push(o);
+      const point = (Array.isArray(o)) ? o[0] : o;
+      if (map.point_in_area(point, x, y, z, w, h)) {
+        if (Array.isArray(o)) result.push(...o);
+        else result.push(o);
       }
     }
     return result;
