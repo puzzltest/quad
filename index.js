@@ -1,7 +1,7 @@
 import { camera } from "./camera.js";
 import { firebase, temp, the_id, VERSION } from "./database.js";
 import { map } from "./map.js";
-import { physics } from "./physics.js";
+import { physics, player_bodies } from "./physics.js";
 import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
@@ -459,6 +459,10 @@ const key_tick = function(event) {
   }
   if (v.keys.KeyR || v.keys.KeyR) {
     panel.clearstate();
+  }
+  if (window.location.hostname === "127.0.0.1" && (v.keys.KeyT || v.keys.KeyT)) {
+    const [x, y] = camera.convertback(mouse.x, mouse.y);
+    player_bodies[player.z].setPosition({ x, y });
   }
   player.pre_move(dx * 100, dy * 100);
 };

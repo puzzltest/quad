@@ -1,7 +1,6 @@
 import { canvas, ctx, v, view, mouse } from "./index.js";
 import { the_id } from "./database.js";
 import { maps, map } from "./map.js";
-import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
 import { draw } from "./draw.js";
@@ -59,6 +58,13 @@ camera.convert = function(x, y, scale = camera.scale) {
   ];
 };
 
+camera.convertback = function(x, y, scale = camera.scale) {
+  return [
+    (x - view.cx) * scale / view.size + camera.cx,
+    (y - view.cy) * scale / view.size + camera.cy
+  ]
+};
+
 camera.draw = function() {
   ctx.save();
   ctx.beginPath();
@@ -80,7 +86,7 @@ camera.draw = function() {
       }
     }
   }
-  
+
   // draw wires
   for (const o of map.search_wires(Math.floor(camera.x) - 1.5, Math.floor(camera.y) - 1.5, z, camera.scale + 3, camera.scale + 3)) {
     const t = o?.theme ?? "normal";
@@ -89,7 +95,7 @@ camera.draw = function() {
       theme[t]?.wire(xx, yy, size, size, o);
     }
   }
-  
+
   // draw objects
   for (const o of map.search_objects(Math.floor(camera.x) - 1.5, Math.floor(camera.y) - 1.5, z, Math.ceil(camera.scale) + 3, Math.ceil(camera.scale) + 3)) {
     if (o.invisible) continue;
@@ -102,7 +108,7 @@ camera.draw = function() {
       theme.normal[s](xx, yy, size, size, o);
     }
   }
-  
+
   // draw other players
   for (const other_id in player.others) {
     if (other_id === the_id) continue;
@@ -112,7 +118,7 @@ camera.draw = function() {
       player_theme.other(ox, oy, size * player.size, size * player.size, other);
     }
   };
-  
+
   // draw player too!
   const [xx, yy] = camera.convert(player.x, player.y);
   player_theme[player.mode](xx, yy, size * player.size, size * player.size);
@@ -121,9 +127,9 @@ camera.draw = function() {
     const [xx2, yy2] = camera.convert(oo?.x, oo?.y);
     player_theme.outline(xx2, yy2, size, size);
   }
-  
+
   ctx.restore();
-  
+
   // draw map room name
   let name = map.get_map(Math.round(player.x), Math.round(player.y), player.z)?.name;
   if (map.panel_ref.active && map.panel_ref.o.panel.name) {

@@ -1119,6 +1119,14 @@ symbol_functions.save = function() {
 
 symbol_functions.load = function() {
   const code = window.prompt("load from 10-letter code:");
+  if (code === "local") {
+    window.alert("NO");
+    return;
+  }
+  if (code.length !== 10) {
+    window.alert("not 10 letters!");
+    return;
+  }
   temp.load(code);
 };
 
