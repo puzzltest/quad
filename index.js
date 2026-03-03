@@ -37,6 +37,7 @@ export const view = {
 export const mouse = {
   touches: [],
   newtaps: [],
+  newdrags: [],
   start_point: {},
   hold_time: {},
   x: false,
@@ -299,6 +300,7 @@ const tick_after = function() {
     mouse.id = false;
   }
   mouse.newtaps = []; // mouse.newtaps.filter((t) => t.active);
+  mouse.newdrags = [];
   // do a save every 1 second?
   if (v.time % 60 === 0) {
     save_game();
@@ -349,6 +351,7 @@ const touchstart_handler = function(event) {
     const o = {
       x: touch.clientX * v.ratio,
       y: touch.clientY * v.ratio,
+      id: touch.identifier,
       active: true,
     };
     mouse.newtaps.push(o);
@@ -357,11 +360,10 @@ const touchstart_handler = function(event) {
 };
 
 const mousedown_handler = function(event) {
-  if (event.buttons & 2) panel.lock_mode = true;
-  else panel.lock_mode = false;
   const o = {
     x: event.clientX * v.ratio,
     y: event.clientY * v.ratio,
+    id: -1,
     active: true,
   };
   /*if (!panel.active && event.buttons & 1) {
@@ -377,6 +379,14 @@ const touch_handler = function(event) {
   mouse.touches = [];
   for (const touch of event.touches) {
     mouse.touches.push([touch.clientX * v.ratio, touch.clientY * v.ratio, touch.identifier]);
+    const o = {
+      x: touch.clientX * v.ratio,
+      y: touch.clientY * v.ratio,
+      id: touch.identifier,
+      drag: true,
+      active: true,
+    };
+    mouse.newdrags.push(o);
   }
   if (event.touches.length > 0) {
     mouse.x = mouse.touches[0][0];
@@ -390,10 +400,22 @@ const touch_handler = function(event) {
 };
 
 const mouse_handler = function(event) {
+  if (event.buttons & 2) panel.lock_mode = true;
+  else panel.lock_mode = false;
   mouse.touches = [[event.clientX * v.ratio, event.clientY * v.ratio, -1]];
   mouse.x = mouse.touches[0][0];
   mouse.y = mouse.touches[0][1];
   mouse.id = mouse.touches[0][2];
+  if (event.buttons) {
+    const o = {
+      x: mouse.x,
+      y: mouse.y,
+      id: -1,
+      drag: true,
+      active: true,
+    };
+    mouse.newdrags.push(o);
+  }
 };
 
 const touchend_handler = function(event) {

@@ -19,6 +19,7 @@ export const panel = {
   lock_mode: false,
   total_solved: 0,
   total_correct: 0,
+  touch_state: {},
   sign: {
     active: false,
     time: 0,
@@ -91,7 +92,7 @@ panel.clearstate = function() {
 };
 
 panel.deactivate = function() {
-  
+
 };
 
 panel.sign.activate = function() {
@@ -102,11 +103,11 @@ panel.sign.activate = function() {
 };
 
 panel.sign.deactivate = function() {
-  
+
 };
 
 panel.mousecheck = function() {
-  for (const t of mouse.newtaps) {
+  for (const t of mouse.newtaps.concat(mouse.newdrags)) {
     if (ctx.isPointInPath(t.x, t.y)) {
       t.active = false;
       // sound.play("tap");
@@ -151,11 +152,15 @@ panel.draw = function() {
           ctx.stroke();
           const check = panel.mousecheck();
           if (check) {
+            let state = panel.touch_state[check.id] ?? -1;
             if (panel.lock_mode) {
-              p.lock[j][i] = 1 - locked;
+              p.lock[j][i] = check.drag ? state : 1 - locked;
+              state = 1 - locked;
             } else if (!locked) {
-              p.state[j][i] = 1 - s;
+              p.state[j][i] = check.drag ? state : 1 - s;
+              state = 1 - s;
             }
+            if (!check.drag) panel.touch_state[check.id] = state;
           }
         }
         for (const symbol in p.hide_symbols ? [] : p.symbols) {
