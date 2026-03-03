@@ -1,3 +1,11 @@
+import alea from "https://cdn.jsdelivr.net/npm/alea@1.0.1/+esm";
+import { gzipSync, decompressSync } from "https://cdn.jsdelivr.net/npm/fflate@0.8.2/+esm";
+import lzstring from 'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm';
+import nodeForge from 'https://cdn.jsdelivr.net/npm/node-forge@1.3.3/+esm';
+
+const forge = nodeForge;
+const prng = alea();
+
 export const util = {
   dir4: [[1, 0], [0, 1], [-1, 0], [0, -1]],
   dir5: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -162,35 +170,25 @@ export const util = {
     return size;
   },
   copy: function(text) {
-    function fallbackCopyTextToClipboard(text) {
-      var textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.top = "0";
-      textArea.style.left = "0";
-      textArea.style.position = "fixed";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+    function fallback(text) {
+      var area = document.createElement("textarea");
+      area.value = text;
+      area.style.top = "0";
+      area.style.left = "0";
+      area.style.position = "fixed";
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
       try {
         var successful = document.execCommand('copy');
-        var msg = successful ? 'successful' : 'unsuccessful';
-        console.log('Fallback: Copying text command was ' + msg);
+        console.log(`fallback: copying text command was ${successful ? "" : "un"}successful`);
       } catch (err) {
-        console.error('Fallback: Oops, unable to copy', err);
+        console.error("fallback: woops, unable to copy", err);
       }
-      document.body.removeChild(textArea);
+      document.body.removeChild(area);
     }
-    function copyTextToClipboard(text) {
-      if (!navigator.clipboard) {
-        fallbackCopyTextToClipboard(text);
-        return;
-      }
-      navigator.clipboard.writeText(text).then(function() {
-      }, function(err) {
-        console.error('Async: Could not copy text: ', err);
-      });
-    }
-    copyTextToClipboard(text);
+    if (!navigator.clipboard) fallback(text);
+    else navigator.clipboard.writeText(text).then(() => {}, console.error);
   },
   is_ios: function() {
     return [

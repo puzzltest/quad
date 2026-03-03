@@ -192,14 +192,13 @@ export const player = {
       else if (o.type === "portal" && (o.door == undefined || o.door?.open)) {
         player.set_position(o.portal);
         camera.jump();
-        // camera.scale = 1;
       }
       else if (o.type === "star" && !o.star?.collected && (o.door == undefined || o.door?.open)) {
         o.star.collected = true;
         map.stars_collected.push(o.star.id);
       }
       else if (o.type === "door") {
-        
+        // todo act on door?
       }
       else if (o.type === "symbol") {
         panel.symbol_function(o.symbol?.type, o);
@@ -210,7 +209,7 @@ export const player = {
       return false;
     }
   },
-  
+
   save: function() {
     const result = {
       x: this.x,
@@ -233,6 +232,7 @@ export const player = {
     camera.tx = camera.cx;
     camera.ty = camera.cy;
   },
+
   set_position: function(x_, y_, z_) {
     const old_z = this.z;
     if (y_ == undefined) {
