@@ -7430,7 +7430,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "rooom_2",
-      name: "best puzzle ever?",
+      name: "wow!",
       w: 9,
       h: 9,
       type: "binary",
@@ -7467,7 +7467,12 @@ export const objects_temp = [
         ..9......`
       },
     },
-  }, // 27,2 panel rooom_2 (challenge #7)
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["rooom_5"],
+    },
+  }, // 27,2 panel rooom_2 (challenge #3.1)
   // room: libra
   {
     x: 28,
@@ -7476,7 +7481,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "balance_0",
-      name: "hmmm",
+      name: "libra",
       w: 5,
       h: 3,
       type: "binary",
@@ -7699,7 +7704,7 @@ export const objects_temp = [
     door: {
       rule: "correct",
       at_least: 1,
-      panels: ["balance_1_2"],
+      panels: ["balance_2_3"],
     },
   }, // 32,14 panel balance_2_4
   {
