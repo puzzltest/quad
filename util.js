@@ -192,6 +192,7 @@ export const util = {
     }
     copyTextToClipboard(text);
   },
+  is_local: () => (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1"),
   is_ios: function() {
     return [
       'iPad Simulator',

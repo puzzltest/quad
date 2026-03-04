@@ -7,6 +7,7 @@ import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { sound } from "./sfx.js";
 import { draw } from "./draw.js";
+import { util } from "./util.js";
 
 export const canvas = document.querySelector("canvas");
 export const ctx = canvas.getContext("2d");
@@ -431,11 +432,11 @@ const mouseup_handler = function(event) {
 };
 
 const keydown = function(event) {
-  if (!event.ctrlKey && !event.metaKey || !event.altKey) event.preventDefault();
+  if (!event.ctrlKey && !event.metaKey && !event.altKey) event.preventDefault();
   if (event.repeat) return;
   v.keys[event.code] = true;
   // restart
-  if (v.keys.KeyR) {
+  if (v.keys.KeyR && panel.active) {
     panel.clearstate();
   }
   // map
@@ -445,7 +446,7 @@ const keydown = function(event) {
     panel.map.static = false;
   }
   // teleport...
-  if (window.location.hostname === "127.0.0.1" && (v.keys.KeyT)) {
+  if (util.is_local() && (v.keys.KeyT)) {
     const [x, y] = camera.convertback(mouse.x, mouse.y);
     player_bodies[player.z].setPosition({ x, y });
   }

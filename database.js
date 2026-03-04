@@ -6,7 +6,7 @@ import { map } from "./map.js";
 import { util } from "./util.js";
 
 const params = new URLSearchParams(document.location.search);
-const local = document.location.hostname === "localhost";
+const local = util.is_local();
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbkiYb_waAew2mLVr9ejn6FTGTr19Vi4A",
