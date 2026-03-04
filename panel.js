@@ -44,7 +44,9 @@ for (const o of objects) {
   panels[o.panel.id] = o.panel;
 }
 
-const panel_symbols = {};
+const panel_draw_symbols = {};
+const panel_updates = {};
+const panel_checks = {};
 const sign_functions = {};
 const sign_pictures = {};
 const symbol_functions = {};
@@ -166,7 +168,7 @@ panel.draw = function() {
         for (const symbol in p.hide_symbols ? [] : p.symbols) {
           const str = p.symbols[symbol][j][i];
           if (str !== ".") {
-            panel_symbols[symbol](str, x + size / 2, y + size / 2, size, size, s);
+            panel_draw_symbols[symbol](str, x + size / 2, y + size / 2, size, size, s);
           }
         }
         y += size + gap;
@@ -308,6 +310,10 @@ panel.check_answer = function(state, answer) {
 panel.update_panel = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
   const p = o.panel;
+  panel_updates[p.id]?.(p);
+  for (const function_name of p.updates ?? []) {
+    panel_updates[function_name]?.(p);
+  }
   const doors_x = map.get_doors_x(p.id);
   if (doors_x) {
     panel.update_doors(doors_x);
@@ -337,6 +343,10 @@ panel.check_correct = function(optional_pid) {
         }
       }
     }
+  }
+  if (panel_checks[p.id] && (panel_checks[p.id](p) == false)) return false;
+  for (const function_name of p.checks ?? []) { // additional custom check functions
+    if (panel_checks[function_name](p) == false) return false;
   }
   return true;
 };
@@ -539,7 +549,7 @@ panel.symbol_function = function(type, o) {
   return symbol_functions[type]?.(o);
 };
 
-panel_symbols.number = function(s, x, y, w, h, state) {
+panel_draw_symbols.number = function(s, x, y, w, h, state) {
   ctx.fillStyle = (state) ? "#111" : "#eee"
   draw.set_font(w * 0.5);
   ctx.textAlign = "center";
@@ -547,7 +557,7 @@ panel_symbols.number = function(s, x, y, w, h, state) {
   ctx.fillText(s, x, y);
 };
 
-panel_symbols.diagonal = function(s, x, y, w, h, state) {
+panel_draw_symbols.diagonal = function(s, x, y, w, h, state) {
   ctx.fillStyle = (state) ? "#111" : "#eee";
   draw.set_font(w * 0.5);
   ctx.textAlign = "center";
@@ -563,14 +573,14 @@ panel_symbols.diagonal = function(s, x, y, w, h, state) {
   draw.reset_transform();
 };
 
-panel_symbols.ring = function(s, x, y, w, h, state) {
+panel_draw_symbols.ring = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.065;
   draw.circle(x, y, w * 0.3);
   ctx.stroke();
 };
 
-panel_symbols.ringnumber = function(s, x, y, w, h, state) {
+panel_draw_symbols.ringnumber = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.045;
   draw.circle(x, y, w * 0.35);
@@ -584,13 +594,13 @@ panel_symbols.ringnumber = function(s, x, y, w, h, state) {
 };
 
 const circle_colours = ["#d65", "#56b", "#6c5", "#cb4", "#4cc"];
-panel_symbols.circle = function(s, x, y, w, h, state) {
+panel_draw_symbols.circle = function(s, x, y, w, h, state) {
   ctx.fillStyle = circle_colours[s];
   draw.circle(x, y, w * 0.28);
   ctx.fill();
 };
 
-panel_symbols.ruing = function(s, x, y, w, h, state) {
+panel_draw_symbols.ruing = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.065;
   ctx.lineCap = "square";
@@ -607,7 +617,7 @@ panel_symbols.ruing = function(s, x, y, w, h, state) {
   }
 };
 
-panel_symbols.squaring = function(s, x, y, w, h, state) {
+panel_draw_symbols.squaring = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.065;
   ctx.lineCap = "square";
@@ -621,7 +631,7 @@ panel_symbols.squaring = function(s, x, y, w, h, state) {
   }
 };
 
-panel_symbols.donut = function(s, x, y, w, h, state) {
+panel_draw_symbols.donut = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.055;
   draw.circle(x, y, w * 0.34);
@@ -640,7 +650,7 @@ panel_symbols.donut = function(s, x, y, w, h, state) {
   }
 };
 
-panel_symbols.copyright = function(s, x, y, w, h, state) {
+panel_draw_symbols.copyright = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.07;
   draw.circle(x, y, w * 0.33);
@@ -656,7 +666,7 @@ panel_symbols.copyright = function(s, x, y, w, h, state) {
   */
 };
 
-panel_symbols.balance = function(s, x, y, w, h, state) {
+panel_draw_symbols.balance = function(s, x, y, w, h, state) {
   ctx.strokeStyle = (state) ? "#111" : "#eee";
   ctx.lineWidth = w * 0.07;
   draw.circle(x, y, w * 0.33);
@@ -955,6 +965,46 @@ panel.randomizer.seed2type = function(words) {
   return type ?? "number_easy";
 };
 
+for (let i = 1; i < 4; i++) {
+  for (let c = 0; c <= 1; c++) {
+    const j = i + 1;
+    const prefix = (c ? "c" : "") + "1234_";
+    const n = c ? [0, 2, 3, 7, 9][j] : j;
+    panel_updates[prefix + i] = function(p) {
+      const o = map.get_panel(prefix + j);
+      if (o) {
+        const p2 = o.panel;
+        const a = [];
+        for (let y = 0; y < p.h; y++) {
+          let s = "";
+          for (let x = 0; x < p.w; x++) {
+            s += p.state[y][x] ? n : ".";
+          }
+          a.push(s);
+        }
+        p2.symbols[c ? "ringnumber" : "number"] = a;
+        panel.update_panel(prefix + j);
+      }
+    };
+    panel_checks[prefix + j] = function(_) {
+      return !!map.get_panel(prefix + i)?.panel?.correct;
+    };
+  }
+}
+
+panel_checks.nonempty = function(p) {
+  for (let y = 0; y < p.h; y++) {
+    for (let x = 0; x < p.w; x++) {
+      if (p.state[y][x]) return true;
+    }
+  }
+  return false;
+};
+
+panel_checks.nonbox = function(p) {
+  // todo
+};
+
 sign_pictures.text = function(x, y, w, h, o) {
   // todo scam
   ctx.translate(x, y);
@@ -1086,7 +1136,7 @@ sign_pictures.IA_invisible = function(x, y, w, h) {
     for (let x = 0; x < 4; x++) {
       const s = diagonal_symbols[y][x];
       if (s === ".") continue;
-      panel_symbols.diagonal(s, xx - r + gap * (x + 1) + size * x, yy - r + gap * (y + 1) + size * y, size, size, 0);
+      panel_draw_symbols.diagonal(s, xx - r + gap * (x + 1) + size * x, yy - r + gap * (y + 1) + size * y, size, size, 0);
     }
   }
 };

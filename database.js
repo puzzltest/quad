@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 100302; // remember to change...
+export const VERSION = 100401; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -76,7 +76,7 @@ firebase.init = function() {
       console.log("not connected :(");
     }
   });
-  
+
   firebase.listen = function(path, listener) {
     return onValue(ref(db, path), (snapshot) => {
       listener(snapshot.val());

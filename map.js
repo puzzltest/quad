@@ -1,7 +1,7 @@
 import { objects_temp, wires_temp } from "./objects.js";
 
 export const maps = [
-  
+
   {
     x: -3,
     y: -4,
@@ -284,13 +284,20 @@ export const maps = [
     theme: "grey",
     name: "warp: amazing",
     map: `
-000000
-.....0
-.....0
-.....0
-.....0
-.....0
-000000
+000,0000
+.....0.0
+.....0.0
+.....0.0
+.....,.0
+.....0.0
+0+0000.0
+.....0.0
+.+.+.,.0
+.+.+.000
+.......0
+00.000.0
+..,..0.0
+.....000
     `,
   }, // 67,-11,-1 warp: amazing
   {
@@ -331,7 +338,7 @@ export const maps = [
     000
     `,
   }, // 61,1,-1 amazing link
-  
+
   {
     x: 22,
     y: -3,
@@ -525,7 +532,7 @@ export const maps = [
     map: `
     000000000
     ......0.0
-    ..000.0.0
+    ..000.0..
     .00...0.0
     .0000.+.0
     ..0.0.0.0
@@ -546,7 +553,7 @@ export const maps = [
     0..000.0.0
     0...0..0.0
     .........0
-    0......0..,
+    0......0..
     00000000.00
     `,
   }, // 60,-4,0 addition
@@ -585,6 +592,55 @@ export const maps = [
     ..000000000000000
     `,
   }, // 56,3,0 overview
+  {
+    x: 70,
+    y: -12,
+    z: 0,
+    scale: 5,
+    theme: "grass",
+    name: "🔢",
+    map: `
+    0000
+    ...0
+    .+..
+    ...0
+    0.00
+    ...0
+    .+.0
+    ...0
+    .+.0
+    ....
+    .+.0
+    ...0
+    .+.00
+    ....0
+    00000
+    `,
+  }, // 70,-12,0 🔢
+  {
+    x: 74,
+    y: -12,
+    z: 0,
+    scale: 7,
+    theme: "grass",
+    name: "(🔢)",
+    map: `
+    00000
+    ....0
+    .++.0
+    .++.0
+    ....0
+    0.0000
+    .....0
+    .+.+.0
+    .....0
+    +..+.0
+    ,....0
+    ,,.+..,
+    0,...0
+    000000
+    `,
+  }, // 74,-12,0 (🔢)
   {
     x: 22,
     y: 4,
@@ -740,8 +796,8 @@ export const maps = [
 0...................0
 000000000000000000000
     `,
-  }, // -10,-10,0 the core
-  
+  }, // -10,-10,0 the core (in the midst (todo))
+
   {
     x: 15,
     y: 18,
@@ -1045,7 +1101,7 @@ export const maps = [
     0.....
     `,
   }, // 15,12,1 copyright
-  
+
   {
     x: 22,
     y: 4,
@@ -1148,7 +1204,7 @@ export const maps = [
 000000000
     `,
   }, // 21,21,2 wow secret!
-  
+
   {
     x: -10,
     y: -10,
@@ -1180,7 +1236,7 @@ export const maps = [
 .....000.000.000.....
     `,
   }, // -10,-10,-99 warp zone
-  
+
   {
     x: -3,
     y: -4,
@@ -1202,7 +1258,7 @@ export const maps = [
 ........
     `,
   }, // -3,-4,1000 main menu
-  
+
 ];
 
 export const objects = objects_temp;
@@ -1296,7 +1352,7 @@ for (const o of objects) {
 const params = new URLSearchParams(document.location.search);
 
 export const map = {
-  
+
   start_point: {
     x: 0,
     y: 0,
@@ -1439,7 +1495,7 @@ export const map = {
   vec2str: function(x, y, z) {
     return x + "," + y + "," + z;
   },
-  
+
   // save/load
   save: function() {
     const save = {
@@ -1467,7 +1523,7 @@ export const map = {
     // console.log("saved", save);
     return zipped;
   },
-  
+
   load: function(raw) {
     try {
       map.load_(raw);
@@ -1477,7 +1533,7 @@ export const map = {
       return false;
     }
   },
-  
+
   load_: function(raw) {
     const save = zipson.parse(raw);
     map.player_ref.load(save.player);
@@ -1531,7 +1587,7 @@ export const map = {
       map.get_star(asteroid).star.collected = true;
     }
   },
-  
+
 };
 
 

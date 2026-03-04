@@ -1,9 +1,9 @@
 export const objects_temp = [
-  
-  
-  
+
+
+
   // @ z = -1
-  
+
   // room: the origin
   {
     x: 0,
@@ -1525,6 +1525,171 @@ export const objects_temp = [
       z: -99,
     },
   }, // 69,-8 portal to z=-99
+  {
+    x: 68,
+    y: -5,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_warp_0",
+      name: "phi =",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        1...
+        .6..
+        ..1.
+        ...8`,
+      },
+    },
+  }, // 68,-5 panel amazing_warp_0
+  {
+    x: 68,
+    y: -3,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_warp_1",
+      name: "e = ",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        ..2..
+        ..7..
+        ..1..
+        ..8..
+        ..3..`,
+      },
+    },
+  }, // 68,-3 panel amazing_warp_1
+  {
+    x: 68,
+    y: -2,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_warp_2",
+      name: "pi = ",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        ringnumber: `
+        ..3..
+        ..1..
+        ..4..
+        ..1..
+        ..6..`,
+      },
+      hide_symbols: true,
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["amazing_warp_1"],
+    },
+  }, // 68,-2 panel amazing_warp_2
+  {
+    x: 70,
+    y: -3,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_warp_3",
+      name: "munchausen number",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        3...
+        .4..
+        ..3.
+        ...5`,
+      },
+    },
+  }, // 70,-3 panel amazing_warp_3
+  {
+    x: 70,
+    y: -2,
+    z: -1,
+    type: "panel",
+    panel: {
+      id: "amazing_warp_4",
+      name: "4th perfect number",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        8...
+        .1..
+        ..2.
+        ...8`,
+      },
+      hide_symbols: true,
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["amazing_warp_3"],
+    },
+  }, // 70,-2 panel amazing_warp_4
+  {
+    x: 69,
+    y: 0,
+    z: -1,
+    type: "door",
+    door: {
+      id: "door_amazing_warp",
+      rule: "solved",
+      at_least: 4,
+      panels: ["amazing_warp_1", "amazing_warp_2", "amazing_warp_3", "amazing_warp_4"],
+      countdown: true,
+    },
+  }, // 62,0 door door_amazing_warp
+  {
+    x: 73,
+    y: 1,
+    z: -1,
+    type: "portal",
+    portal: {
+      x: 73,
+      y: 1,
+      z: 0,
+    },
+  }, // 73,1 portal to z=0
   // room: amazing link
   {
     x: 62,
@@ -1627,11 +1792,11 @@ export const objects_temp = [
       panels: ["amazing_1", "amazing_link_2"],
     },
   }, // 62,0 door door_amazing_link
-  
-  
-  
+
+
+
   // @ z = 0
-  
+
   // room: the beginning
   {
     x: 25,
@@ -1651,14 +1816,14 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 273",
+    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 292",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
     textangle: -0.1,
   }, // 27,0 sign
   {
-    x: 22,
+    x: 23,
     y: 0,
     z: 0,
     type: "symbol",
@@ -2541,6 +2706,15 @@ export const objects_temp = [
       `,
     },
   }, // 67,-8 panel trial_among
+  {
+    x: 68,
+    y: -8,
+    z: 0,
+    type: "symbol",
+    symbol: {
+      type: "arrow_down",
+    }
+  }, // 68,-8 symbol arrow_down
   // room: addition
   {
     x: 62,
@@ -2992,6 +3166,488 @@ export const objects_temp = [
       panels: ["trial_shortcut_2"],
     },
   }, // 69,1 door door_trial_shortcut_2_2
+  // room: 🔢
+  {
+    x: 73,
+    y: 1,
+    z: 0,
+    type: "portal",
+    portal: {
+      x: 73,
+      y: 1,
+      z: -1,
+    },
+  }, // 73,1 portal to z=-1
+  {
+    x: 71,
+    y: 0,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "1234_1",
+      name: "1",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        .1..
+        ...1
+        ....
+        1.1.
+        `,
+      },
+    },
+  }, // 71,0 panel 1234_1
+  {
+    x: 71,
+    y: -2,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "1234_2",
+      name: "2",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        ....
+        ....
+        ....
+        ....
+        `,
+      },
+      checks: ["nonempty"],
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["1234_1"],
+    },
+  }, // 71,-2 panel 1234_2
+  {
+    x: 71,
+    y: -4,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "1234_3",
+      name: "3",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        ....
+        ....
+        ....
+        ....
+        `,
+      },
+      checks: ["nonempty"],
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["1234_2"],
+    },
+  }, // 71,-4 panel 1234_3
+  {
+    x: 71,
+    y: -6,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "1234_4",
+      name: "4",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        ....
+        ....
+        ....
+        ....
+        `,
+      },
+      checks: ["nonempty"],
+    },
+    door: {
+      rule: "correct",
+      at_least: 1,
+      panels: ["1234_3"],
+    },
+  }, // 71,-6 panel 1234_4
+  {
+    x: 71,
+    y: -10,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "1234_5",
+      name: "5",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        ....
+        .55.
+        .55.
+        ....
+        `,
+      },
+    },
+  }, // 71,-10 panel 1234_5
+  {
+    x: 71,
+    y: -8,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_1234",
+      rule: "solved",
+      at_least: 1,
+      panels: ["1234_4"],
+    },
+  }, // 71,-8 door door_1234
+  {
+    x: 69,
+    y: -10,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_1234_left",
+      rule: "solved",
+      at_least: 1,
+      panels: ["1234_5"],
+    },
+  }, // 69,-10 door door_1234_left
+  {
+    x: 73,
+    y: -10,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_1234_right",
+      rule: "solved",
+      at_least: 1,
+      panels: ["1234_5"],
+    },
+  }, // 73,-10 door door_1234_right
+  // room: (🔢)
+  {
+    x: 75,
+    y: -10,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_start_1",
+      name: "🔢 - 1",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      1221
+      2222
+      2222
+      1221`,
+      symbols: {
+        ringnumber: `
+        1..2
+        ....
+        ....
+        4..3
+        `,
+      },
+    },
+  }, // 75,-10 panel c1234_start_1
+  {
+    x: 76,
+    y: -10,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_start_2",
+      name: "🔢 - 2",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        ....
+        .1.3
+        ....
+        .4.2
+        `,
+      },
+    },
+  }, // 76,-10 panel c1234_start_2
+  {
+    x: 75,
+    y: -9,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_start_3",
+      name: "🔢 - 3",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        number: `
+        ....
+        .3..
+        ..4.
+        ....
+        `,
+        ringnumber: `
+        c...
+        ....
+        ....
+        ....
+        `,
+      },
+    },
+  }, // 75,-9 panel c1234_start_3
+  {
+    x: 76,
+    y: -9,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_start_4",
+      name: "🔢 - 4",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        .3..
+        .1..
+        .4..
+        .2..
+        `,
+      },
+    },
+  }, // 76,-9 panel c1234_start_4
+  {
+    x: 75,
+    y: -7,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_c1234_start",
+      rule: "solved",
+      at_least: 3,
+      panels: ["c1234_start_1", "c1234_start_2", "c1234_start_3", "c1234_start_4"],
+      countdown: true,
+    },
+  }, // 75,-7 door door_c1234_start
+  {
+    x: 75,
+    y: -5,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_1",
+      name: "2",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        .2..
+        ..2.
+        .2..
+        ..2.`,
+      },
+      checks: ["nonempty"],
+    },
+  }, // 75,-5 panel c1234_1
+  {
+    x: 77,
+    y: -5,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_2",
+      name: "3",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        ....
+        ....
+        ....
+        ....`,
+      },
+      checks: ["nonempty"],
+    },
+  }, // 77,-5 panel c1234_2
+  {
+    x: 77,
+    y: -3,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_3",
+      name: "7",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        ....
+        ....
+        ....
+        ....`,
+      },
+      checks: ["nonempty"],
+    },
+  }, // 77,-3 panel c1234_3
+  {
+    x: 77,
+    y: -1,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_4",
+      name: "9",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2221
+      2202
+      2122
+      0222`,
+      symbols: {
+        ringnumber: `
+        ....
+        ....
+        ....
+        ....`,
+      },
+      checks: ["nonempty"],
+    },
+  }, // 77,-1 panel c1234_4
+  {
+    x: 79,
+    y: -1,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_c1234_end",
+      rule: "solved",
+      at_least: 1,
+      panels: ["c1234_4"],
+    },
+  }, // 79,-1 door door_c1234_end
+  {
+    x: 74,
+    y: -3,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "c1234_triangle",
+      name: "shortcut",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      ruin: "0.\n00\n.0",
+      symbols: {
+        ruing: `
+        .....
+        .0...
+        ...0.
+        .0...
+        .....`,
+        donut: `
+        ..1..
+        .....
+        .....
+        .....
+        ..1..`,
+      },
+    },
+  }, // 74,-3 panel c1234_triangle
+  {
+    x: 73,
+    y: -3,
+    z: 0,
+    type: "door",
+    door: {
+      id: "door_c1234_triangle",
+      rule: "solved",
+      at_least: 1,
+      panels: ["c1234_triangle"],
+    },
+  }, // 73,-3 door door_c1234_triangle
   // room: westward
   {
     x: 17,
@@ -3853,11 +4509,11 @@ export const objects_temp = [
       z: 1,
     },
   }, // 28,15 portal to z=1
-  
-  
-  
+
+
+
   // @ z = 1
-  
+
   // room: staring (to the right)
   {
     x: 17,
@@ -4133,7 +4789,7 @@ export const objects_temp = [
         circle: `
         0....0
         ......
-        ...... 
+        ......
         ......
         ......
         0....0
@@ -8114,7 +8770,7 @@ export const objects_temp = [
     type: "panel",
     panel: {
       id: "copyright_side_5",
-      name: "",
+      name: "shortcut",
       w: 5,
       h: 5,
       type: "binary",
@@ -8435,11 +9091,11 @@ export const objects_temp = [
       panels: ["squaring_5", "squaring_6", "squaring_7", "squaring_8"],
     },
   }, // 37,19 door door_squaring_2
-  
-  
-  
+
+
+
   // @ z = 2
-  
+
   // room: room (level 2)
   {
     x: 27,
@@ -9114,10 +9770,10 @@ export const objects_temp = [
       id: "secret_1",
     },
   }, // 27,23 star secret_1
-  
-  
+
+
   // @ z = -99
-  
+
   {
     x: 0,
     y: 0,
@@ -9343,11 +9999,11 @@ export const objects_temp = [
       panels: ["warp_6"],
     },
   }, // -4,5 door door_warp_6
-  
-  
-  
+
+
+
   // @ z = 1000
-  
+
   {
     x: 0,
     y: 0,
@@ -9405,14 +10061,14 @@ export const objects_temp = [
     type: "link",
     content: "/changelog/",
   }, // 3,0 link
-  
-  
-  
+
+
+
 ];
 
 
 export const wires_def = [
-  
+
   {
     x: 8,
     y: 0,
@@ -9552,6 +10208,41 @@ export const wires_def = [
     rules: [["trial_shortcut_2"], ["trial_shortcut_star"]],
   }, // 67,1,0 room: overview (link)
   {
+    x: 69,
+    y: -10,
+    z: 0,
+    map: `
+    +4+4+
+    ...
+    ..+
+    ..3
+    ..+
+    ..2
+    ..+
+    ..1
+    ..+
+    ..0
+    ..+`,
+    rules: [["1234_1"], ["1234_2"], ["1234_3"], ["1234_4"], ["1234_5"]],
+  }, // 69,-10,0 room: 🔢
+  {
+    x: 75,
+    y: -10,
+    z: 0,
+    map: `
+    ++
+    ++
+    4
+    +
+    .
+    +0+
+    ..1
+    ..+
+    ..2
+    ..+3+`,
+    rules: [["c1234_1"], ["c1234_2"], ["c1234_3"], ["c1234_4"], ["door_c1234_start"]],
+  }, // 69,-10,0 room: 🔢
+  {
     x: 17,
     y: 3,
     z: 0,
@@ -9679,7 +10370,7 @@ export const wires_def = [
       4444+..+`,
     rules: [["balance_1_1"], ["balance_2_1"], ["balance_1_2"], ["balance_2_3"], ["door_balance_2"], ["door_balance_3"]],
   }, // 30,10,2 room: libra
-  
+
 ];
 
 
@@ -9719,14 +10410,14 @@ for (const o of objects_temp) {
 
 export const wires_temp = (function() {
   const wires = {}; // result
-  
+
   const vec2str = function(x, y, z) {
     return x + "," + y + "," + z;
   };
-  
+
   for (const w of wires_def) {
     if (w.map) w.map = w.map.trim().replaceAll(/[ ]/g, "").split("\n");
-    
+
     const wirelookup = {};
     for (let dy = 0; dy < w.map.length; dy++) {
       for (let dx = 0; dx < w.map[dy].length; dx++) {
@@ -9773,6 +10464,6 @@ export const wires_temp = (function() {
       else wires[ws] = wow;
     }
   }
-  
+
   return wires;
 })(); // :)

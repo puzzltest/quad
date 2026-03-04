@@ -431,12 +431,29 @@ const mouseup_handler = function(event) {
 };
 
 const keydown = function(event) {
+  if (!event.ctrlKey && !event.metaKey || !event.altKey) event.preventDefault();
   if (event.repeat) return;
   v.keys[event.code] = true;
+  // restart
+  if (v.keys.KeyR) {
+    panel.clearstate();
+  }
+  // map
+  if (v.keys.Tab || v.keys.KeyM) {
+    panel.map.active = !panel.map.active;
+    panel.map.z = player.z;
+    panel.map.static = false;
+  }
+  // teleport...
+  if (window.location.hostname === "127.0.0.1" && (v.keys.KeyT)) {
+    const [x, y] = camera.convertback(mouse.x, mouse.y);
+    player_bodies[player.z].setPosition({ x, y });
+  }
 };
 
 const keyup = function(event) {
   v.keys[event.code] = false;
+  event.preventDefault();
 };
 
 const key_tick = function(event) {
@@ -456,13 +473,6 @@ const key_tick = function(event) {
   }
   if (v.keys.Space || v.keys.Enter) {
     player.act();
-  }
-  if (v.keys.KeyR || v.keys.KeyR) {
-    panel.clearstate();
-  }
-  if (window.location.hostname === "127.0.0.1" && (v.keys.KeyT || v.keys.KeyT)) {
-    const [x, y] = camera.convertback(mouse.x, mouse.y);
-    player_bodies[player.z].setPosition({ x, y });
   }
   player.pre_move(dx * 100, dy * 100);
 };
