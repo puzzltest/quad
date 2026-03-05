@@ -74,13 +74,14 @@ export const util = {
     }
     return result;
   },
-  bfs: function(a, x, y) {
+  dfs: function(a, x, y) {
     const result = [];
     const the = a[y][x];
     const visited = {};
-    const q = [{ x, y }]; // ya not really a q but ok
+    const q = [{ x, y }]; // used like a stack :)
     while (q.length > 0) {
-      const b = q.shift();
+      const b = q.pop();
+      visited[util.xy2str(b.x, b.y)] = true;
       for (const [dx, dy] of util.dir4) {
         const xx = b.x + dx;
         const yy = b.y + dy;
@@ -90,7 +91,6 @@ export const util = {
           q.push({ x: xx, y: yy });
         }
       }
-      visited[util.xy2str(b.x, b.y)] = true;
       result.push(b);
     }
     return result;
@@ -114,7 +114,7 @@ export const util = {
       h: max_y - min_y,
     };
   },
-  bfs_to_shape: function(bfs_result) {
+  bfs_to_shape: function(bfs_result, padding = 0) {
     if (bfs_result.length === 1) return ["0"];
     const xs = [];
     const ys = [];
@@ -122,10 +122,10 @@ export const util = {
       xs.push(x);
       ys.push(y);
     }
-    const min_x = Math.min(...xs);
-    const max_x = Math.max(...xs);
-    const min_y = Math.min(...ys);
-    const max_y = Math.max(...ys);
+    const min_x = Math.min(...xs) - padding;
+    const max_x = Math.max(...xs) + padding;
+    const min_y = Math.min(...ys) - padding;
+    const max_y = Math.max(...ys) + padding;
     const temp = [];
     for (const line of ((".").repeat(max_x - min_x + 1) + "\n").repeat(max_y - min_y + 1).trim().split("\n")) {
       temp.push(line.split(""));
@@ -161,6 +161,37 @@ export const util = {
     }
     return size;
   },
+  holes_in_shape: function(bfs_result) {
+    const shape = util.bfs_to_shape(bfs_result, 1);
+    const result = [];
+    const visited = {};
+    for (let y = 0; y < shape.length; y++) {
+      for (let x = 0; x < shape[y].length; x++) {
+        if (visited[util.xy2str(x, y)]) continue;
+        // modified dfs
+        const q = [{ x, y }];
+        const the = shape[y][x];
+        const is_hole = the === "." && y > 0 && x > 0;
+        const r = [];
+        while (q.length > 0) {
+          const b = q.pop();
+          visited[util.xy2str(b.x, b.y)] = true;
+          for (const [dx, dy] of util.dir4) {
+            const xx = b.x + dx;
+            const yy = b.y + dy;
+            if (shape[yy] == undefined || shape[yy][xx] == undefined) continue;
+            if (the === shape[yy][xx] && !visited[util.xy2str(xx, yy)]) {
+              visited[util.xy2str(xx, yy)] = true;
+              q.push({ x: xx, y: yy });
+            }
+          }
+          if (is_hole) r.push(b);
+        }
+        if (is_hole) result.push(r);
+      }
+    }
+    return result;
+  },
   copy: function(text) {
     function fallbackCopyTextToClipboard(text) {
       var textArea = document.createElement("textarea");
@@ -195,12 +226,12 @@ export const util = {
   is_local: () => (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1"),
   is_ios: function() {
     return [
-      'iPad Simulator',
-      'iPhone Simulator',
-      'iPod Simulator',
-      'iPad',
-      'iPhone',
-      'iPod'
+      "iPad Simulator",
+      "iPhone Simulator",
+      "iPod Simulator",
+      "iPad",
+      "iPhone",
+      "iPod"
     ].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
   },
 };

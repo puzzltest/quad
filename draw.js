@@ -1,5 +1,4 @@
-import { canvas, ctx, v, view, mouse } from "./index.js";
-import { util } from "./util.js";
+import { ctx } from "./index.js";
 import { createNoise2D, createNoise3D, createNoise4D } from "https://cdn.jsdelivr.net/npm/simplex-noise@4.0.1/+esm";
 
 const round = Math.round;
@@ -8,11 +7,11 @@ export const noise3 = createNoise3D();
 export const noise4  = createNoise4D();
 
 export const draw = {
-  
+
   noise2: noise2,
   noise3: noise3,
   noise4: noise4,
-  
+
   line: function(x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -81,7 +80,7 @@ export const draw = {
     else ctx.fill();
     ctx.setTransform(stored);
   },
-  
+
   // text functions
   set_font: function(size, modifier) {
     ctx.font = ((modifier) ? (modifier + " ") : "") + `${round(size)}px roboto mono`;
@@ -124,7 +123,7 @@ export const draw = {
       yy += gap;
     }
   },
-  
+
   // svg
   svg: function(name, x, y, r, a = 0) {
     if (!svg[name]) {
@@ -140,18 +139,18 @@ export const draw = {
     ctx.setTransform(stored);
     // draw.reset_transform();
   },
-  
+
   // important!
   reset_transform: function() {
     ctx.resetTransform();
     const r = window.devicePixelRatio;
     ctx.scale(r, r);
   },
-  
+
 };
 
 export const svg = {
-  
+
   arrow_left: "m10 18l-6-6l6-6l1.4 1.45L7.85 11H20v2H7.85l3.55 3.55z",
   arrow_right: "m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6z",
   arrow_up: "M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20z",
@@ -163,5 +162,5 @@ export const svg = {
   clear_puzzle: "M3 17v-2h2v2zm0-4v-2h2v2zm0-4V7h2v2zm4 12v-2h2v2zM7 5V3h2v2zm4 0V3h2v2zm1.5 16l-1.4-1.4l3.55-3.55l-3.55-3.55l1.4-1.4l3.55 3.55l3.55-3.55l1.4 1.4l-3.55 3.55L21 19.6L19.6 21l-3.55-3.55zM15 5V3h2v2zm4 4V7h2v2zM3 5V3h2v2zm18 0h-2V3h2zM3 21v-2h2v2z",
   lock_puzzle: "M6 22q-.825 0-1.412-.587T4 20V10q0-.825.588-1.412T6 8h1V6q0-2.075 1.463-3.537T12 1t3.538 1.463T17 6v2h1q.825 0 1.413.588T20 10v10q0 .825-.587 1.413T18 22zm6-5q.825 0 1.413-.587T14 15t-.587-1.412T12 13t-1.412.588T10 15t.588 1.413T12 17M9 8h6V6q0-1.25-.875-2.125T12 3t-2.125.875T9 6z",
   unlock_puzzle: "M12 17q.825 0 1.413-.587T14 15t-.587-1.412T12 13t-1.412.588T10 15t.588 1.413T12 17m-6 5q-.825 0-1.412-.587T4 20V10q0-.825.588-1.412T6 8h7V6q0-2.075 1.463-3.537T18 1q1.875 0 3.263 1.213T22.925 5.2q.05.325-.225.563T22 6t-.7-.175t-.4-.575q-.275-.95-1.062-1.6T18 3q-1.25 0-2.125.875T15 6v2h3q.825 0 1.413.588T20 10v10q0 .825-.587 1.413T18 22z",
-  
+
 };

@@ -2341,23 +2341,45 @@ export const objects_temp = [
     panel: {
       id: "corridoor_shortcut_1",
       name: "optional shortcut - top",
-      w: 5,
-      h: 5,
+      w: 10,
+      h: 10,
       type: "binary",
       map: `
-      22222
-      22222
-      22222
-      22222
-      22222`,
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222
+      2222222222`,
+      ruin: `
+      000000..
+      0.......
+      0.......
+      0.......
+      0.....00
+      0.0...0.
+      0000000.
+      0.......
+      0.......
+      0.......`,
       symbols: {
-        number: `
-        1.222
-        .12.1
-        134.2
-        2..3.
-        133.2`,
+        ruing: `
+        ..........
+        ..........
+        ..........
+        ...1......
+        ..........
+        ..........
+        ..........
+        ..........
+        ..........
+        ..........`,
       },
+      revoke: true,
     },
   }, // 48,1 panel corridoor_shortcut_1
   {
@@ -2378,13 +2400,20 @@ export const objects_temp = [
       22222
       22222`,
       symbols: {
-        number: `
-        212.1
-        ..21.
-        .2..1
-        12..3
-        ..131`,
+        copyright: `
+        .....
+        .....
+        0.0.0
+        .....
+        .....`,
+        ringnumber: `
+        .....
+        .....
+        .3.4.
+        .....
+        .....`
       },
+      revoke: true,
     },
   }, // 48,3 panel corridoor_shortcut_2
   {
@@ -4068,6 +4097,38 @@ export const objects_temp = [
     },
   }, // 16,23 panel stairing_1
   {
+    x: 17,
+    y: 23,
+    z: 0,
+    type: "panel",
+    panel: {
+      id: "stairing_0",
+      name: "middle option",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ring: `
+        .00.
+        0...
+        0...
+        .00.
+        `,
+        circle: `
+        2..2
+        ....
+        ....
+        2..2
+        `,
+      }
+    },
+  }, // 17,23 panel stairing_0
+  {
     x: 18,
     y: 23,
     z: 0,
@@ -4887,6 +4948,56 @@ export const objects_temp = [
       panels: ["circle_5_1", "circle_5_2"],
     },
   }, // 5,20 panel circle_last
+  {
+    x: 4,
+    y: 22,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circle_shortcut",
+      name: "shortcut",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        circle: `
+        .....0
+        .1....
+        ......
+        ......
+        ....1.
+        0.....
+        `,
+        ring: `
+        0.....
+        ...0..
+        ..0.0.
+        .0.0..
+        ..0...
+        ......
+        `,
+      },
+    },
+  }, // 4,22 panel circle_shortcut
+  {
+    x: 4,
+    y: 23,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_circle_shortcut",
+      rule: "solved",
+      at_least: 2,
+      panels: ["circle_shortcut", "circnum_shortcut"],
+    },
+  }, // 3,20 door door_circle_shortcut
   {
     x: 3,
     y: 20,
@@ -6092,6 +6203,42 @@ export const objects_temp = [
       }
     },
   }, // 8,26 panel circnum_unlock
+  {
+    x: 4,
+    y: 24,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "circnum_shortcut",
+      name: "shortcut",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringnumber: `
+        b....c
+        ......
+        ......
+        ......
+        ......
+        d.....`,
+        ring: `
+        ......
+        ......
+        ...0..
+        ..0...
+        ......
+        .....0`,
+      }
+    },
+  }, // 2,24 panel circnum_shortcut
   // room: circle test
   {
     x: 66,
@@ -6391,7 +6538,7 @@ export const objects_temp = [
       ruin: "00.\n.00",
       symbols: {
         ruing: `
-        00...
+        0....
         ...0.
         .....
         .0...
@@ -9091,6 +9238,237 @@ export const objects_temp = [
       panels: ["squaring_5", "squaring_6", "squaring_7", "squaring_8"],
     },
   }, // 37,19 door door_squaring_2
+  // room: more circles!
+  {
+    x: 1,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "more_circles_1",
+      name: "more circles: 1",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        ringnumber: `
+        ....
+        .23.
+        .45.
+        ....
+        `,
+      },
+    },
+  }, // 1,20 panel more_circles_1
+  {
+    x: 0,
+    y: 19,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "more_circles_2",
+      name: "more circles: 2",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringnumber: `
+        ......
+        ......
+        ..67..
+        ..89..
+        ......
+        ......
+        `,
+        donut: `
+        ......
+        ..00..
+        .1..0.
+        .0..0.
+        ..00..
+        ......
+        `,
+      },
+    },
+  }, // 0,19 panel more_circles_2
+  {
+    x: 0,
+    y: 21,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "more_circles_3",
+      name: "more circles: 3",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        ringnumber: `
+        .......
+        .......
+        ..234..
+        ..815..
+        ..976..
+        .......
+        .......`,
+      },
+    },
+  }, // 0,21 panel more_circles_3
+  {
+    x: -1,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "more_circles_4",
+      name: "more circles: 4",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        ringnumber: `
+        .......
+        .1.2.3.
+        .......
+        .8.9.4.
+        .......
+        .7.6.5.
+        .......`,
+      },
+    },
+  }, // -1,20 panel more_circles_4
+  {
+    x: 0,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "more_circles_5",
+      name: "more circles: 5",
+      w: 7,
+      h: 6,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        ringnumber: `
+        .......
+        .......
+        ...56..
+        ...78..
+        .......
+        .......
+        `,
+        copyright: `
+        .......
+        .......
+        ..0....
+        ..0....
+        .......
+        .......
+        `,
+      },
+    },
+  }, // 0,20 panel more_circles_5
+  {
+    x: -3,
+    y: 20,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_more_circles",
+      rule: "solved",
+      at_least: 3,
+      countdown: true,
+      panels: ["more_circles_1", "more_circles_2", "more_circles_3", "more_circles_4", "more_circles_5"],
+    },
+  }, // -3,20 door door_more_circles
+  // room: holes
+  {
+    x: -5,
+    y: 20,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_0",
+      name: "holes?",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        ringhole: `
+        1..
+        ...
+        ...`,
+      },
+    },
+  }, // -5,20 panel holes_0
+  {
+    x: -5,
+    y: 22,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_00",
+      name: "holes!",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        ringhole: `
+        ..1
+        ...
+        ...`,
+        ringnumber: `
+        ...
+        ...
+        7..
+        `
+      },
+    },
+  }, // -5,22 panel holes_00
+
 
 
 

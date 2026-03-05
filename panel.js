@@ -373,19 +373,19 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return (total === +s);
   }
   else if (name === "ring") {
-    for (const v of util.bfs(p.state, x, y)) {
+    for (const v of util.dfs(p.state, x, y)) {
       if (v.x === x && v.y === y) continue;
       if (p.symbols.ring[v.y][v.x] !== ".") return false;
     }
     return true;
   }
   else if (name === "ringnumber") {
-    const area = util.bfs(p.state, x, y).length;
+    const area = util.dfs(p.state, x, y).length;
     return (area === +parseInt(s, 36));
   }
   else if (name === "circle") {
     let has_same = false;
-    for (const v of util.bfs(p.state, x, y)) {
+    for (const v of util.dfs(p.state, x, y)) {
       if (v.x === x && v.y === y) continue;
       const circle = p.symbols.circle[v.y][v.x];
       if (circle === ".") continue;
@@ -403,9 +403,9 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       return false;
     }
     if (s == 0)
-      return util.compare_shape(util.bfs_to_shape(util.bfs(p.state, x, y)), p.ruin);
+      return util.compare_shape(util.bfs_to_shape(util.dfs(p.state, x, y)), p.ruin);
     else if (s == 1) {
-      let bfs_result = util.bfs(p.state, x, y);
+      let bfs_result = util.dfs(p.state, x, y);
       if (bfs_result.length !== util.size_of_shape(p.ruin)) return false;
       for (let i = 0; i < 4; i++) {
         if (util.compare_shape(util.bfs_to_shape(bfs_result), p.ruin)) {
@@ -418,14 +418,14 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "donut") {
-    const bfs_result = util.bfs(p.state, x, y);
+    const bfs_result = util.dfs(p.state, x, y);
     let compare = util.rotate_bfs_result(util.rotate_bfs_result(bfs_result));
     let yes = util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
     if (s == 1 || s == 3) yes = !yes;
     return yes;
   }
   else if (name === "squaring") {
-    const shape = util.bfs_to_shape(util.bfs(p.state, x, y));
+    const shape = util.bfs_to_shape(util.dfs(p.state, x, y));
     for (const char of shape.join("")) {
       if (char === ".") return (s == 1);
     }
@@ -437,14 +437,14 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     else if (s == 1) y_ = (y + 1 >= p.w) ? 0 : (y + 1);
     else if (s == 2) x_ = (x - 1 < 0) ? (p.w - 1) : (x - 1);
     else if (s == 3) y_ = (y - 1 < 0) ? (p.h - 1) : (y - 1);
-    const bfs_left = util.bfs(p.state, x, y);
+    const bfs_left = util.dfs(p.state, x, y);
     const shape_left = util.bfs_to_shape(bfs_left);
     for (const o of bfs_left) {
       if (o.x === x_ && o.y === y_) {
         return false;
       }
     }
-    const bfs_right = util.bfs(p.state, x_, y_);
+    const bfs_right = util.dfs(p.state, x_, y_);
     const shape_right = util.bfs_to_shape(bfs_right);
     if (false) {
       return util.compare_shape(shape_left, shape_right);
@@ -464,7 +464,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "balance") {
-    let bfs_result = util.bfs(p.state, x, y);
+    let bfs_result = util.dfs(p.state, x, y);
     const n = (s == 2 || s == 3) ? 4 : 1;
     for (let i = 0; i < n; i++) {
       let total_x = 0;
@@ -493,6 +493,12 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       if (i + 1 < n) bfs_result = util.rotate_bfs_result(bfs_result);
     }
     return true;
+  }
+  else if (name === "ringhole") {
+    const bfs_result = util.dfs(p.state, x, y);
+    const holes = util.holes_in_shape(bfs_result);
+    const h = holes.length;
+    return "" + h == s;
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
@@ -687,6 +693,20 @@ panel_draw_symbols.balance = function(s, x, y, w, h, state) {
   ctx.restore();
 };
 
+panel_draw_symbols.ringhole = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.05;
+  draw.circle(x, y, w * 0.36);
+  ctx.stroke();
+  draw.circle(x, y, w * (0.2 + util.bounce(v.time, 30) * 0.08));
+  ctx.stroke();
+  ctx.fillStyle = ctx.strokeStyle;
+  if (s == 1) {
+    draw.circle(x, y, w * 0.04);
+    ctx.fill();
+  }
+};
+
 // todo symbols.amogus
 
 const wordlist = [];
@@ -750,7 +770,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.bfs(answer, x, y);
+      const bfs_result = util.dfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -772,7 +792,7 @@ panel.randomizer.random = function(size, type, seed) {
     const circles = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.bfs(answer, x, y);
+      const bfs_result = util.dfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -793,7 +813,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (util.rand() < 0.65) return 0;
-      const bfs_result = util.bfs(answer, x, y);
+      const bfs_result = util.dfs(answer, x, y);
       const rand = util.randint(0, bfs_result.length - 1);
       const ringpos = bfs_result[rand];
       rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
@@ -811,7 +831,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.bfs(answer, x, y);
+      const bfs_result = util.dfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -841,7 +861,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (util.rand() < 0.65) return 0;
-      const bfs_result = util.bfs(answer, x, y);
+      const bfs_result = util.dfs(answer, x, y);
       const rand = util.randint(0, bfs_result.length - 1);
       const ringpos = bfs_result[rand];
       rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
