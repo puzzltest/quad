@@ -1816,7 +1816,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 292",
+    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 302",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",

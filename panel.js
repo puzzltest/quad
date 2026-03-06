@@ -1,8 +1,7 @@
-import { canvas, ctx, v, view, mouse } from "./index.js";
+import { ctx, v, view, mouse } from "./index.js";
 import { camera, mini_theme } from "./camera.js";
-import { maps, map, objects } from "./map.js";
+import { map, objects } from "./map.js";
 import { player } from "./player.js";
-import { sound } from "./sfx.js";
 import { util } from "./util.js";
 import { temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
@@ -1182,18 +1181,20 @@ symbol_functions.arrow_down = function() {
 };
 
 symbol_functions.save = function() {
-  if (window.confirm("create a new save?")) {
-    window.prompt("saved! copy this:", temp.save());
+  const current_code = localStorage.getItem("code");
+  if (current_code) {
+    const new_save = !window.confirm("save to code: '" + current_code + "'? (cancel to make new save)");
+    if (new_save) window.prompt("new save created! copy this:", temp.save(the_id));
+    else window.alert("saved to " + temp.save(current_code));
+  } else {
+    if (window.confirm("create a new save?")) window.prompt("saved! copy this:", temp.save(the_id));
   }
 };
 
 symbol_functions.load = function() {
-  const code = window.prompt("load from 10-letter code:");
-  if (code === "local") {
-    window.alert("NO");
-    return;
-  }
-  if (code.length !== 10) {
+  const code = window.prompt("load from 10-letter code:", localStorage.getItem("code"));
+  if (!code) return;
+  if ((code?.length ?? 0) !== 10) {
     window.alert("not 10 letters!");
     return;
   }

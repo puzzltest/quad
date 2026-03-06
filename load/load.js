@@ -1,3 +1,4 @@
+import { util } from "/util.js";
 import { firebase } from "/database.js";
 
 async function sha256(message) {
@@ -24,11 +25,13 @@ const setpos = function(o) {
 };
 
 window.addEventListener("load", async function(event) {
-  const password = window.prompt("password?");
-  const hi = await sha256(password);
-  console.log(hi);
-  if (hi !== "26a08721ac62bc4dd61f69ba877d91cf979c10589e90dcd49324fbeedef28f41") {
-    return;
+  if (!util.is_local()) {
+    const password = window.prompt("password?");
+    const hi = await sha256(password);
+    console.log(hi);
+    if (hi !== "26a08721ac62bc4dd61f69ba877d91cf979c10589e90dcd49324fbeedef28f41") {
+      return;
+    }
   }
   const raw = localStorage.getItem("save");
   const a = document.querySelector("textarea");
@@ -72,12 +75,16 @@ window.addEventListener("load", async function(event) {
   });
   firebase.listen("/quad/save/", async function(data) {
     const savestats = (await firebase.promise_get("/quad/savestats/")) ?? {};
+    const codes = Object.keys(data);
+    codes.sort((a, b) => {
+      return (savestats[b].time ?? 0) - (savestats[a].time ?? 0);
+    });
     let s = "";
-    for (const id in data) {
+    for (const id of codes) {
       s += `<p>${savestats[id]?.puzzles ?? 0}/${savestats[id]?.stars ?? 0} | <a id="save_${id}">${id}</a></p>`;
     }
     span.innerHTML = s;
-    for (const id in data) {
+    for (const id of codes) {
       const link = document.getElementById("save_" + id);
       link.href = "#";
       link.addEventListener("click", function(event) {
