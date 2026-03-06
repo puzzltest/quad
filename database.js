@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 100502; // remember to change...
+export const VERSION = 100503; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -163,9 +163,10 @@ firebase.tick = function(time) {
     firebase.clear();
     firebase.send();
   }
-  if (local && time - firebase.update3_time > 3000) {
+  if (time - firebase.update3_time > 3000) {
     firebase.update3_time = time;
-    temp.save("local", true);
+    if (local) temp.save("local");
+    else temp.autosave();
   }
 };
 
@@ -177,6 +178,13 @@ firebase.clear = function() {
 
 
 export const temp = {};
+
+temp.autosave = function() {
+  const current_code = localStorage.getItem("code");
+  if (current_code) {
+    temp.save(current_code);
+  }
+};
 
 temp.save = function(id = the_id) {
   let nice = localStorage.getItem("save");
@@ -195,6 +203,7 @@ temp.save = function(id = the_id) {
   }
   return id;
 };
+
 temp.load = function(code = false) {
   if (!code && params.get("save")) {
     firebase.get("/quad/" + params.get("save"), (data) => {

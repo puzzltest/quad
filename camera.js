@@ -576,11 +576,11 @@ export const theme = {
 // to do, for minimap/map
 export const mini_theme = {
   normal: {
-    [""]: "#f00", // very error
+    [""]: "#f0f", // very error
     ["."]: "#f00", // error
     ["0"]: "#f00", // error
     [","]: "#56c",
-    ["+"]: "#0000",
+    ["+"]: "#0ff",
     // objects
     ["panel"]: function(o) {
       if (o.door) {
@@ -592,7 +592,7 @@ export const mini_theme = {
       if (!o?.door?.open) return "#eee";
       return " ";
     },
-    ["portal"]: "#b7a",
+    ["portal"]: "#d89",
     ["sign"]: "#a85",
     ["star"]: "#7ab", // #bef? todo function
     ["symbol"]: () => " ",
