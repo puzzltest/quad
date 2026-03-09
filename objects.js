@@ -2379,7 +2379,7 @@ export const objects_temp = [
         ..........
         ..........`,
       },
-      revoke: true,
+      revoke: 100501,
     },
   }, // 48,1 panel corridoor_shortcut_1
   {
@@ -2413,7 +2413,7 @@ export const objects_temp = [
         .....
         .....`
       },
-      revoke: true,
+      revoke: 100501,
     },
   }, // 48,3 panel corridoor_shortcut_2
   {
@@ -3168,7 +3168,6 @@ export const objects_temp = [
         ..........
         `,
       },
-      revoke: true,
     },
   }, // 67,3 panel trial_shortcut_2
   {
@@ -5913,7 +5912,6 @@ export const objects_temp = [
         7.7.7
         `,
       },
-      revoke: true,
     },
   }, // 14,37 panel circnum_lost_3
   {
@@ -9448,26 +9446,132 @@ export const objects_temp = [
     panel: {
       id: "holes_00",
       name: "holes!",
-      w: 3,
-      h: 3,
+      w: 4,
+      h: 4,
       type: "binary",
       map: `
-      222
-      222
-      222`,
+      2222
+      2222
+      2222
+      2222`,
       symbols: {
         ringhole: `
-        ..1
-        ...
-        ...`,
-        ringnumber: `
-        ...
-        ...
-        7..
-        `
+        2...
+        ....
+        ....
+        ....`
       },
+      revoke: 100600,
     },
   }, // -5,22 panel holes_00
+  {
+    x: -5,
+    y: 24,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_01",
+      name: "holes!!",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        ringhole: `
+        .......
+        .......
+        .......
+        ..123..
+        .......
+        .......
+        .......`
+      },
+    },
+  }, // -5,24 panel holes_01
+  {
+    x: -5,
+    y: 25,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_02",
+      name: "holes!!!!",
+      w: 9,
+      h: 9,
+      type: "binary",
+      map: `
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222`,
+      symbols: {
+        ringhole: `
+        .........
+        .........
+        .........
+        .........
+        .42313.4.
+        .........
+        .........
+        .........
+        .........`,
+      },
+    },
+  }, // -5,25 panel holes_02
+  {
+    x: -5,
+    y: 26,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_03",
+      name: "holes!!!",
+      w: 6,
+      h: 6,
+      type: "binary",
+      map: `
+      222222
+      222222
+      222222
+      222222
+      222222
+      222222`,
+      symbols: {
+        ringhole: `
+        7.....
+        ......
+        ......
+        ......
+        ......
+        ......`,
+      },
+    },
+  }, // -5,26 panel holes_03
+  {
+    x: -3,
+    y: 25,
+    z: 1,
+    type: "door",
+    door: {
+      id: "door_holes_0",
+      rule: "solved",
+      at_least: 2,
+      countdown: true,
+      panels: ["holes_01", "holes_02", "holes_03"],
+    },
+  }, // -3,25 door door_holes_0
 
 
 
@@ -10127,6 +10231,667 @@ export const objects_temp = [
       },
     },
   }, // 38,15 panel balance_4_0
+  {
+    x: 28,
+    y: 6,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_0",
+      name: "click the middle",
+      w: 3,
+      h: 3,
+      type: "binary",
+      map: `
+      222
+      222
+      222`,
+      symbols: {
+        shapenumber: `
+        0..
+        ...
+        ...`,
+      },
+    },
+  }, // 28,6 panel shapenum_0
+  {
+    x: 31,
+    y: 5,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_00",
+      name: "0",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..0..
+        .....
+        .....`,
+      },
+    },
+  }, // 31,5 panel shapenum_00
+  {
+    x: 31,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_01",
+      name: "1",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      12221
+      22222
+      22222
+      22222
+      12221`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..1..
+        .....
+        .....`,
+      },
+    },
+  }, // 31,4 panel shapenum_01
+  {
+    x: 31,
+    y: 3,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_02",
+      name: "2",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..2..
+        .....
+        .....`
+      },
+    },
+  }, // 31,3 panel shapenum_02
+  {
+    x: 31,
+    y: 2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_03",
+      name: "3",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..3..
+        .....
+        .....`,
+        ringnumber: `
+        1....
+        .....
+        .....
+        .....
+        .....`
+      },
+    },
+  }, // 31,2 panel shapenum_03
+  {
+    x: 31,
+    y: 1,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_04",
+      name: "4",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..4..
+        .....
+        .....`
+      },
+    },
+  }, // 31,1 panel shapenum_04
+  {
+    x: 31,
+    y: 0,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_05",
+      name: "5",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..5..
+        .....
+        .....`,
+        circle: `
+        ....1
+        .....
+        .....
+        .....
+        1....`
+      },
+    },
+  }, // 31,0 panel shapenum_05
+  {
+    x: 31,
+    y: -1,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_06",
+      name: "6",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..6..
+        .....
+        .....`
+      },
+    },
+  }, // 31,-1 panel shapenum_06
+  {
+    x: 31,
+    y: -2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_07",
+      name: "7",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        7.7.7
+        .....
+        .....`,
+        ring: `
+        .....
+        .....
+        .1.1.
+        .....
+        .....`
+      },
+    },
+  }, // 31,-2 panel shapenum_07
+  {
+    x: 31,
+    y: -3,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_08",
+      name: "8",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..8..
+        .....
+        .....`,
+      },
+    },
+  }, // 31,-3 panel shapenum_08
+  {
+    x: 31,
+    y: -4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_09",
+      name: "9",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..9..
+        .....
+        .....`,
+        ring: `
+        1...1
+        .....
+        .....
+        .....
+        1...1`
+      },
+    },
+  }, // 31,-4 panel shapenum_09
+  {
+    x: 33,
+    y: 5,
+    z: 2,
+    type: "door",
+    door: {
+      id: "door_shapenum_0",
+      rule: "solved",
+      at_least: 7,
+      countdown: true,
+      panels: ["shapenum_00", "shapenum_01", "shapenum_02", "shapenum_03", "shapenum_04", "shapenum_05", "shapenum_06", "shapenum_07", "shapenum_08", "shapenum_09"],
+    },
+  }, // 33,5 door door_shapenum_0
+  {
+    x: 35,
+    y: 5,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_10",
+      name: "0?",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        shapenumber: `
+        0...
+        ....
+        ....
+        ....`,
+        ringnumber: `
+        ...a
+        ....
+        ....
+        ....`,
+      },
+    },
+  }, // 35,5 panel shapenum_10
+  {
+    x: 35,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_11",
+      name: "1?",
+      w: 4,
+      h: 4,
+      type: "binary",
+      map: `
+      2222
+      2222
+      2222
+      2222`,
+      symbols: {
+        shapenumber: `
+        ....
+        ..1.
+        .1..
+        ...1`,
+        ringnumber: `
+        5...
+        ....
+        ....
+        ....`,
+      },
+    },
+  }, // 35,4 panel shapenum_11
+  {
+    x: 35,
+    y: 3,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_12",
+      name: "2?",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        ..2..
+        .....
+        .....
+        .....
+        .....`,
+        ringnumber: `
+        .....
+        ..3..
+        .....
+        ..3..
+        .....`,
+        circle: `
+        ....3
+        .....
+        .....
+        .....
+        3....`,
+      },
+    },
+  }, // 35,3 panel shapenum_12
+  {
+    x: 35,
+    y: 2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_13",
+      name: "boom",
+      w: 5,
+      h: 5,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..4..
+        .....
+        .....`,
+        copyright: `
+        .....
+        .....
+        .0...
+        .....
+        .....`
+      },
+    },
+  }, // 35,2 panel shapenum_13
+  {
+    x: 36,
+    y: 2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_14",
+      name: "123!",
+      w: 5,
+      h: 7,
+      type: "binary",
+      map: `
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222
+      22222`,
+      symbols: {
+        shapenumber: `
+        .....
+        .....
+        ..1..
+        ..2..
+        ..3..
+        .....
+        .....`
+      },
+    },
+  }, // 36,2 panel shapenum_14
+  {
+    x: 37,
+    y: 2,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_15",
+      name: "380!",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        shapenumber: `
+        .......
+        .......
+        .......
+        .380...
+        .......
+        .......
+        .......`
+      },
+    },
+  }, // 37,2 panel shapenum_15
+  {
+    x: 37,
+    y: 3,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_16",
+      name: "4321... wait no",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        shapenumber: `
+        .......
+        .....g.
+        ....b..
+        ...c...
+        ..d....
+        .......
+        .......`
+      },
+    },
+  }, // 37,3 panel shapenum_16
+  {
+    x: 37,
+    y: 4,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_17",
+      name: "4444444",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        shapenumber: `
+        d....d.
+        dddddd.
+        .....d.
+        .....d.
+        ..d..d.
+        .d...d.
+        c....d.`
+      },
+    },
+  }, // 37,4 panel shapenum_17
+  {
+    x: 37,
+    y: 5,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_18",
+      name: "77777",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        shapenumber: `
+        .......
+        .77777.
+        .....7.
+        .....7.
+        .....7.
+        .2...7.
+        .......`
+      },
+    },
+  }, // 37,5 panel shapenum_18
+  {
+    x: 36,
+    y: 5,
+    z: 2,
+    type: "panel",
+    panel: {
+      id: "shapenum_19",
+      name: "spinny",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        shapenumber: `
+        .......
+        ...a...
+        ...c...
+        ...f...
+        ...g...
+        .......
+        .......`
+      },
+    },
+  }, // 36,5 panel shapenum_19
+  {
+    x: 36,
+    y: 0,
+    z: 2,
+    type: "door",
+    door: {
+      id: "door_shapenum_1",
+      rule: "solved",
+      at_least: 7,
+      countdown: true,
+      panels: ["shapenum_10", "shapenum_11", "shapenum_12", "shapenum_13", "shapenum_14", "shapenum_15", "shapenum_16", "shapenum_17", "shapenum_18", "shapenum_19"],
+    },
+  }, // 36,0 door door_shapenum_1
   // room: wow secret
   {
     x: 23,
@@ -10682,6 +11447,20 @@ export const wires_def = [
     rules: [["circnum_1"], ["door_circnum_2"], ["door_circnum_4"], ["circnum_5"], ["circnum_6_1"], ["circnum_6_2"], ["circnum_7_1"], ["circnum_7_2"], ["circnum_unlock"]],
   }, // 3,24,1 room: circled numbers
   {
+    x: -5,
+    y: 20,
+    z: 1,
+    map: `
+..+0+
+.
+.
+.
+.
++1+
+    `,
+    rules: [["door_more_circles"], ["door_holes_0"]],
+  }, // 3,24,1 room: circled numbers
+  {
     x: 61,
     y: -1,
     z: -1,
@@ -10748,6 +11527,19 @@ export const wires_def = [
       4444+..+`,
     rules: [["balance_1_1"], ["balance_2_1"], ["balance_1_2"], ["balance_2_3"], ["door_balance_2"], ["door_balance_3"]],
   }, // 30,10,2 room: libra
+  {
+    x: 31,
+    y: 0,
+    z: 2,
+    map: `
+     .....+
+     .....1
+     .....+
+     .
+     .
+     +0+`,
+    rules: [["door_shapenum_0"], ["door_shapenum_1"]],
+  }, // 31,5,2 room: number shapes
 
 ];
 

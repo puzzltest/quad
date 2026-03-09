@@ -153,7 +153,7 @@ panel.draw = function() {
           ctx.stroke();
           const check = panel.mousecheck();
           if (check) {
-            let state = panel.touch_state[check.id] ?? -1;
+            let state = panel.touch_state[check.id] ?? 1;
             if (panel.lock_mode) {
               p.lock[j][i] = check.drag ? state : 1 - locked;
               state = 1 - locked;
@@ -497,7 +497,24 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     const bfs_result = util.dfs(p.state, x, y);
     const holes = util.holes_in_shape(bfs_result);
     const h = holes.length;
-    return "" + h == s;
+    return ("" + h) == s;
+  }
+  else if (name === "shapenumber") {
+    let bfs_result = util.dfs(p.state, x, y);
+    let shape = util.bfs_to_shape(bfs_result);
+    const n = util.shape_is_number(shape);
+    if ((s == 1 || s == "a") && util.size_of_shape(shape) === 1) return false;
+    if (s > "9") {
+      const ss = parseInt(s, 36) - 9;
+      for (let i = 0; i < 3; i++) {
+        if (("" + util.shape_is_number(shape)) == ss) return true;
+        bfs_result = util.rotate_bfs_result(bfs_result);
+        shape = util.bfs_to_shape(bfs_result);
+      }
+      return (("" + util.shape_is_number(shape)) == ss);
+    } else {
+      return ("" + n) == s;
+    }
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
@@ -697,13 +714,67 @@ panel_draw_symbols.ringhole = function(s, x, y, w, h, state) {
   ctx.lineWidth = w * 0.05;
   draw.circle(x, y, w * 0.36);
   ctx.stroke();
-  draw.circle(x, y, w * (0.2 + util.bounce(v.time, 30) * 0.08));
+  const r = 0.2 + util.bounce(v.time, 30) * 0.08;
+  draw.circle(x, y, w * r);
   ctx.stroke();
   ctx.fillStyle = ctx.strokeStyle;
+  const a = w * 0.08, z = w * 0.04;
   if (s == 1) {
-    draw.circle(x, y, w * 0.04);
+    draw.circle(x, y, z);
     ctx.fill();
+  } else if (s == 2) {
+    draw.circle(x - a, y + a, z);
+    ctx.fill();
+    draw.circle(x + a, y - a, z);
+    ctx.fill();
+  } else if (s == 3) {
+    draw.circle(x, y - a, z);
+    ctx.fill();
+    draw.circle(x - a * 0.9, y + a * 0.6, z);
+    ctx.fill();
+    draw.circle(x + a * 0.9, y + a * 0.6, z);
+    ctx.fill();
+  } else if (+s >= 4) {
+    const sides = Math.floor(+s / 2) * 2;
+    let angle = 0;
+    for (let i = 0; i < sides; i++) {
+      angle += Math.PI * 2 / sides;
+      draw.circle(x + a * 1.5 * Math.cos(angle), y + a * 1.5 * Math.sin(angle), z);
+      ctx.fill();
+    }
+    if (+s % 2) {
+      draw.circle(x, y, z);
+      ctx.fill();
+    }
   }
+};
+
+const seg7f = {
+  a: (x, y, a, b) => draw.line(x - b, y - a, x + b, y - a),
+  b: (x, y, a, b) => draw.line(x + b, y - a, x + b, y),
+  c: (x, y, a, b) => draw.line(x + b, y, x + b, y + a),
+  d: (x, y, a, b) => draw.line(x - b, y + a, x + b, y + a),
+  e: (x, y, a, b) => draw.line(x - b, y, x - b, y + a),
+  f: (x, y, a, b) => draw.line(x - b, y - a, x - b, y),
+  g: (x, y, a, b) => draw.line(x - b, y, x + b, y),
+};
+panel_draw_symbols.shapenumber = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.045;
+  draw.circle(x, y, w * 0.36);
+  ctx.stroke();
+  const a = w * 0.23, b = w * 0.12;
+  ctx.save();
+  ctx.translate(x, y);
+  if (s > "9") {
+    s = "" + (parseInt(s, 36) - 9);
+    ctx.rotate(v.time / 30);
+  }
+  ctx.strokeStyle = (state) ? "#1112" : "#eee2";
+  for (const c of "abcdefg") seg7f[c](0, 0, a, b);
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  for (const c of util.seg7[+s]) seg7f[c](0, 0, a, b);
+  ctx.restore();
 };
 
 // todo symbols.amogus

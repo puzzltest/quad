@@ -82,8 +82,8 @@ export const draw = {
   },
 
   // text functions
-  set_font: function(size, modifier) {
-    ctx.font = ((modifier) ? (modifier + " ") : "") + `${round(size)}px roboto mono`;
+  set_font: function(size, modifier, font = "roboto mono") {
+    ctx.font = ((modifier) ? (modifier + " ") : "") + `${round(size)}px ${font}`;
   },
   split_text_: function(text, x, y, w, h, fontsize) {
     const words = text.split(/[ ]+/g);

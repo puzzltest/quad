@@ -941,7 +941,12 @@ export const maps = [
 ...0.+.
 ...0...
 ...00+0
-...0.,.
+...0...
+...0.+.0.....
+...0.+.......
+...0.+.0.....,
+...0...0.....
+...0000000000
     `,
   }, // -3,17,1 holes
   {
@@ -1148,9 +1153,9 @@ export const maps = [
     map: `
 00...00
 0.....0
-,.....,
+,.....+
 0.....0
-,,.....
+,,....+
 0,....0
 0,.0.00
 0.....0
@@ -1209,7 +1214,7 @@ export const maps = [
     theme: "wood2",
     name: "libra",
     map: `
-00000000000
+000000000000
 +.....+...0
 0.....0.+.0
 00+0+00.+.0
@@ -1221,6 +1226,31 @@ export const maps = [
 00000000000
     `,
   }, // 28,7,2 libra
+  {
+    x: 29,
+    y: -6,
+    z: 2,
+    w: 11,
+    h: 7,
+    scale: 8,
+    theme: "wood2",
+    name: "number shapes",
+    map: `
+00000
+0...0
+0.+.0
+0.+.0
+0.+.0
+0.+.0..,
+0.+.000.000
+0.+.0.....0
+0.+.0.+++.0
+0.+.0.+.+.0
+0.+.0.+.+.0
+..+...+++.0
+....0.....0
+    `,
+  }, // 29,-3,2 number shapes
   {
     x: 21,
     y: 21,
@@ -1601,7 +1631,7 @@ export const map = {
             p.lock.push(temp);
           }
         }
-        if (!p?.solved && !p?.revoke && s?.solved) {
+        if (!p?.solved && !p?.revoke && s?.solved) { // todo add a save version, and check if save version < revoke version (outdated), else don't revoke
           p.solved = true;
           map.panel_ref.total_solved++;
         }
