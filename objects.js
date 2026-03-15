@@ -1816,7 +1816,7 @@ export const objects_temp = [
     type: "sign",
     sign: "text",
     title: "welcome sign",
-    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 302",
+    content: "welcome to the game without a name yet! 🌳 thank you for testing!\n\nfull completion: ⭐ 9 🧩 334",
     // embark 🌳\n\nright: ruins\nabove: water
     fontsize: 0.06,
     fontcolor: "#eee",
@@ -9578,6 +9578,45 @@ export const objects_temp = [
     z: 1,
     type: "panel",
     panel: {
+      id: "holes_10",
+      name: "",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        circle: `
+        .0.....
+        0....2.
+        .......
+        .......
+        .......
+        .2.....
+        .......`,
+        ringhole: `
+        6......
+        .......
+        .......
+        .......
+        .......
+        .......
+        .......`
+      },
+    },
+  }, // -1,28 panel holes_10
+  {
+    x: -1,
+    y: 29,
+    z: 1,
+    type: "panel",
+    panel: {
       id: "holes_11",
       name: "",
       w: 7,
@@ -9610,7 +9649,12 @@ export const objects_temp = [
         .......`
       },
     },
-  }, // -1,28 panel holes_11
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["holes_10"],
+    },
+  }, // -1,29 panel holes_11
   {
     x: 0,
     y: 28,
@@ -9651,8 +9695,8 @@ export const objects_temp = [
     },
   }, // 0,28 panel holes_12
   {
-    x: 1,
-    y: 28,
+    x: 0,
+    y: 29,
     z: 1,
     type: "panel",
     panel: {
@@ -9693,7 +9737,146 @@ export const objects_temp = [
       at_least: 1,
       panels: ["holes_12"],
     },
-  }, // 1,28 panel holes_13
+  }, // 0,29 panel holes_13
+  {
+    x: 1,
+    y: 28,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_14",
+      name: "",
+      w: 9,
+      h: 9,
+      type: "binary",
+      map: `
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222`,
+      symbols: {
+        ringhole: `
+        1.......2
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        3.......4`
+      },
+    },
+  }, // 1,28 panel holes_14
+  {
+    x: 1,
+    y: 29,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_15",
+      name: "",
+      w: 9,
+      h: 9,
+      type: "binary",
+      map: `
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222
+      222222222`,
+      symbols: {
+        ringhole: `
+        2.......3
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        .........
+        4.......5`
+      },
+    },
+    door: {
+      rule: "solved",
+      at_least: 1,
+      panels: ["holes_14"],
+    },
+  }, // 1,29 panel holes_15
+  {
+    x: -1,
+    y: 25,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_21",
+      name: "",
+      w: 7,
+      h: 7,
+      type: "binary",
+      map: `
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222
+      2222222`,
+      symbols: {
+        ringhole: `
+        1......
+        .....6.
+        .......
+        .......
+        .......
+        .6.....
+        ......1`
+      },
+    },
+  }, // -1,25 panel holes_21
+  {
+    x: 0,
+    y: 25,
+    z: 1,
+    type: "panel",
+    panel: {
+      id: "holes_22",
+      name: "",
+      w: 8,
+      h: 8,
+      type: "binary",
+      map: `
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222
+      22222222`,
+      symbols: {
+        ringhole: `
+        135.....
+        ........
+        ........
+        ........
+        ........
+        ........
+        ........
+        ........`
+      },
+    },
+  }, // 0,25 panel holes_22
 
 
 
