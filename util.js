@@ -1,3 +1,5 @@
+import lzstring from 'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm';
+
 export const util = {
   dir4: [[1, 0], [0, 1], [-1, 0], [0, -1]],
   dir5: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -51,6 +53,18 @@ export const util = {
     }
     return result;
   },
+  compress: function(s) {
+    return lzstring.compressToUTF16(s);
+  },
+  decompress: function(s) {
+    return lzstring.decompressFromUTF16(s);
+  },
+  compress_safe: function(s) {
+    return lzstring.compressToEncodedURIComponent(s);
+  },
+  decompress_safe: function(s) {
+    return lzstring.decompressFromEncodedURIComponent(s);
+  },
   to_component: function(a) {
     return Math.floor(a).toString(16).padStart(2, "0");
   },
@@ -75,11 +89,97 @@ export const util = {
     }
     return result;
   },
-  dfs: function(a, x, y) {
+  wfs: function(state, x, y, amount) {
+    const air = state[y][x];
+    const h = state.length;
+    const w = state[0].length;
+    const water = Array.from(Array(h), () => Array(w).fill(false));
+    const visited = {};
+    function is_solid(cx, cy) {
+      return state[cy] != undefined && state[cy][cx] != undefined && (state[cy][cx] != air || water[cy][cx]);
+    }
+    function wfs_pour(xx, yy, a) { // guaranteed to pour from air
+      while (yy < h && !is_solid(xx, yy + 1)) yy++;
+      if (yy < 0 || yy >= h) return;
+      const k = util.xy2str(xx, yy);
+      if (visited[k]) return;
+      visited[k] = 1;
+      wfs_fill(xx, yy, a);
+    }
+    function wfs_fill(xx, yy, a) {
+      let sources = [xx];
+      while (yy >= 0) {
+        const open = [];
+        const q = sources.filter(s => s >= 0 && s < w && !is_solid(s, yy));
+        if (q.length === 0) return;
+        // 1d bfs
+        const seen = new Set(q);
+        while (q.length > 0) {
+          const cx = q.pop();
+          open.push(cx);
+          for (const nx of [cx - 1, cx + 1]) {
+            if (!seen.has(nx) && nx >= 0 && nx < w && !is_solid(nx, yy)) {
+              seen.add(nx);
+              if (is_solid(nx, yy + 1)) q.push(nx);
+            }
+          }
+        }
+        // console.log(seen, open);
+        open.sort((a, b) => a - b);
+        const groups = [[]];
+        groups[0].push(open[0]);
+        for (let i = 1; i < open.length; i++) {
+          if (open[i] !== open[i - 1] + 1) groups.push([]);
+          groups[groups.length - 1].push(open[i]);
+        }
+        sources = [];
+        for (const group of groups) {
+          const left = group[0];
+          const right = group[group.length - 1];
+
+          for (const cx of group) {
+            if (yy + 1 < h && !is_solid(cx, yy + 1)) {
+              console.error("floor hole error");
+              wfs_pour(cx, yy + 1);
+            }
+          }
+
+          const leftwall = is_solid(left - 1, yy);
+          const rightwall = is_solid(right + 1, yy);
+          const allfloor = group.every(cx => is_solid(cx, yy + 1));
+          if (allfloor === false) console.error("floor all error");
+
+          if (leftwall && rightwall) {
+            sources.push(...group);
+          } else {
+            const divider = (Number(!leftwall) + Number(!rightwall));
+            if (!leftwall && left > 0) wfs_pour(left - 1, yy, a / divider);
+            if (!rightwall && right < w - 1) wfs_pour(right + 1, yy, a / divider);
+            return;
+          }
+        }
+
+        if (sources.length === 0) return;
+        for (const x of sources) water[yy][x] = true;
+        a -= sources.length;
+        yy--;
+      }
+    }
+
+    wfs_pour(x, y, amount);
+
+    const result = [];
+    for (let r = 0; r < h; r++)
+      for (let c = 0; c < w; c++)
+        if (water[r][c]) result.push({ x: c, y: r });
+    return result;
+  },
+  bfs: function(a, x, y) {
     const result = [];
     const the = a[y][x];
     const visited = {};
-    const q = [{ x, y }]; // used like a stack :)
+    const q = [{ x, y }]; // q? really?
+    let k;
     while (q.length > 0) {
       const b = q.pop();
       visited[util.xy2str(b.x, b.y)] = true;
@@ -87,12 +187,49 @@ export const util = {
         const xx = b.x + dx;
         const yy = b.y + dy;
         if (a[yy] == undefined || a[yy][xx] == undefined) continue;
-        if (the == a[yy][xx] && !visited[util.xy2str(xx, yy)]) {
-          visited[util.xy2str(xx, yy)] = true;
+        if (the == a[yy][xx] && !visited[k = util.xy2str(xx, yy)]) {
+          visited[k] = true;
           q.push({ x: xx, y: yy });
         }
       }
       result.push(b);
+    }
+    return result;
+  },
+  bfs_all: function(a) {
+    const result = [];
+    const visited = {};
+    for (let y = 0; y < a.length; y++) {
+      const r = [];
+      for (let x = 0; x < a[y].length; x++) {
+        const v = visited[util.xy2str(b.x, b.y)];
+        if (v) {
+          r.push(v[0]);
+          continue;
+        }
+        const a = [1]; // lol
+        const ans = [];
+        const the = a[y][x];
+        const q = [{ x, y }];
+        let k;
+        while (q.length > 0) {
+          const b = q.pop();
+          visited[util.xy2str(b.x, b.y)] = a;
+          for (const [dx, dy] of util.dir4) {
+            const xx = b.x + dx;
+            const yy = b.y + dy;
+            if (a[yy] == undefined || a[yy][xx] == undefined) continue;
+            if (the == a[yy][xx] && !visited[k = util.xy2str(xx, yy)]) {
+              visited[k] = a;
+              q.push({ x: xx, y: yy });
+            }
+          }
+          ans.push(b);
+        }
+        a[0] = ans.length;
+        r.push(a[0]);
+      }
+      result.push(r);
     }
     return result;
   },
@@ -172,7 +309,7 @@ export const util = {
     for (let y = 0; y < shape.length; y++) {
       for (let x = 0; x < shape[y].length; x++) {
         if (visited[util.xy2str(x, y)]) continue;
-        // modified dfs
+        // modified bfs
         const q = [{ x, y }];
         const the = shape[y][x];
         const is_hole = the === "." && y > 0 && x > 0;
@@ -239,9 +376,6 @@ export const util = {
     ].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
   },
 };
-
-util.local = util.is_local();
-util.ios = util.is_ios();
 
 util.check_shape_number = (function() {
   // thanks matrix67!

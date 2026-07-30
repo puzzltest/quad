@@ -2,8 +2,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 import { getAuth, onAuthStateChanged, updateProfile, GoogleAuthProvider, EmailAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup, signInWithPopup, signInWithEmailAndPassword, signInWithCredential, updateEmail, getAdditionalUserInfo, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { map } from "./map.js";
+import { reinit_everything, map } from "./map.js";
 import { util } from "./util.js";
+import { physics } from "./physics.js";
+import { init_load } from "./index.js";
+import { panel } from "./panel.js";
+import lzstring from 'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm';
 
 const params = new URLSearchParams(document.location.search);
 const local = util.is_local();
@@ -60,7 +64,8 @@ function connect() {
   });*/
 };
 
-firebase.init = function() {
+// used to be firebase.init
+(function() {
 
   // initialize firebase
   const app = initializeApp(firebaseConfig);
@@ -146,7 +151,7 @@ firebase.init = function() {
 
   // initialized = true;
 
-};
+})();
 
 firebase.time = 0;
 firebase.update_time = 30;
@@ -163,17 +168,33 @@ firebase.tick = function(time) {
     firebase.clear();
     firebase.send();
   }
-  if (time - firebase.update3_time > 3000) {
-    firebase.update3_time = time;
-    if (local) temp.save("local");
-    else temp.autosave();
-  }
+  if (map.name === "new") return;
+  // if (time - firebase.update3_time > 3000) {
+  //   firebase.update3_time = time;
+  //   if (local) temp.save("local");
+  //   else temp.autosave();
+  // }
 };
 
 firebase.clear = function() {
   // console.log("cleared :}");
   firebase.remove("/quad/positions/");
 };
+
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const map_id = params.get("map");
+  if (map_id == "new") {
+    firebase.listen(`/qat/publish/${map_id}`, function(raw) {
+      panel.total_solved = 0;
+      reinit_everything(util.decompress_safe(raw));
+      physics.init();
+      physics.tick();
+      map.name = map_id;
+      init_load();
+    });
+  }
+})();
 
 
 
@@ -229,7 +250,7 @@ temp.load = function(code = false) {
         if (raw) {
           localStorage.setItem("save", raw);
           map.load(raw);
-          localStorage.setItem("save", map.save());
+          map.save();
           localStorage.setItem("code", code);
           firebase.set("/quad/savestats/" + code, {
             puzzles: map.panel_ref.total_solved,

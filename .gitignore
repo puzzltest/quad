@@ -2,3 +2,4 @@ CNAME
 auto.appcache
 .surgeignore
 .vscode
+editor/*

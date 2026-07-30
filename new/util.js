@@ -201,4 +201,3 @@ export const util = {
     ].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
   },
 };
-util.ios = util.is_ios();

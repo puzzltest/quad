@@ -118,6 +118,12 @@ panel.mousecheck = function() {
   return false;
 };
 
+panel.resize = function() {
+  panel.size = view.size * 0.85;
+  panel.x = 0;//view.cx - panel.size / 2;
+  panel.y = 0;//view.cy - panel.size / 2;
+};
+
 panel.draw = function() {
   let x, y, w, h;
   if (panel.active) {
@@ -125,23 +131,43 @@ panel.draw = function() {
     const p = panel.o.panel;
     const size_ = panel.size / Math.max(p.w, p.h);
     const size = size_ * 0.85;
-    const gap = panel.size * 0.15 / (1 + Math.max(p.w, p.h));
+    const gap = panel.size / (1 + Math.max(p.w, p.h)) * 0.15;
     const panel_w = size_ * p.w;
     const panel_h = size_ * p.h;
-    ctx.fillStyle = p.correct ? "#8dac" : "#bafc";
-    draw.rectangle(view.cx, view.cy, panel_w + gap * 2, panel_h + gap * 2);
+    ctx.fillStyle = p.correct ? "#8daa" : "#bafa";
+    draw.rectangle(view.cx, view.cy, panel_w + view.size * 0.15, panel_h + view.size * 0.15);
     ctx.fill();
-    ctx.fillStyle = p.correct ? "#111" : "#111";
-    draw.rectangle(view.cx, view.cy, panel_w, panel_h);
+    x = view.cx;
+    y = view.cy;
+    const filtered_checks = p.checks?.filter(check => panel_draw_symbols[check] != undefined);
+    if (filtered_checks?.length >= 1) {
+      // draw checks
+      y -= view.size * 0.43;
+      ctx.fillStyle = "#111";
+      draw.roundrectangle(x, y, panel_w, view.size * 0.1, size * 0.1);
+      ctx.fill();
+      ctx.fillStyle = "#eee";
+      ctx.strokeStyle = "#eee";
+      x -= (filtered_checks.length - 1) / 2 * view.size * 0.11;
+      for (const check of filtered_checks) {
+        panel_draw_symbols[check]?.("", x, y, view.size * 0.075, view.size * 0.075);
+        x += view.size * 0.11;
+      }
+      x = view.cx; // reset
+      y += view.size * 0.49; // net down 0.06
+    }
+    ctx.fillStyle = "#111";
+    draw.roundrectangle(x, y, panel_w, panel_h, size * 0.1);
     ctx.fill();
-    x = view.cx - (size * p.w + gap * p.w - gap) / 2;
-    y = view.cy - (size * p.h + gap * p.h - gap) / 2;
+    x -= (size * p.w + gap * p.w - gap) / 2;
+    y -= (size * p.h + gap * p.h - gap) / 2;
+    // draw cells
     for (let i = 0; i < p.w; i++) {
       for (let j = 0; j < p.h; j++) {
         let s = +p.state[j][i];
         let locked = +p.lock[j][i];
         let n = +p.map[j][i];
-        draw.roundrect(x, y, size, size, 5);
+        draw.roundrect(x, y, size, size, size * 0.1);
         if (s || n === 1) {
           ctx.fillStyle = "#eee";
           ctx.fill();
@@ -149,7 +175,7 @@ panel.draw = function() {
         if (n === 2) {
           ctx.strokeStyle = p.correct ? "#8da" : "#baf";
           if (locked) ctx.strokeStyle = "#c76";
-          ctx.lineWidth = gap * 0.3;
+          ctx.lineWidth = size * 0.05;
           ctx.stroke();
           const check = panel.mousecheck();
           if (check) {
@@ -175,7 +201,7 @@ panel.draw = function() {
       y -= (size + gap) * p.h;
       x += size + gap;
     }
-    // panel
+    // panel stuff
     panel.update_panel();
   }
   else {
@@ -290,12 +316,6 @@ panel.draw = function() {
   }
 };
 
-panel.resize = function() {
-  panel.size = view.size * 0.85;
-  panel.x = view.cx - panel.size / 2;
-  panel.y = view.cy - panel.size / 2;
-};
-
 panel.check_answer = function(state, answer) {
   for (let y = 0; y < answer.length; y++) {
     for (let x = 0; x < answer[y].length; x++) {
@@ -327,25 +347,29 @@ panel.update_panel = function(optional_pid) {
 panel.check_correct = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
   const p = o.panel;
+  let wrongmode = false, offmode = false;
   if (p.random) return p.solved;
   if (p.answer) {
     return panel.check_answer(p.state, p.answer);
   }
+  // check "global" conditions
+  if (panel_checks[p.id] && (panel_checks[p.id](p) == false)) return false;
+  for (const function_name of p.checks ?? []) { // additional custom check functions
+    if (function_name === "wrong") { wrongmode = true; continue; }
+    if (panel_checks[function_name](p) == false) return false;
+  }
+  // check all symbols
   for (const symbol_name in p.symbols) {
     for (let y = 0; y < p.h; y++) {
       for (let x = 0; x < p.w; x++) {
         const s = p.symbols[symbol_name][y][x];
         if (s !== ".") {
-          if (panel.check_symbol_correct(p, symbol_name, s, x, y) == false) {
-            return false;
-          }
+          const c = panel.check_symbol_correct(p, symbol_name, s, x, y);
+          if (!wrongmode && c == false) return false;
+          if (wrongmode && c == true) return false;
         }
       }
     }
-  }
-  if (panel_checks[p.id] && (panel_checks[p.id](p) == false)) return false;
-  for (const function_name of p.checks ?? []) { // additional custom check functions
-    if (panel_checks[function_name](p) == false) return false;
   }
   return true;
 };
@@ -372,19 +396,19 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return (total === +s);
   }
   else if (name === "ring") {
-    for (const v of util.dfs(p.state, x, y)) {
+    for (const v of util.bfs(p.state, x, y)) {
       if (v.x === x && v.y === y) continue;
       if (p.symbols.ring[v.y][v.x] !== ".") return false;
     }
     return true;
   }
   else if (name === "ringnumber") {
-    const area = util.dfs(p.state, x, y).length;
+    const area = util.bfs(p.state, x, y).length;
     return (area === +parseInt(s, 36));
   }
   else if (name === "circle") {
     let has_same = false;
-    for (const v of util.dfs(p.state, x, y)) {
+    for (const v of util.bfs(p.state, x, y)) {
       if (v.x === x && v.y === y) continue;
       const circle = p.symbols.circle[v.y][v.x];
       if (circle === ".") continue;
@@ -402,9 +426,9 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
       return false;
     }
     if (s == 0)
-      return util.compare_shape(util.bfs_to_shape(util.dfs(p.state, x, y)), p.ruin);
+      return util.compare_shape(util.bfs_to_shape(util.bfs(p.state, x, y)), p.ruin);
     else if (s == 1) {
-      let bfs_result = util.dfs(p.state, x, y);
+      let bfs_result = util.bfs(p.state, x, y);
       if (bfs_result.length !== util.size_of_shape(p.ruin)) return false;
       for (let i = 0; i < 4; i++) {
         if (util.compare_shape(util.bfs_to_shape(bfs_result), p.ruin)) {
@@ -417,14 +441,14 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "donut") {
-    const bfs_result = util.dfs(p.state, x, y);
+    const bfs_result = util.bfs(p.state, x, y);
     let compare = util.rotate_bfs_result(util.rotate_bfs_result(bfs_result));
     let yes = util.compare_shape(util.bfs_to_shape(bfs_result), util.bfs_to_shape(compare));
     if (s == 1 || s == 3) yes = !yes;
     return yes;
   }
   else if (name === "squaring") {
-    const shape = util.bfs_to_shape(util.dfs(p.state, x, y));
+    const shape = util.bfs_to_shape(util.bfs(p.state, x, y));
     for (const char of shape.join("")) {
       if (char === ".") return (s == 1);
     }
@@ -436,14 +460,14 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     else if (s == 1) y_ = (y + 1 >= p.w) ? 0 : (y + 1);
     else if (s == 2) x_ = (x - 1 < 0) ? (p.w - 1) : (x - 1);
     else if (s == 3) y_ = (y - 1 < 0) ? (p.h - 1) : (y - 1);
-    const bfs_left = util.dfs(p.state, x, y);
+    const bfs_left = util.bfs(p.state, x, y);
     const shape_left = util.bfs_to_shape(bfs_left);
     for (const o of bfs_left) {
       if (o.x === x_ && o.y === y_) {
         return false;
       }
     }
-    const bfs_right = util.dfs(p.state, x_, y_);
+    const bfs_right = util.bfs(p.state, x_, y_);
     const shape_right = util.bfs_to_shape(bfs_right);
     if (false) {
       return util.compare_shape(shape_left, shape_right);
@@ -463,7 +487,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "balance") {
-    let bfs_result = util.dfs(p.state, x, y);
+    let bfs_result = util.bfs(p.state, x, y);
     const n = (s == 2 || s == 3) ? 4 : 1;
     for (let i = 0; i < n; i++) {
       let total_x = 0;
@@ -494,13 +518,13 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return true;
   }
   else if (name === "ringhole") {
-    const bfs_result = util.dfs(p.state, x, y);
+    const bfs_result = util.bfs(p.state, x, y);
     const holes = util.holes_in_shape(bfs_result);
     const h = holes.length;
     return ("" + h) == s;
   }
   else if (name === "shapenumber") {
-    let bfs_result = util.dfs(p.state, x, y);
+    let bfs_result = util.bfs(p.state, x, y);
     let shape = util.bfs_to_shape(bfs_result);
     const n = util.shape_is_number(shape);
     if ((s == 1 || s == "a") && util.size_of_shape(shape) === 1) return false;
@@ -515,6 +539,13 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     } else {
       return ("" + n) == s;
     }
+  }
+  else if (name === "waterdrop") {
+    const area = util.wfs(p.state, x, y).length;
+    // if (area != window._debug) {
+    //   console.log(area); window._debug = area;
+    // }
+    return (area >= +parseInt(s, 36));
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
@@ -572,8 +603,12 @@ panel.symbol_function = function(type, o) {
 };
 
 panel_draw_symbols.number = function(s, x, y, w, h, state) {
-  ctx.fillStyle = (state) ? "#111" : "#eee"
-  draw.set_font(w * 0.5);
+  ctx.fillStyle = (state) ? "#111" : "#eee";
+  ctx.strokeStyle = ctx.fillStyle;
+  ctx.lineWidth = w * 0.048;
+  draw.rectangle(x, y, w * 0.65, w * 0.65);
+  ctx.stroke();
+  draw.set_font(w * 0.35, "bold");
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(s, x, y);
@@ -581,9 +616,8 @@ panel_draw_symbols.number = function(s, x, y, w, h, state) {
 
 panel_draw_symbols.diagonal = function(s, x, y, w, h, state) {
   ctx.fillStyle = (state) ? "#111" : "#eee";
-  draw.set_font(w * 0.5);
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.strokeStyle = ctx.fillStyle;
+  ctx.lineWidth = w * 0.048;
   ctx.translate(x, y);
   ctx.rotate(-Math.PI / 4);
   if (parseInt(s, 36) > 9) {
@@ -591,8 +625,13 @@ panel_draw_symbols.diagonal = function(s, x, y, w, h, state) {
     s = parseInt(s, 36) - 9;
     ctx.rotate(Math.PI / 4 + (Math.sin(v.time / 25)));
   }
-  ctx.fillText(s, 0, 0);
+  draw.rectangle(0, 0, w * 0.6, w * 0.6);
+  ctx.stroke();
   draw.reset_transform();
+  draw.set_font(w * 0.35, "bold");
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(s, x, y);
 };
 
 panel_draw_symbols.ring = function(s, x, y, w, h, state) {
@@ -777,7 +816,47 @@ panel_draw_symbols.shapenumber = function(s, x, y, w, h, state) {
   ctx.restore();
 };
 
+panel_draw_symbols.waterdrop = function(s, x, y, w, h, state) {
+  ctx.strokeStyle = (state) ? "#111" : "#eee";
+  ctx.lineWidth = w * 0.015;
+  draw.svg_stroke("water", x, y, w * 0.85);
+  ctx.fillStyle = (state) ? "#111" : "#eee";
+  const n = parseInt(s, 36);
+  draw.set_font(n > 9 ? w * 0.25 : w * 0.32, "bold");
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(n, x, y + w * 0.1);
+};
+
 // todo symbols.amogus
+
+panel_draw_symbols.snake = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.05;
+  draw.rectangle(x, y, w, h);
+  ctx.stroke();
+  draw.line(x + w * 0.5, y + h * 0.5, x - w * 0.5, y - h * 0.5);
+  draw.line(x + w * 0.5, y - h * 0.5, x - w * 0.5, y + h * 0.5);
+  ctx.stroke();
+};
+
+panel_draw_symbols.sudoku = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.05;
+  draw.rectangle(x, y, w, h);
+  ctx.stroke();
+  draw.rectangle(x - w * 0.25, y + h * 0.25, w * 0.5, h * 0.5);
+  ctx.fill();
+  draw.rectangle(x + w * 0.25, y - h * 0.25, w * 0.5, h * 0.5);
+  ctx.fill();
+};
+
+panel_draw_symbols.equality = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.05;
+  draw.circle(x, y, w * 0.55);
+  ctx.stroke();
+  draw.line(x - w * 0.23, y - h * 0.1, x + w * 0.23, y - h * 0.1);
+  draw.line(x - w * 0.23, y + h * 0.1, x + w * 0.23, y + h * 0.1);
+  ctx.stroke();
+};
 
 const wordlist = [];
 panel.randomizer.init = function() {
@@ -840,7 +919,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.dfs(answer, x, y);
+      const bfs_result = util.bfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -862,7 +941,7 @@ panel.randomizer.random = function(size, type, seed) {
     const circles = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.dfs(answer, x, y);
+      const bfs_result = util.bfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -883,7 +962,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (util.rand() < 0.65) return 0;
-      const bfs_result = util.dfs(answer, x, y);
+      const bfs_result = util.bfs(answer, x, y);
       const rand = util.randint(0, bfs_result.length - 1);
       const ringpos = bfs_result[rand];
       rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
@@ -901,7 +980,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (memo[y][x]) return 0;
-      const bfs_result = util.dfs(answer, x, y);
+      const bfs_result = util.bfs(answer, x, y);
       for (const o of bfs_result) {
         memo[o.y][o.x] = true;
       }
@@ -931,7 +1010,7 @@ panel.randomizer.random = function(size, type, seed) {
     const rings = util.construct(size, () => ".");
     util.construct(size, function(x, y) {
       if (util.rand() < 0.65) return 0;
-      const bfs_result = util.dfs(answer, x, y);
+      const bfs_result = util.bfs(answer, x, y);
       const rand = util.randint(0, bfs_result.length - 1);
       const ringpos = bfs_result[rand];
       rings[ringpos.y][ringpos.x] = "" + bfs_result.length.toString(36);
@@ -1055,32 +1134,34 @@ panel.randomizer.seed2type = function(words) {
   return type ?? "number_easy";
 };
 
-for (let i = 1; i < 4; i++) {
-  for (let c = 0; c <= 1; c++) {
-    const j = i + 1;
-    const prefix = (c ? "c" : "") + "1234_";
-    const n = c ? [0, 2, 3, 7, 9][j] : j;
-    panel_updates[prefix + i] = function(p) {
-      const o = map.get_panel(prefix + j);
-      if (o) {
-        const p2 = o.panel;
-        const a = [];
-        for (let y = 0; y < p.h; y++) {
-          let s = "";
-          for (let x = 0; x < p.w; x++) {
-            s += p.state[y][x] ? n : ".";
+(function() {
+  for (let i = 1; i < 4; i++) {
+    for (let c = 0; c <= 1; c++) {
+      const j = i + 1;
+      const prefix = (c ? "c" : "") + "1234_";
+      const n = c ? [0, 2, 3, 7, 9][j] : j;
+      panel_updates[prefix + i] = function(p) {
+        const o = map.get_panel(prefix + j);
+        if (o) {
+          const p2 = o.panel;
+          const a = [];
+          for (let y = 0; y < p.h; y++) {
+            let s = "";
+            for (let x = 0; x < p.w; x++) {
+              s += p.state[y][x] ? n : ".";
+            }
+            a.push(s);
           }
-          a.push(s);
+          p2.symbols[c ? "ringnumber" : "number"] = a;
+          panel.update_panel(prefix + j);
         }
-        p2.symbols[c ? "ringnumber" : "number"] = a;
-        panel.update_panel(prefix + j);
-      }
-    };
-    panel_checks[prefix + j] = function(_) {
-      return !!map.get_panel(prefix + i)?.panel?.correct;
-    };
+      };
+      panel_checks[prefix + j] = function(_) {
+        return !!map.get_panel(prefix + i)?.panel?.correct;
+      };
+    }
   }
-}
+})();
 
 panel_checks.nonempty = function(p) {
   for (let y = 0; y < p.h; y++) {
@@ -1091,12 +1172,44 @@ panel_checks.nonempty = function(p) {
   return false;
 };
 
-panel_checks.nonbox = function(p) {
+panel_checks.snake = function(p) {
+  for (let y = 0; y < p.h - 1; y++) {
+    for (let x = 0; x < p.w - 1; x++) {
+      const s = p.state[y][x];
+      if (s === p.state[y+1][x] && s === p.state[y][x+1] && s === p.state[y+1][x+1]) return false;
+    }
+  }
+  return true;
+};
+
+panel_checks.sudoku = function(p) {
+  for (let y = 0; y < p.h; y++) {
+    let s = 0;
+    for (let x = 0; x < p.w; x++) s += p.state[y][x] ? 1 : 0;
+    if (s !== p.w / 2) return false;
+  }
+  for (let x = 0; x < p.w; x++) {
+    let s = 0;
+    for (let y = 0; y < p.h; y++) s += p.state[y][x] ? 1 : 0;
+    if (s !== p.h / 2) return false;
+  }
+  return true;
+};
+
+panel_checks.equality = function(p) {
+  // not exactly the most averagely efficient way
+  const f = util.bfs_all(p.state).flat();
+  return f.every(a => a === f[0]);
+};
+
+panel_checks.mirror = function(p) {
   // todo
+  return false;
 };
 
 sign_pictures.text = function(x, y, w, h, o) {
   // todo scam
+  // what was i saying 2 years ago
   ctx.translate(x, y);
   if (o.textangle) {
     ctx.rotate(o.textangle);
@@ -1284,6 +1397,10 @@ symbol_functions.map = function() {
   panel.map.y = player.y;
   panel.map.z = player.z;
   panel.map.static = true;
+};
+
+door_custom.door_start_1 = function(door) {
+  return (!map.get_panel("start_one").panel.correct)
 };
 
 door_custom.door_0_1234 = function(door) {

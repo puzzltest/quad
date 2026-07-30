@@ -72,8 +72,9 @@ export const objects_temp = [
     type: "door",
     door: {
       id: "door_0",
+      rule: "correct",
+      at_least: 1,
       panels: ["0_smile"],
-      rule: "all",
     },
   }, // 11,0 door door_0
   // room: taunt
@@ -10097,6 +10098,42 @@ export const objects_temp = [
       panels: ["rooom_5"],
     },
   }, // 27,2 panel rooom_2 (challenge #3.1)
+  // room: waterdrop
+  // {
+  //   x: 22,
+  //   y: 6,
+  //   z: 2,
+  //   type: "panel",
+  //   panel: {
+  //     id: "waterdrop_0",
+  //     name: "water?",
+  //     w: 9,
+  //     h: 9,
+  //     type: "binary",
+  //     map: `
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222
+  //     222222222`,
+  //     symbols: {
+  //       waterdrop: `
+  //       ....1....
+  //       .........
+  //       .........
+  //       .........
+  //       .........
+  //       .........
+  //       .........
+  //       .........
+  //       .........`,
+  //     },
+  //   },
+  // }, // 22,6 panel waterdrop_0
   // room: libra
   {
     x: 28,
@@ -11849,8 +11886,7 @@ export const wires_def = [
 ];
 
 
-
-for (const o of objects_temp) {
+export const init_object = function(o) {
   o.seen = false;
   if (o.panel) {
     if (o.panel.map) o.panel.map = o.panel.map.trim().replaceAll(/[ ]/g, "").split("\n");
@@ -11859,7 +11895,7 @@ for (const o of objects_temp) {
     for (const s in o.panel.symbols ?? []) {
       o.panel.symbols[s] = o.panel.symbols[s].trim().replaceAll(/[ ]/g, "").split("\n");
     }
-    o.panel.state = [];
+    o.panel.state = []; // init panel state
     for (let y = 0; y < o.panel.h; y++) {
       const temp = [];
       for (let x = 0; x < o.panel.w; x++) {
@@ -11871,7 +11907,7 @@ for (const o of objects_temp) {
       }
       o.panel.state.push(temp);
     }
-    o.panel.lock = [];
+    o.panel.lock = []; // init panel lock
     for (let y = 0; y < o.panel.h; y++) {
       const temp = [];
       for (let x = 0; x < o.panel.w; x++) {
@@ -11880,17 +11916,41 @@ for (const o of objects_temp) {
       o.panel.lock.push(temp);
     }
   }
+  if (o.door) {
+    if (typeof o.door.panels === "string") {
+      o.door.panels = o.door.panels ? o.door.panels.split(",").map(function(s) { return s.trim(); }).filter(Boolean) : [];
+    }
+    if (typeof o.door.panelx === "string") {
+      o.door.panelx = o.door.panelx ? o.door.panelx.split(",").map(function(s) { return s.trim(); }).filter(Boolean) : [];
+    }
+  }
+  if (o.sign && typeof o.sign === "object") {
+    const sign = o.sign;
+    var type = (sign.type === "sign") ? "text" : sign.type;
+    o.sign = type || "text";
+    o.title = sign.title;
+    o.content = sign.content;
+    o.fontsize = sign.fontsize > 1 ? sign.fontsize / 250 : sign.fontsize;
+    o.fontcolor = sign.fontcolor;
+  }
+};
+
+export const init_all_objects = function(objects) {
+  for (const o of objects) {
+    init_object(o);
+  }
 }
 
+init_all_objects(objects_temp);
 
-export const wires_temp = (function() {
-  const wires = {}; // result
+export const init_wires = function(def, old = {}) {
+  const wires = old; // result
 
   const vec2str = function(x, y, z) {
     return x + "," + y + "," + z;
   };
 
-  for (const w of wires_def) {
+  for (const w of def) {
     if (w.map) w.map = w.map.trim().replaceAll(/[ ]/g, "").split("\n");
 
     const wirelookup = {};
@@ -11941,4 +12001,6 @@ export const wires_temp = (function() {
   }
 
   return wires;
-})(); // :)
+}
+
+export const wires_temp = init_wires(wires_def);

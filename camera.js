@@ -3,7 +3,7 @@ import { the_id } from "./database.js";
 import { maps, map } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
-import { draw } from "./draw.js";
+import { draw, svg } from "./draw.js";
 
 export const camera = {
   cx: 0,
@@ -39,8 +39,8 @@ camera.init = function() {
 camera.tick = function() {
   camera.scale = util.lerp(camera.scale, camera.tscale, 0.05);
   const offset = camera.tscale / 2;
-  camera.tx = player.x ;
-  camera.ty = player.y ;
+  camera.tx = player.x;
+  camera.ty = player.y;
   camera.cx = util.lerp(camera.cx, camera.tx, 0.05);
   camera.cy = util.lerp(camera.cy, camera.ty, 0.05);
   camera.z = player.z;
@@ -209,8 +209,13 @@ export const theme = {
     },
     ["symbol"]: function(x, y, w, h, o) {
       if (!o.symbol) return;
-      ctx.fillStyle = o.symbol?.fill ?? "#ffff";
-      draw.svg(o.symbol.type, x, y, w);
+      ctx.fillStyle = o.symbol?.fill ?? "#eee";
+      const t = o.symbol.type;
+      if (svg[t]) {
+        draw.svg(t, x, y, w);
+      } else {
+        draw.art(t.substring(7), x, y, w);
+      }
     },
     ["panel"]: function(x, y, w, h, o) {
       ctx.fillStyle = o.panel?.solved ? "#8da" : "#baf";
@@ -592,7 +597,7 @@ export const mini_theme = {
       if (!o?.door?.open) return "#eee";
       return " ";
     },
-    ["portal"]: "#d89",
+    ["portal"]: "#85a",
     ["sign"]: "#a85",
     ["star"]: "#7ab", // #bef? todo function
     ["symbol"]: () => " ",
@@ -609,6 +614,7 @@ export const mini_theme = {
     ["0"]: "#842",
     ["1"]: "#842",
     ["2"]: "#351",
+    ["portal"]: "#85a",
   },
   wood: {
     ["."]: "#652",
@@ -625,7 +631,7 @@ export const mini_theme = {
   warp: {
     ["."]: "#635",
     ["0"]: "#b7a",
-    ["portal"]: "#eee",
+    ["portal"]: "#8a5",
   },
 };
 

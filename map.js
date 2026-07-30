@@ -1,4 +1,5 @@
-import { objects_temp, wires_temp } from "./objects.js";
+import { init_object, init_wires, objects_temp, wires_temp } from "./objects.js";
+import { util } from "./util.js";
 
 export const maps = [
 
@@ -1391,35 +1392,49 @@ export const star_lookup = {};
 export const door_lookup = {};
 export const door_connections = {};
 export const door_connexions = {};
-for (const o of objects) {
-  const s = o.x + "," + o.y + "," + o.z;
-  object_lookup[s] = o;
-  if (o.panel?.id != undefined) {
-    panel_lookup[o.panel.id] = o;
+
+export const clear_object = (obj) => {
+  for (const k in obj) delete obj[k];
+};
+const init_lookups = () => {
+  clear_object(object_lookup);
+  clear_object(panel_lookup);
+  clear_object(sign_lookup);
+  clear_object(star_lookup);
+  clear_object(door_lookup);
+  clear_object(door_connections);
+  clear_object(door_connexions);
+  for (const o of objects) {
+    const s = o.x + "," + o.y + "," + o.z;
+    object_lookup[s] = o;
+    if (o.panel?.id != undefined) {
+      panel_lookup[o.panel.id] = o;
+    }
+    if (o.type === "sign" && o.title != undefined) {
+      sign_lookup[o.title] = o;
+    }
+    if (o.star?.id != undefined) {
+      star_lookup[o.star.id] = o;
+    }
+    if (o.door?.id != undefined) {
+      door_lookup[o.door.id] = o;
+    }
+    for (const pid of o.door?.panels ?? []) {
+      if (door_connections[pid] == undefined) door_connections[pid] = [];
+      door_connections[pid].push(o);
+    }
+    for (const pid of o.door?.panelx ?? []) {
+      if (door_connexions[pid] == undefined) door_connexions[pid] = [];
+      door_connexions[pid].push(o);
+    }
   }
-  if (o.type === "sign" && o.title != undefined) {
-    sign_lookup[o.title] = o;
-  }
-  if (o.star?.id != undefined) {
-    star_lookup[o.star.id] = o;
-  }
-  if (o.door?.id != undefined) {
-    door_lookup[o.door.id] = o;
-  }
-  for (const pid of o.door?.panels ?? []) {
-    if (door_connections[pid] == undefined) door_connections[pid] = [];
-    door_connections[pid].push(o);
-  }
-  for (const pid of o.door?.panelx ?? []) {
-    if (door_connexions[pid] == undefined) door_connexions[pid] = [];
-    door_connexions[pid].push(o);
-  }
-}
+};
 
 const params = new URLSearchParams(document.location.search);
 
 export const map = {
 
+  name: "old",
   start_point: {
     x: 0,
     y: 0,
@@ -1438,6 +1453,7 @@ export const map = {
     return this.stars_collected.length;
   },
   init: function() {
+    map.solvable_panels = 0;
     for (const pid in panel_lookup) {
       if (panel_lookup[pid].panel.unsolvable) continue;
       map.solvable_panels++;
@@ -1535,6 +1551,7 @@ export const map = {
     if (door.rule === "custom") {
       const f = map.door_custom[door.id] ?? map.door_custom[door.custom] ?? ((d) => false);
       door.open = f(door);
+      if (door.invert) door.open = !door.open;
       return (door.open !== old);
     }
     let number = 0;
@@ -1546,7 +1563,8 @@ export const map = {
     door.number = number - (door.at_least ?? door.panels?.length ?? 0);
     const open = (door.number >= 0);
     door.open = open;
-    return (open !== old);
+    if (door.invert) door.open = !door.open;
+    return (door.open !== old);
   },
   str2vec: function(s) {
     return tile_reverse_memo[s];
@@ -1586,15 +1604,24 @@ export const map = {
       }
       save.panels[pid] = panelsave;
     }
-    const zipped = zipson.stringify(save);
-    // console.log("saved", save);
-    return zipped;
+    if (map.name === "old") {
+      const zipped = zipson.stringify(save);
+      localStorage.setItem("save", zipped);
+    } else {
+      const compressed = util.compress(JSON.stringify(save));
+      localStorage.setItem("save_" + map.name, compressed);
+      // console.log("saved", compressed);
+    }
   },
 
   load: function(raw) {
     try {
-      map.load_(raw);
-      return true;
+      if (map.name === "old") {
+        map.load_(zipson.parse(raw));
+        return true;
+      } else {
+        map.load_(JSON.parse(util.decompress(raw)));
+      }
     } catch (e) {
       console.error(e);
       return false;
@@ -1602,7 +1629,7 @@ export const map = {
   },
 
   load_: function(raw) {
-    const save = zipson.parse(raw);
+    const save = raw;
     map.player_ref.load(save.player);
     for (const pid in panel_lookup) {
       try {
@@ -1655,36 +1682,79 @@ export const map = {
     }
   },
 
+  init_tiles: function() {
+    for (const m of maps) {
+      if (typeof m.map === "string") m.map = m.map.trim().replaceAll(/[ ]/g, "").split("\n");
+    }
+    for (const m of maps) {
+      if (!map.levels.includes(m.z)) {
+        map.levels.push(m.z);
+      }
+      for (let i = 0; i < m.map.length; i++) {
+        const y = m.y + i;
+        for (let j = 0; j < m.map[i].length; j++) {
+          const x = m.x + j;
+          const s = map.vec2str(x, y, m.z);
+          tiles[s] = m.map[i][j];
+          tilemap[s] = tilemap[s] ?? m;
+          tile_reverse_memo[s] = { x: x, y: y, z: m.z };
+        }
+      }
+    }
+  },
+
 };
 
 
 // do things
+map.init_tiles();
 
-for (const m of maps) {
-  m.map = m.map.trim().replaceAll(/[ ]/g, "").split("\n");
-  /*if (m.wire) {
-    m.wire = m.wire.trim().replaceAll(/[ ]/g, "").split("\n");
-  }*/
-}
+function init_map(spawn) {
+  map.stars_collected.length = 0;
+  map.levels.length = 0;
+  clear_object(tiles);
+  clear_object(tilemap);
+  clear_object(tile_reverse_memo);
+  init_lookups();
+  map.init_tiles();
 
-for (const m of maps) {
-  if (!map.levels.includes(m.z)) {
-    map.levels.push(m.z);
-  }
-  for (let i = 0; i < m.map.length; i++) {
-    const y = m.y + i;
-    for (let j = 0; j < m.map[i].length; j++) {
-      const x = m.x + j;
-      const s = map.vec2str(x, y, m.z);
-      tiles[s] = m.map[i][j];
-      tilemap[s] = tilemap[s] ?? m;
-      tile_reverse_memo[s] = { x: x, y: y, z: m.z };
-      /*if (m.wire && m.wire[i][j] !== ".") {
-        wires[s] = m.wire[i][j];
-      }*/
+  // set spawn point // todo simplify
+  if (spawn) {
+    map.start_point.x = spawn.x;
+    map.start_point.y = spawn.y;
+    map.start_point.z = spawn.z;
+    if (!map.levels.includes(map.start_point.z) && spawn.fallbackZ != null) {
+      map.start_point.z = spawn.fallbackZ;
     }
+    if (!map.levels.includes(map.start_point.z) && maps.length > 0) {
+      map.start_point.x = maps[0].x;
+      map.start_point.y = maps[0].y;
+      map.start_point.z = maps[0].z;
+    }
+  } else if (!map.levels.includes(map.start_point.z) && maps.length > 0) {
+    map.start_point.x = maps[0].x;
+    map.start_point.y = maps[0].y;
+    map.start_point.z = maps[0].z;
   }
 }
+
+export function reinit_everything(raw) {
+  const parsed = JSON.parse(raw);
+  maps.length = 0;
+  for (const r of parsed.rooms || []) maps.push(r);
+  objects.length = 0;
+  for (const o of parsed.objects || []) {
+    init_object(o);
+    objects.push(o);
+  }
+  clear_object(wires);
+  if (parsed.wires) init_wires(parsed.wires, wires);
+  init_map(parsed.spawnPoint);
+  map.init();
+  return parsed;
+}
+
+init_map();
 
 /*
 const dir4 = [[1, 0], [0, 1], [-1, 0], [0, -1]];

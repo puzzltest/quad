@@ -13,7 +13,6 @@ export const canvas = document.querySelector("canvas");
 export const ctx = canvas.getContext("2d");
 
 export const v = {
-  version: VERSION,
   width: 0,
   height: 0,
   mobile: false,
@@ -47,7 +46,6 @@ export const mouse = {
 
 const init = function() {
   map.init();
-  firebase.init();
   player.init();
   camera.init();
   physics.init();
@@ -58,17 +56,22 @@ const init = function() {
   resize();
   v.time = 0;
   requestAnimationFrame(tick);
-//  if (window.location.hostname === "qat.pages.dev") {
-//    temp.load();
-//  }
   // load
-  if (window.location.hostname === "localhost" && localStorage.getItem("local") != v.version.toString()) {
-    temp.load("local");
-  } else {
-    const raw_save = localStorage.getItem("save");
-    if (raw_save) {
-      map.load(raw_save);
+  init_load();
+};
+
+export const init_load = function() {
+  if (map.name === "old") {
+    if (window.location.hostname === "localhost" && localStorage.getItem("local") != VERSION.toString()) {
+      temp.load("local");
+    } else {
+      const raw_save = localStorage.getItem("save");
+      if (raw_save) {
+        map.load(raw_save);
+      }
     }
+  } else {
+    map.load(localStorage.getItem("save_" + map.name));
   }
 };
 
@@ -432,15 +435,16 @@ const mouseup_handler = function(event) {
 };
 
 const keydown = function(event) {
-  if (!event.ctrlKey && !event.metaKey && !event.altKey) event.preventDefault();
+  const no_mod = !event.ctrlKey && !event.metaKey && !event.altKey;
+  if (no_mod) event.preventDefault();
   if (event.repeat) return;
   v.keys[event.code] = true;
   // restart
-  if (v.keys.KeyR && panel.active) {
+  if (v.keys.KeyR && panel.active && no_mod) {
     panel.clearstate();
   }
   // map
-  if (v.keys.Tab || v.keys.KeyM) {
+  if ((v.keys.Tab || v.keys.KeyM) && no_mod) {
     panel.map.active = !panel.map.active;
     panel.map.z = player.z;
     panel.map.static = false;
@@ -484,8 +488,7 @@ const scroll_handler = function(event) {
 };
 
 const save_game = function() {
-  const raw_save = map.save();
-  localStorage.setItem("save", raw_save);
+  map.save();
   return;
 };
 

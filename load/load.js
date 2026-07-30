@@ -56,7 +56,6 @@ window.addEventListener("load", async function(event) {
   });
   const div = document.querySelector("div");
   const span = document.querySelector("span");
-  firebase.init();
   firebase.listen("/quad/positions/", function(data) {
     let s = "";
     for (const id in data) {

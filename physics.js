@@ -1,26 +1,27 @@
 const { World, Shape, Fixture, Body, Contact, Vec2, Box, Circle } = planck;
-import { map, tiles, tilemap, tiledef, objects } from "./map.js";
+import { map, tiles, tilemap, tiledef, objects, clear_object } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
 import { draw } from "./draw.js";
 
 export const physics = {
-  
+
 };
 
 export const tile_bodies = {};
 export const player_bodies = {};
 
 export const worlds = {};
-  
-for (const z of map.levels) {
-  worlds[z] = new World({
-    gravity: new Vec2(0.0, 0.0),
-    allowSleep: true,
-  });
-}
 
 physics.init = function() {
+  // create worlds
+  clear_object(worlds);
+  for (const z of map.levels) {
+    worlds[z] = new World({
+      gravity: new Vec2(0.0, 0.0),
+      allowSleep: true,
+    });
+  }
   // create walls
   for (const s in tiles) {
     const d = tiledef[tiles[s]];
