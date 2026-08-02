@@ -235,17 +235,17 @@ panel.draw = function() {
       panel.sign.time = 0;
     }
     if (panel.map.active) {
-      ctx.fillStyle = "#e8dde8f9";
-      ctx.strokeStyle = "#eaf";
       x = view.cx;
       y = view.cy;
-      const z = player.z;
+      const z = panel.map.z;
       w = view.size * 0.85;
       h = view.size * 0.85;
-      ctx.lineWidth = w * 0.02;
-      draw.rectangle(x, y, w, h);
+      ctx.fillStyle = "#eaf8";
+      draw.rectangle(x, y, view.size, view.size);
       ctx.fill();
-      ctx.stroke();
+      ctx.fillStyle = "#ede";
+      draw.roundrectangle(x, y, w, h);
+      ctx.fill();
       if (panel.map.static && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
         const dx = player.move_nx;
         const dy = player.move_ny;
@@ -255,8 +255,8 @@ panel.draw = function() {
         player.move_x = 0;
         player.move_y = 0;
       } else if (!panel.map.static) {
-        panel.map.x = camera.x;
-        panel.map.y = camera.y;
+        panel.map.x = camera.cx;
+        panel.map.y = camera.cy;
       }
       if ("draw map") {
         ctx.save();
@@ -267,11 +267,15 @@ panel.draw = function() {
         for (let x = Math.floor(panel.map.x - scale / 2); x <= panel.map.x + scale / 2 + 1; x++) {
           for (let y = Math.floor(panel.map.y - scale / 2); y <= panel.map.y + scale / 2 + 1; y++) {
             const m = map.get_map(x, y, z);
-            // if (!m) continue;
-            const s = map.get_tile(x, y, z) ?? ".";
+            let t = m?.theme ?? map.z_themes[z] ?? "normal";
+            let s = map.get_tile(x, y, z) ?? ".";
             let o = map.get_object(x, y, z);
             if (o?.invisible) o = undefined;
-            const t = m?.theme ?? map.z_themes[z] ?? "normal";
+            if (m && m.id && !map.visited.has(m.id)) {
+              t = map.z_themes[z] ?? "normal";
+              s = ".";
+              o = undefined;
+            }
             let xx = view.cx + (x - panel.map.x) * view.size / scale;
             let yy = view.cy + (y - panel.map.y) * view.size / scale;
             let fill = mini_theme[t][o?.type] ?? mini_theme.normal[o?.type] ?? mini_theme[t][s] ?? mini_theme.normal[s];
@@ -289,8 +293,8 @@ panel.draw = function() {
           }
         }
         ctx.globalAlpha = 0.5 + 0.5 * util.bounce(v.time, 20);
-        let px = view.cx + (player.x - panel.map.x - 0.2) * view.size / scale;
-        let py = view.cy + (player.y - panel.map.y - 0.2) * view.size / scale;
+        let px = view.cx + (player.x - panel.map.x) * view.size / scale;
+        let py = view.cy + (player.y - panel.map.y) * view.size / scale;
         ctx.fillStyle = "#e54f";
         ctx.strokeStyle = "#ffff";
         ctx.lineWidth = size * 0.05;
@@ -299,8 +303,11 @@ panel.draw = function() {
         ctx.stroke();
         ctx.globalAlpha *= 0.5;
         for (const ok in player.others) {
-          const op = player.others[ok];
           if (ok === the_id) continue;
+          const op = player.others[ok];
+          if (op.z != player.z || op.m !== map.name) continue;
+          const m = map.get_map(Math.floor(op.x), Math.floor(op.y), Math.floor(op.z));
+          if (m && m.id && !map.visited.has(m.id)) continue;
           px = view.cx + (op.x - panel.map.x) * view.size / scale;
           py = view.cy + (op.y - panel.map.y) * view.size / scale;
           ctx.fillStyle = "#5e4f";
@@ -457,7 +464,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   else if (name === "copyright") {
     let x_ = x, y_ = y;
     if (s == 0) x_ = (x + 1 >= p.w) ? 0 : (x + 1);
-    else if (s == 1) y_ = (y + 1 >= p.w) ? 0 : (y + 1);
+    else if (s == 1) y_ = (y + 1 >= p.h) ? 0 : (y + 1);
     else if (s == 2) x_ = (x - 1 < 0) ? (p.w - 1) : (x - 1);
     else if (s == 3) y_ = (y - 1 < 0) ? (p.h - 1) : (y - 1);
     const bfs_left = util.bfs(p.state, x, y);
@@ -858,6 +865,15 @@ panel_draw_symbols.equality = function(s, x, y, w, h) {
   ctx.stroke();
 };
 
+panel_draw_symbols.wrong = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.05;
+  draw.circle(x, y, w * 0.55);
+  ctx.stroke();
+  draw.line(x - w * 0.2, y - h * 0.2, x + w * 0.22, y + h * 0.2);
+  draw.line(x - w * 0.2, y + h * 0.2, x + w * 0.22, y - h * 0.2);
+  ctx.stroke();
+};
+
 const wordlist = [];
 panel.randomizer.init = function() {
   for (const english of [english10, english20, english35, english40]) {
@@ -1134,7 +1150,7 @@ panel.randomizer.seed2type = function(words) {
   return type ?? "number_easy";
 };
 
-(function() {
+(function() { // special function for 1234_n and c1234_n
   for (let i = 1; i < 4; i++) {
     for (let c = 0; c <= 1; c++) {
       const j = i + 1;
@@ -1397,10 +1413,6 @@ symbol_functions.map = function() {
   panel.map.y = player.y;
   panel.map.z = player.z;
   panel.map.static = true;
-};
-
-door_custom.door_start_1 = function(door) {
-  return (!map.get_panel("start_one").panel.correct)
 };
 
 door_custom.door_0_1234 = function(door) {

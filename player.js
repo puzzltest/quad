@@ -28,6 +28,7 @@ export const player = {
         y: util.round_to(player.y, 100),
         z: player.z,
         // t: serverTimestamp(),
+        m: map.name,
         p: map.panel_ref.total_solved,
       });
     };
@@ -66,6 +67,7 @@ export const player = {
     } else {
       player.door_staring_counter = 0;
     }
+    player.update_map_visited();
   },
   move_x: 0,
   move_y: 0,
@@ -132,8 +134,8 @@ export const player = {
     if (player.acted) return;
     player.acted = true;
     player.act_time++;
-    // press and hold
     if (player.act_time > 120) return; // todo another function
+    if (player.act_time > 59) return player.act2();
     if (player.act_time > 0) return;
     // ok it's actually a new button press now
     if (panel.map.active) {
@@ -209,6 +211,19 @@ export const player = {
       return false;
     }
   },
+  act2: function() {
+    if (player.paused) return;
+    panel.map.active = true;
+    panel.map.z = player.z;
+    panel.map.static = false;
+  },
+
+  update_map_visited: function() {
+    const { x, y, z } = player.xyz;
+    const id = map.get_map(x, y, z)?.id;
+    if (!id) return;
+    if (!map.visited.has(id)) map.visited.add(id);
+  },
 
   save: function() {
     const result = {
@@ -242,7 +257,8 @@ export const player = {
     this.x = x_;
     this.y = y_;
     this.z = z_;
-    physics.teleport_player(x_, y_, z_, (old_z !== z_) ? player_bodies[old_z].v : undefined);
+    physics.teleport_player(x_, y_, z_, player_bodies[old_z].getLinearVelocity());
     camera.tick();
   },
+
 };

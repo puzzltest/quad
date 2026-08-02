@@ -16,6 +16,8 @@ export const worlds = {};
 physics.init = function() {
   // create worlds
   clear_object(worlds);
+  clear_object(tile_bodies);
+  clear_object(player_bodies);
   for (const z of map.levels) {
     worlds[z] = new World({
       gravity: new Vec2(0.0, 0.0),
@@ -101,7 +103,7 @@ const velocityIterations = 8;
 const positionIterations = 3;
 physics.tick = function(dt) {
   if (player.paused) return;
-  worlds[player.z].step(dt / 700, velocityIterations, positionIterations);
+  worlds[player.z].step((dt ?? 16) / 700, velocityIterations, positionIterations);
   worlds[player.z].clearForces();
 };
 
@@ -116,6 +118,6 @@ physics.move_player = function(dx, dy) {
 physics.teleport_player = function(x, y, z, v) {
   if (z == undefined) z = player.z;
   player_bodies[z].setPosition(new Vec2(x, y));
-  if (v != undefined) player_bodies[z].setLinearVelocity(v ?? new Vec2(0, 0));
+  if (v) player_bodies[z].setLinearVelocity(v ?? new Vec2(0, 0));
   worlds[z].clearForces();
 };

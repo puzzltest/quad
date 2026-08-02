@@ -168,7 +168,7 @@ firebase.tick = function(time) {
     firebase.clear();
     firebase.send();
   }
-  if (map.name === "new") return;
+  if (map.name !== "old") return;
   // if (time - firebase.update3_time > 3000) {
   //   firebase.update3_time = time;
   //   if (local) temp.save("local");
@@ -184,9 +184,12 @@ firebase.clear = function() {
 (function() {
   const params = new URLSearchParams(window.location.search);
   const map_id = params.get("map");
-  if (map_id == "new") {
+  if (map_id && map_id !== "old") {
     firebase.listen(`/qat/publish/${map_id}`, function(raw) {
+      if (!raw) return;
       panel.total_solved = 0;
+      panel.active = false;
+      panel.o = null;
       reinit_everything(util.decompress_safe(raw));
       physics.init();
       physics.tick();

@@ -89,7 +89,7 @@ export const util = {
     }
     return result;
   },
-  wfs: function(state, x, y, amount) {
+  wfs: function(state, x, y, amount) { // todo amount
     const air = state[y][x];
     const h = state.length;
     const w = state[0].length;
@@ -202,32 +202,32 @@ export const util = {
     for (let y = 0; y < a.length; y++) {
       const r = [];
       for (let x = 0; x < a[y].length; x++) {
-        const v = visited[util.xy2str(b.x, b.y)];
+        const v = visited[util.xy2str(x, y)];
         if (v) {
           r.push(v[0]);
           continue;
         }
-        const a = [1]; // lol
+        const aaa = [1]; // lol
         const ans = [];
         const the = a[y][x];
         const q = [{ x, y }];
         let k;
         while (q.length > 0) {
           const b = q.pop();
-          visited[util.xy2str(b.x, b.y)] = a;
+          visited[util.xy2str(b.x, b.y)] = aaa;
           for (const [dx, dy] of util.dir4) {
             const xx = b.x + dx;
             const yy = b.y + dy;
             if (a[yy] == undefined || a[yy][xx] == undefined) continue;
             if (the == a[yy][xx] && !visited[k = util.xy2str(xx, yy)]) {
-              visited[k] = a;
+              visited[k] = aaa;
               q.push({ x: xx, y: yy });
             }
           }
           ans.push(b);
         }
-        a[0] = ans.length;
-        r.push(a[0]);
+        aaa[0] = ans.length;
+        r.push(aaa[0]);
       }
       result.push(r);
     }

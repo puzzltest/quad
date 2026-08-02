@@ -88,10 +88,7 @@ const joybutton_mouse = function(x, y, id) {
     player.act();
     const t = mouse.hold_time[id];
     if (t === 60 && player.act_time >= 59) {
-      if (player.paused) return;
-      panel.map.active = true;
-      panel.map.z = player.z;
-      panel.map.static = false;
+      player.act2();
     }
   }
 };
@@ -287,7 +284,7 @@ const tick = function(time) {
   v.realtime = time;
   v.button_press = {};
   camera.tick();
-  physics.tick(dt);
+  physics.tick();
   player.tick();
   particle.tick();
   firebase.tick(time);
@@ -329,7 +326,7 @@ const canvas_init = function() {
 };
 
 const resize = function() {
-  v.ratio = window.devicePixelRatio;
+  v.ratio = Math.min(2, window.devicePixelRatio);
   v.width = window.innerWidth;
   v.height = window.innerHeight;
   canvas.width = v.width * v.ratio;
@@ -443,11 +440,15 @@ const keydown = function(event) {
   if (v.keys.KeyR && panel.active && no_mod) {
     panel.clearstate();
   }
-  // map
   if ((v.keys.Tab || v.keys.KeyM) && no_mod) {
-    panel.map.active = !panel.map.active;
-    panel.map.z = player.z;
-    panel.map.static = false;
+    if (panel.map.active) {
+      panel.map.active = false;
+    } else {
+      player.act2();
+    }
+  }
+  if ((v.keys.Space || v.keys.Enter) && no_mod) {
+    player.act();
   }
   // teleport...
   if (util.is_local() && (v.keys.KeyT)) {

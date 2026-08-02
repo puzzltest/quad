@@ -113,7 +113,7 @@ camera.draw = function() {
   for (const other_id in player.others) {
     if (other_id === the_id) continue;
     const other = player.others[other_id];
-    if (other.z == player.z) {
+    if (other.z == player.z && other.m === map.name) {
       const [ox, oy] = camera.convert(other.x, other.y);
       player_theme.other(ox, oy, size * player.size, size * player.size, other);
     }

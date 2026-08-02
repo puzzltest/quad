@@ -135,7 +135,13 @@ export const draw = {
     ctx.rotate(a);
     ctx.translate(-r / 2, -r / 2);
     ctx.scale(r / 24, r / 24);
-    ctx.fill(new Path2D(svg[name]));
+    if (!svg_path2ds[name]) {
+      const path2d = new Path2D(svg[name]);
+      svg_path2ds[name] = path2d;
+      ctx.fill(path2d);
+    } else {
+      ctx.fill(svg_path2ds[name]);
+    }
     ctx.setTransform(stored);
     // draw.reset_transform();
   },
@@ -156,6 +162,10 @@ export const draw = {
 
   // svg art
   art: function(art_name, x, y, r, a = 0) {
+    if (!svgart[art_name]) {
+      console.error("no such art name: " + art_name);
+      return;
+    }
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(a);
@@ -191,7 +201,7 @@ export const draw = {
   // important!
   reset_transform: function() {
     ctx.resetTransform();
-    const r = window.devicePixelRatio;
+    const r = Math.min(2, window.devicePixelRatio);
     ctx.scale(r, r);
   },
 
@@ -215,6 +225,7 @@ export const svg = {
   teardrop: "M11.47 2.22a.75.75 0 0 1 1.06 0c.403.403 1.999 2.127 3.499 4.362C17.509 8.785 19 11.635 19 14.25c0 2.524-.746 4.479-2.044 5.806C15.659 21.38 13.889 22 12 22s-3.659-.619-4.956-1.944C5.746 18.729 5 16.774 5 14.25c0-2.615 1.492-5.465 2.971-7.668c1.5-2.235 3.096-3.96 3.499-4.362M9.216 7.418C7.758 9.59 6.5 12.115 6.5 14.25c0 2.226.653 3.771 1.617 4.757c.965.987 2.32 1.493 3.883 1.493c1.562 0 2.918-.506 3.883-1.493c.964-.986 1.617-2.53 1.617-4.757c0-2.135-1.258-4.66-2.716-6.832A33 33 0 0 0 12 3.848a33 33 0 0 0-2.784 3.57",
 
 };
+const svg_path2ds = {};
 
 export const svgart = {
   diagonal: [ { "d": "M0 0L24 24L0 24Z", "p": "f", "r": 24, "c": "#888" } ],

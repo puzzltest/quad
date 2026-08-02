@@ -1449,6 +1449,8 @@ export const map = {
   levels: [],
   solvable_panels: 0,
   stars_collected: [],
+  all_ids: new Set(),
+  visited: new Set(),
   get total_stars() {
     return this.stars_collected.length;
   },
@@ -1548,7 +1550,15 @@ export const map = {
   // returns if the door open state has changed
   check_door: function(door) {
     const old = door.open === true;
-    if (door.rule === "custom") {
+    if (door.rule === "panel") {
+      const pid = door.panelx?.[0];
+      const state = map.get_panel(pid)?.panel?.state;
+      if (state && !state[door.y][door.x]) door.open = true;
+      else door.open = false;
+      if (door.invert) door.open = !door.open;
+      return (door.open !== old);
+    }
+    else if (door.rule === "custom") {
       const f = map.door_custom[door.id] ?? map.door_custom[door.custom] ?? ((d) => false);
       door.open = f(door);
       if (door.invert) door.open = !door.open;
@@ -1557,7 +1567,7 @@ export const map = {
     let number = 0;
     for (const pid of door.panels ?? []) {
       const pane = map.get_panel(pid)?.panel;
-      const corr = ((door.rule.includes("solved")) ? pane?.solved : pane?.correct) === true;
+      const corr = (door.rule === "solved" ? pane?.solved : pane?.correct) === true;
       if (corr) number++;
     }
     door.number = number - (door.at_least ?? door.panels?.length ?? 0);
@@ -1585,6 +1595,7 @@ export const map = {
   save: function() {
     const save = {
       player: map.player_ref.save(),
+      visited: [...map.visited],
       panels: {},
       signs: {},
       stars: map.stars_collected,
@@ -1620,7 +1631,16 @@ export const map = {
         map.load_(zipson.parse(raw));
         return true;
       } else {
-        map.load_(JSON.parse(util.decompress(raw)));
+        if (!raw || raw.length <= 0) {
+          console.log("first time? loading new save...");
+          map.load_({
+            player: { d: 1, dx: 1, dy: 0, x: map.start_point.x, y: map.start_point.y, z: map.start_point.z, },
+            panels: {}, signs: {}, stars: [],
+          });
+        } else {
+          map.load_(JSON.parse(util.decompress(raw)));
+        }
+        return true;
       }
     } catch (e) {
       console.error(e);
@@ -1677,18 +1697,28 @@ export const map = {
     map.panel_ref.update_doors(Object.values(door_lookup));
     map.stars_collected = [];
     for (const asteroid of save.stars) {
+      if (!map.get_star(asteroid)) continue;
       map.stars_collected.push(asteroid);
       map.get_star(asteroid).star.collected = true;
+    }
+    map.visited.clear();
+    for (const v of save.visited ?? []) {
+      if (map.all_ids.has(v)) map.visited.add(v);
     }
   },
 
   init_tiles: function() {
+    map.visited.clear();
+    map.all_ids.clear();
     for (const m of maps) {
       if (typeof m.map === "string") m.map = m.map.trim().replaceAll(/[ ]/g, "").split("\n");
     }
     for (const m of maps) {
       if (!map.levels.includes(m.z)) {
         map.levels.push(m.z);
+      }
+      if (m.id && !map.all_ids.has(m.id)) {
+        map.all_ids.add(m.id);
       }
       for (let i = 0; i < m.map.length; i++) {
         const y = m.y + i;
@@ -1705,10 +1735,6 @@ export const map = {
 
 };
 
-
-// do things
-map.init_tiles();
-
 function init_map(spawn) {
   map.stars_collected.length = 0;
   map.levels.length = 0;
@@ -1720,9 +1746,7 @@ function init_map(spawn) {
 
   // set spawn point // todo simplify
   if (spawn) {
-    map.start_point.x = spawn.x;
-    map.start_point.y = spawn.y;
-    map.start_point.z = spawn.z;
+    map.start_point = spawn;
     if (!map.levels.includes(map.start_point.z) && spawn.fallbackZ != null) {
       map.start_point.z = spawn.fallbackZ;
     }
@@ -1749,7 +1773,7 @@ export function reinit_everything(raw) {
   }
   clear_object(wires);
   if (parsed.wires) init_wires(parsed.wires, wires);
-  init_map(parsed.spawnPoint);
+  init_map(parsed.spawn);
   map.init();
   return parsed;
 }

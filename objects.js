@@ -7457,7 +7457,7 @@ export const objects_temp = [
       rule: "solved",
       at_least: 1,
       countdown: true,
-      panels: ["donut_shortcut", "donut_shortcut_2"],
+      panels: ["donut_shortcut_1", "donut_shortcut_2"],
     },
   }, // 25,15 door door_donut_shortcut
   {
@@ -7950,8 +7950,6 @@ export const objects_temp = [
       22222
       22222
       22222
-      22222
-      22222
       22222`,
       symbols: {
         donut: `
@@ -8173,12 +8171,12 @@ export const objects_temp = [
       22222
       22222
       22222
-      222222`,
+      22222`,
       symbols: {
         donut: `
         .1.0.
         0...1
-        ......
+        .....
         1...0
         .0.1.`,
         ringnumber: `
