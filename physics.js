@@ -118,6 +118,6 @@ physics.move_player = function(dx, dy) {
 physics.teleport_player = function(x, y, z, v) {
   if (z == undefined) z = player.z;
   player_bodies[z].setPosition(new Vec2(x, y));
-  if (v) player_bodies[z].setLinearVelocity(v ?? new Vec2(0, 0));
+  if (v != undefined) player_bodies[z].setLinearVelocity(v || new Vec2(0, 0));
   worlds[z].clearForces();
 };

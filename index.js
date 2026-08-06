@@ -437,29 +437,29 @@ const keydown = function(event) {
   if (event.repeat) return;
   v.keys[event.code] = true;
   // restart
-  if (v.keys.KeyR && panel.active && no_mod) {
+  if (event.code === "KeyR" && panel.active && no_mod) {
     panel.clearstate();
   }
-  if ((v.keys.Tab || v.keys.KeyM) && no_mod) {
+  if ((event.code === "Tab" || event.code === "KeyM") && no_mod) {
     if (panel.map.active) {
       panel.map.active = false;
     } else {
       player.act2();
     }
   }
-  if ((v.keys.Space || v.keys.Enter) && no_mod) {
+  if ((event.code === "Space" || event.code === "Enter") && no_mod) {
     player.act();
   }
   // teleport...
-  if (util.is_local() && (v.keys.KeyT)) {
-    const [x, y] = camera.convertback(mouse.x, mouse.y);
+  if (util.is_local() && event.code === "KeyT") {
+    const [x, y] = camera.convertback(mouse.x / v.ratio, mouse.y / v.ratio);
     player_bodies[player.z].setPosition({ x, y });
   }
 };
 
 const keyup = function(event) {
-  v.keys[event.code] = false;
   event.preventDefault();
+  v.keys[event.code] = false;
 };
 
 const key_tick = function(event) {

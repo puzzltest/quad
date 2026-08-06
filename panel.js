@@ -26,6 +26,14 @@ export const panel = {
     type: "",
     text: "",
   },
+  talk: {
+    active: false,
+    time: 0,
+    o: null,
+    type: "",
+    text: [],
+    i: 0,
+  },
   map: {
     active: false,
     time: 0,
@@ -54,6 +62,7 @@ const door_custom = {};
 panel.init = function() {
   panel.active = false;
   panel.sign.active = false;
+  panel.talk.active = false;
   map.door_custom = door_custom;
   map.panel_ref = panel;
   map.player_ref = player;
@@ -96,6 +105,13 @@ panel.deactivate = function() {
 
 };
 
+panel.sign.toggle = function(o) {
+  panel.sign.active = !panel.sign.active;
+  panel.sign.o = o;
+  if (panel.sign.active) panel.sign.activate();
+  else panel.sign.deactivate();
+}
+
 panel.sign.activate = function() {
   const title = panel.sign.o.title;
   if (sign_functions.hasOwnProperty(title)) {
@@ -104,6 +120,34 @@ panel.sign.activate = function() {
 };
 
 panel.sign.deactivate = function() {
+
+};
+
+panel.talk.toggle = function(o) {
+  if (panel.talk.active) {
+    if (panel.talk.time < panel.talk.text[panel.talk.i].length) {
+      panel.talk.time += 12345;
+      return;
+    }
+    if (panel.talk.i + 1 >= panel.talk.text.length) {
+      panel.talk.active = false;
+      panel.talk.deactivate();
+    } else {
+      panel.talk.i++;
+      panel.talk.time = 0;
+    }
+  } else {
+    panel.talk.active = true;
+    panel.talk.o = o;
+    panel.talk.activate();
+  }
+};
+
+panel.talk.activate = function() {
+  panel.talk.i = 0;
+};
+
+panel.talk.deactivate = function() {
 
 };
 
@@ -150,7 +194,7 @@ panel.draw = function() {
       ctx.strokeStyle = "#eee";
       x -= (filtered_checks.length - 1) / 2 * view.size * 0.11;
       for (const check of filtered_checks) {
-        panel_draw_symbols[check]?.("", x, y, view.size * 0.075, view.size * 0.075);
+        panel_draw_symbols[check]?.("", x, y, view.size * 0.07, view.size * 0.07);
         x += view.size * 0.11;
       }
       x = view.cx; // reset
@@ -208,118 +252,144 @@ panel.draw = function() {
     panel.time = 0;
     if (panel.sign.active) {
       panel.sign.time++;
-      // draw sign
-      ctx.fillStyle = "#974e";
-      ctx.strokeStyle = "#543";
-      ctx.lineWidth = 2.5;
-      x = view.cx;
-      y = view.cy - view.size * 0.075;
-      w = view.size * 0.9;
-      h = view.size * 0.75;
-      draw.rectangle(x, y, w, h);
-      ctx.fill();
-      ctx.stroke();
-      draw.rectangle(x, view.cy + view.size * 0.375, view.size * 0.08, view.size * 0.15);
-      ctx.fill();
-      ctx.stroke();
-      // draw sign content
-      const o = panel.sign.o;
-      const type = o.sign;
-      const content = o.content;
-      if (type === "text") {
-        sign_pictures.text(x, y, w, h, o);
-      } else if (type === "picture") {
-        sign_pictures[content](x, y, w, h);
-      }
-    } else {
-      panel.sign.time = 0;
-    }
+      panel.draw_sign();
+    } else panel.sign.time = 0;
+    if (panel.talk.active) {
+      panel.talk.time++;
+      panel.draw_talk();
+    } else panel.talk.time = 0;
     if (panel.map.active) {
-      x = view.cx;
-      y = view.cy;
-      const z = panel.map.z;
-      w = view.size * 0.85;
-      h = view.size * 0.85;
-      ctx.fillStyle = "#eaf8";
-      draw.rectangle(x, y, view.size, view.size);
-      ctx.fill();
-      ctx.fillStyle = "#ede";
-      draw.roundrectangle(x, y, w, h);
-      ctx.fill();
-      if (panel.map.static && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
-        const dx = player.move_nx;
-        const dy = player.move_ny;
-        const speed = 0.5;
-        panel.map.x += dx * speed;
-        panel.map.y += dy * speed;
-        player.move_x = 0;
-        player.move_y = 0;
-      } else if (!panel.map.static) {
-        panel.map.x = camera.cx;
-        panel.map.y = camera.cy;
-      }
-      if ("draw map") {
-        ctx.save();
-        draw.rectangle(x, y, w * 0.92, h * 0.92);
-        ctx.clip();
-        const scale = 50;
-        const size = view.size / scale + 1;
-        for (let x = Math.floor(panel.map.x - scale / 2); x <= panel.map.x + scale / 2 + 1; x++) {
-          for (let y = Math.floor(panel.map.y - scale / 2); y <= panel.map.y + scale / 2 + 1; y++) {
-            const m = map.get_map(x, y, z);
-            let t = m?.theme ?? map.z_themes[z] ?? "normal";
-            let s = map.get_tile(x, y, z) ?? ".";
-            let o = map.get_object(x, y, z);
-            if (o?.invisible) o = undefined;
-            if (m && m.id && !map.visited.has(m.id)) {
-              t = map.z_themes[z] ?? "normal";
-              s = ".";
-              o = undefined;
-            }
-            let xx = view.cx + (x - panel.map.x) * view.size / scale;
-            let yy = view.cy + (y - panel.map.y) * view.size / scale;
-            let fill = mini_theme[t][o?.type] ?? mini_theme.normal[o?.type] ?? mini_theme[t][s] ?? mini_theme.normal[s];
-            if (!fill) continue;
-            if (typeof fill === "function") {
-              fill = fill(o);
-              if (fill.length === 1) {
-                if (fill === " ") fill = s;
-                fill = mini_theme[t][fill] ?? mini_theme.normal[fill];
-              }
-            }
-            ctx.fillStyle = fill;
-            draw.rectangle(xx, yy, size + 1, size + 1);
-            ctx.fill();
+      panel.draw_map();
+    }
+  }
+};
+
+panel.draw_talk = function() {
+  let x = view.cx;
+  let y = view.cy + view.size * 0.3;
+  let w = view.size * 0.9;
+  let h = view.size * 0.3;
+  let r = view.size * 0.05;
+  ctx.fillStyle = "#dc9e";
+  draw.roundrectangle(x, y, w, h, r);
+  ctx.moveTo(x + w * 0.2, y - h * 0.5);
+  ctx.lineTo(x, y - h * 0.77);
+  ctx.lineTo(x + w * 0.1, y - h * 0.5);
+  ctx.fill();
+  ctx.fillStyle = "#111";
+  const s = panel.talk.text[panel.talk.i].substring(0, panel.talk.time);
+  draw.split_text(s, x, y, w * 0.9, h, h * 0.1);
+};
+
+panel.draw_sign = function() {
+  ctx.fillStyle = "#974e";
+  ctx.strokeStyle = "#543";
+  ctx.lineWidth = 2.5;
+  let x = view.cx;
+  let y = view.cy - view.size * 0.075;
+  let w = view.size * 0.9;
+  let h = view.size * 0.75;
+  draw.rectangle(x, y, w, h);
+  ctx.fill();
+  ctx.stroke();
+  draw.rectangle(x, view.cy + view.size * 0.375, view.size * 0.08, view.size * 0.15);
+  ctx.fill();
+  ctx.stroke();
+  // draw sign content
+  const o = panel.sign.o;
+  const type = o.sign;
+  const content = o.content;
+  if (type === "text") {
+    sign_pictures.text(x, y, w, h, o);
+  } else if (type === "picture") {
+    sign_pictures[content](x, y, w, h);
+  }
+};
+
+panel.draw_map = function() {
+  let x = view.cx;
+  let y = view.cy;
+  const z = panel.map.z;
+  let w = view.size * 0.85;
+  let h = view.size * 0.85;
+  ctx.fillStyle = "#eaf8";
+  draw.rectangle(x, y, view.size, view.size);
+  ctx.fill();
+  ctx.fillStyle = "#ede";
+  draw.roundrectangle(x, y, w, h);
+  ctx.fill();
+  if (panel.map.static && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
+    const dx = player.move_nx;
+    const dy = player.move_ny;
+    const speed = 0.5;
+    panel.map.x += dx * speed;
+    panel.map.y += dy * speed;
+    player.move_x = 0;
+    player.move_y = 0;
+  } else if (!panel.map.static) {
+    panel.map.x = camera.cx;
+    panel.map.y = camera.cy;
+  }
+  if ("draw map") {
+    ctx.save();
+    draw.rectangle(x, y, w * 0.92, h * 0.92);
+    ctx.clip();
+    const scale = 50;
+    const size = view.size / scale + 1;
+    for (let x = Math.floor(panel.map.x - scale / 2); x <= panel.map.x + scale / 2 + 1; x++) {
+      for (let y = Math.floor(panel.map.y - scale / 2); y <= panel.map.y + scale / 2 + 1; y++) {
+        const m = map.get_map(x, y, z);
+        let t = m?.theme ?? map.z_themes[z] ?? "normal";
+        let s = map.get_tile(x, y, z) ?? ".";
+        let o = map.get_object(x, y, z);
+        if (o?.invisible) o = undefined;
+        if (m && m.id && !map.visited.has(m.id)) {
+          t = map.z_themes[z] ?? "normal";
+          s = ".";
+          o = undefined;
+        }
+        let xx = view.cx + (x - panel.map.x) * view.size / scale;
+        let yy = view.cy + (y - panel.map.y) * view.size / scale;
+        let fill = mini_theme[t][o?.type] ?? mini_theme.normal[o?.type] ?? mini_theme[t][s] ?? mini_theme.normal[s];
+        if (!fill) continue;
+        if (typeof fill === "function") {
+          fill = fill(o);
+          if (fill.length === 1) {
+            if (fill === " ") fill = s;
+            fill = mini_theme[t][fill] ?? mini_theme.normal[fill];
           }
         }
-        ctx.globalAlpha = 0.5 + 0.5 * util.bounce(v.time, 20);
-        let px = view.cx + (player.x - panel.map.x) * view.size / scale;
-        let py = view.cy + (player.y - panel.map.y) * view.size / scale;
-        ctx.fillStyle = "#e54f";
-        ctx.strokeStyle = "#ffff";
-        ctx.lineWidth = size * 0.05;
-        draw.circle(px, py, size * 0.5);
+        ctx.fillStyle = fill;
+        draw.rectangle(xx, yy, size + 1, size + 1);
         ctx.fill();
-        ctx.stroke();
-        ctx.globalAlpha *= 0.5;
-        for (const ok in player.others) {
-          if (ok === the_id) continue;
-          const op = player.others[ok];
-          if (op.z != player.z || op.m !== map.name) continue;
-          const m = map.get_map(Math.floor(op.x), Math.floor(op.y), Math.floor(op.z));
-          if (m && m.id && !map.visited.has(m.id)) continue;
-          px = view.cx + (op.x - panel.map.x) * view.size / scale;
-          py = view.cy + (op.y - panel.map.y) * view.size / scale;
-          ctx.fillStyle = "#5e4f";
-          ctx.strokeStyle = "#ffff";
-          ctx.lineWidth = size * 0.05;
-          draw.circle(px, py, size * 0.3);
-          ctx.fill();
-          ctx.stroke();
-        }
-        ctx.restore();
       }
     }
+    ctx.globalAlpha = 0.5 + 0.5 * util.bounce(v.time, 20);
+    let px = view.cx + (player.x - panel.map.x) * view.size / scale;
+    let py = view.cy + (player.y - panel.map.y) * view.size / scale;
+    ctx.fillStyle = "#e54f";
+    ctx.strokeStyle = "#ffff";
+    ctx.lineWidth = size * 0.05;
+    draw.circle(px, py, size * 0.5);
+    ctx.fill();
+    ctx.stroke();
+    ctx.globalAlpha *= 0.5;
+    for (const ok in player.others) {
+      if (ok === the_id) continue;
+      const op = player.others[ok];
+      if (op.z != player.z || op.m !== map.name) continue;
+      const m = map.get_map(Math.floor(op.x), Math.floor(op.y), Math.floor(op.z));
+      if (m && m.id && !map.visited.has(m.id)) continue;
+      px = view.cx + (op.x - panel.map.x) * view.size / scale;
+      py = view.cy + (op.y - panel.map.y) * view.size / scale;
+      ctx.fillStyle = "#5e4f";
+      ctx.strokeStyle = "#ffff";
+      ctx.lineWidth = size * 0.05;
+      draw.circle(px, py, size * 0.3);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 };
 
@@ -554,6 +624,9 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     // }
     return (area >= +parseInt(s, 36));
   }
+  else if (name === "red") {
+    // todo
+  }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
   }
@@ -613,7 +686,7 @@ panel_draw_symbols.number = function(s, x, y, w, h, state) {
   ctx.fillStyle = (state) ? "#111" : "#eee";
   ctx.strokeStyle = ctx.fillStyle;
   ctx.lineWidth = w * 0.048;
-  draw.rectangle(x, y, w * 0.65, w * 0.65);
+  draw.rectangle(x, y, w * 0.65, h * 0.65);
   ctx.stroke();
   draw.set_font(w * 0.35, "bold");
   ctx.textAlign = "center";
@@ -838,7 +911,7 @@ panel_draw_symbols.waterdrop = function(s, x, y, w, h, state) {
 // todo symbols.amogus
 
 panel_draw_symbols.snake = function(s, x, y, w, h) {
-  ctx.lineWidth = w * 0.05;
+  ctx.lineWidth = w * 0.08;
   draw.rectangle(x, y, w, h);
   ctx.stroke();
   draw.line(x + w * 0.5, y + h * 0.5, x - w * 0.5, y - h * 0.5);
@@ -847,7 +920,7 @@ panel_draw_symbols.snake = function(s, x, y, w, h) {
 };
 
 panel_draw_symbols.sudoku = function(s, x, y, w, h) {
-  ctx.lineWidth = w * 0.05;
+  ctx.lineWidth = w * 0.08;
   draw.rectangle(x, y, w, h);
   ctx.stroke();
   draw.rectangle(x - w * 0.25, y + h * 0.25, w * 0.5, h * 0.5);
@@ -857,7 +930,7 @@ panel_draw_symbols.sudoku = function(s, x, y, w, h) {
 };
 
 panel_draw_symbols.equality = function(s, x, y, w, h) {
-  ctx.lineWidth = w * 0.05;
+  ctx.lineWidth = w * 0.08;
   draw.circle(x, y, w * 0.55);
   ctx.stroke();
   draw.line(x - w * 0.23, y - h * 0.1, x + w * 0.23, y - h * 0.1);
@@ -866,7 +939,7 @@ panel_draw_symbols.equality = function(s, x, y, w, h) {
 };
 
 panel_draw_symbols.wrong = function(s, x, y, w, h) {
-  ctx.lineWidth = w * 0.05;
+  ctx.lineWidth = w * 0.08;
   draw.circle(x, y, w * 0.55);
   ctx.stroke();
   draw.line(x - w * 0.2, y - h * 0.2, x + w * 0.22, y + h * 0.2);
@@ -1413,6 +1486,26 @@ symbol_functions.map = function() {
   panel.map.y = player.y;
   panel.map.z = player.z;
   panel.map.static = true;
+};
+
+symbol_functions.art_test = function(o) {
+  panel.talk.text = ["testing..​​​​​​​​​​​​​​​.​​​​​​​​​​​​​​​.​​​​​​.​​​​​​.​​​​​​​​​​​​​​​..", "oh, you found me!"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_warning = function(o) {
+  panel.talk.text = ["don't say i didn't warn you"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_snail = function(o) {
+  panel.talk.text = ["i'm just trying to get to the other side, i heard the grass there is greener.", "[developer's note: it's not. it's #335511 always.]"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_mess = function(o) {
+  panel.talk.text = ["i used to be a really famous footballer until my pet lion went missing :(", "can you help me find him? you should know his name..."];
+  panel.talk.toggle(o);
 };
 
 door_custom.door_0_1234 = function(door) {

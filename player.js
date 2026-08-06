@@ -90,13 +90,13 @@ export const player = {
     player.move_y += dy;
   },
   get paused() {
-    return panel.active || panel.sign.active; // || panel.map.active;
+    return panel.active || panel.sign.active || panel.talk.active; // || panel.map.active;
   },
   get can_move() {
     return !this.paused;
   },
   move: function() {
-    if (!player.can_move) return;
+    if (player.paused) return;
     if (player.move_x === 0 && player.move_y === 0) return;
     if (player.move_r2 < 25 * 25) return;
     const dx = player.move_nx;
@@ -134,7 +134,6 @@ export const player = {
     if (player.acted) return;
     player.acted = true;
     player.act_time++;
-    if (player.act_time > 120) return; // todo another function
     if (player.act_time > 59) return player.act2();
     if (player.act_time > 0) return;
     // ok it's actually a new button press now
@@ -170,17 +169,14 @@ export const player = {
         });
       }
     }
-    else if (!on && tile === "0") {
+    else if (!on && "012".includes(tile)) {
       physics.move_player(-player.dx * player.speed * 5, -player.dy * player.speed * 5);
     }
     // act on objects
     if (do_check && o != null && typeof o === "object") {
       o.seen = true;
       if (o.type === "sign") {
-        panel.sign.active = !panel.sign.active;
-        panel.sign.o = o;
-        if (panel.sign.active) panel.sign.activate();
-        else panel.sign.deactivate();
+        panel.sign.toggle(o);
       }
       else if (o.type === "panel" && (o.door == undefined || o.door?.open)) {
         panel.active = !panel.active;
@@ -200,7 +196,11 @@ export const player = {
         map.stars_collected.push(o.star.id);
       }
       else if (o.type === "door") {
-        // todo act on door?
+        if (o.door.open) {
+          physics.teleport_player(o.x, o.y, o.z, 0);
+        } else {
+          physics.move_player(-player.dx * player.speed * 5, -player.dy * player.speed * 5);
+        }
       }
       else if (o.type === "symbol") {
         panel.symbol_function(o.symbol?.type, o);

@@ -26,7 +26,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 100801; // remember to change...
+export const VERSION = 110201; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -40,7 +40,7 @@ function connect() {
     firebase.others = positions;
   });
   firebase.listen("/quad/version/", function(new_ver) {
-    if (new_ver < version) {
+    if (!local && new_ver < version) {
       firebase.set("/quad/version/", version);
     } else if (new_ver > version) {
       if (window.confirm("new version released! reload?")) {

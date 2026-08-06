@@ -12,6 +12,7 @@ export const camera = {
   tx: 0,
   ty: 0,
   scale: 0,
+  smoothness: 0.09,
   get tscale() {
     return map.get_scale(player.x, player.y, player.z);
   },
@@ -37,12 +38,17 @@ camera.init = function() {
 };
 
 camera.tick = function() {
-  camera.scale = util.lerp(camera.scale, camera.tscale, 0.05);
+  camera.scale = util.lerp(camera.scale, camera.tscale, camera.smoothness * 0.75);
   const offset = camera.tscale / 2;
-  camera.tx = player.x;
-  camera.ty = player.y;
-  camera.cx = util.lerp(camera.cx, camera.tx, 0.05);
-  camera.cy = util.lerp(camera.cy, camera.ty, 0.05);
+  if (map.panel_ref.talk.active) {
+    camera.tx = map.panel_ref.talk.o.x;
+    camera.ty = map.panel_ref.talk.o.y;
+  } else {
+    camera.tx = player.x;
+    camera.ty = player.y;
+  }
+  camera.cx = util.lerp(camera.cx, camera.tx, camera.smoothness);
+  camera.cy = util.lerp(camera.cy, camera.ty, camera.smoothness);
   camera.z = player.z;
 };
 
@@ -98,7 +104,13 @@ camera.draw = function() {
 
   // draw objects
   for (const o of map.search_objects(Math.floor(camera.x) - 1.5, Math.floor(camera.y) - 1.5, z, Math.ceil(camera.scale) + 3, Math.ceil(camera.scale) + 3)) {
-    if (o.invisible) continue;
+    if (o.invisible) {
+      const d = util.distance2(player.x, player.y, o.x, o.y);
+      if (d <= 2) {
+        ctx.save();
+        ctx.globalAlpha = (2 - d) / 2;
+      } else continue;
+    }
     const s = o.type;
     const t = o?.theme ?? "normal";
     let [xx, yy] = camera.convert(o.x, o.y);
@@ -107,6 +119,7 @@ camera.draw = function() {
     } else {
       theme.normal[s](xx, yy, size, size, o);
     }
+    if (o.invisible) ctx.restore();
   }
 
   // draw other players
@@ -172,9 +185,9 @@ camera.draw = function() {
 export const theme = {
   normal: {
     ["."]: function(x, y, w, h) {
-      // ctx.fillStyle = "#546";
-      // draw.rectangle(x, y, w, h);
-      // ctx.fill();
+      ctx.fillStyle = "#546";
+      draw.rectangle(x, y, w, h);
+      ctx.fill();
     },
     [","]: function(x, y, w, h) {
       ctx.fillStyle = "#56c";
@@ -201,6 +214,26 @@ export const theme = {
       draw.rectangle(x, y, w, h);
       ctx.fill();
     },
+    ["1"]: function(x, y, w, h, o) {
+      const d = util.distance2(player.x, player.y, o.x, o.y);
+      if (d <= 1.1) {
+        ctx.save();
+        theme[map.z_themes[o.z]]["."](x, y, w, h, o);
+        ctx.globalAlpha = d / 1.1;
+        theme[map.z_themes[o.z]]["0"](x, y, w, h, o);
+        ctx.restore();
+      } else theme[map.z_themes[o.z]]["0"](x, y, w, h, o);
+    },
+    ["2"]: function(x, y, w, h, o) {
+      theme[map.z_themes[o.z]]["."](x, y, w, h, o);
+      const d = util.distance2(player.x, player.y, o.x, o.y);
+      if (d <= 2.5) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, (3 - d) / 2.5);
+        theme[map.z_themes[o.z]]["0"](x, y, w, h, o);
+        ctx.restore();
+      }
+    },
     // objects
     ["link"]: function(x, y, w, h) {
       ctx.fillStyle = "#fff0";
@@ -214,7 +247,7 @@ export const theme = {
       if (svg[t]) {
         draw.svg(t, x, y, w);
       } else {
-        draw.art(t.substring(7), x, y, w);
+        draw.art(t.substring(4), x, y, w);
       }
     },
     ["panel"]: function(x, y, w, h, o) {
@@ -248,6 +281,7 @@ export const theme = {
       else {
         ctx.fill();
         if (o.door?.countdown) {
+          // todo make countdown visual
           ctx.fillStyle = "#1116";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
@@ -363,7 +397,7 @@ export const theme = {
             ctx.fill();
           }
         } else {
-          this["."](x, y, w, h, o);
+          theme[map.z_themes[o.z]]["."](x, y, w, h, o);
           if (o.portal?.flip) w = -w;
           x -= w / 2;
           y -= h / 2;
@@ -416,12 +450,6 @@ export const theme = {
         ctx.fillRect(x + xx * w / 10, y + yy * w / 10, w / 10, h / 10);
       }*/
     },
-    ["1"]: function(x, y, w, h, o) {
-      this["0"](x, y, w, h, o);
-    },
-    ["2"]: function(x, y, w, h, o) {
-      this["."](x, y, w, h, o);
-    },
   },
   grass: {
     ["."]: function(x, y, w, h, o) {
@@ -462,12 +490,6 @@ export const theme = {
         draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
       }
     },
-    ["1"]: function(x, y, w, h, o) {
-      this["0"](x, y, w, h, o);
-    },
-    ["2"]: function(x, y, w, h, o) {
-      this["."](x, y, w, h, o);
-    },
   },
   wood: {
     ["."]: function(x, y, w, h) {
@@ -497,12 +519,6 @@ export const theme = {
       for (let i = 0; i < 5; i++) {
         draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
       }
-    },
-    ["1"]: function(x, y, w, h, o) {
-      this["0"](x, y, w, h, o);
-    },
-    ["2"]: function(x, y, w, h, o) {
-      this["."](x, y, w, h, o);
     },
   },
   wood2: {
@@ -543,12 +559,6 @@ export const theme = {
         draw.line(x - w * 0.05 * (1 + (o.y - +(!i)) ** 2 % 8) + (i % 2 ? w / 2 : 0), ys[i], undefined, ys[i + 1]);
       }
     },
-    ["1"]: function(x, y, w, h, o) {
-      this["0"](x, y, w, h, o);
-    },
-    ["2"]: function(x, y, w, h, o) {
-      this["."](x, y, w, h, o);
-    },
   },
   warp: {
     ["."]: function(x, y, w, h, o) {
@@ -569,12 +579,6 @@ export const theme = {
       draw.rectangle(x, y, w * t, h * t);
       ctx.stroke();
     },
-    ["1"]: function(x, y, w, h, o) {
-      this["0"](x, y, w, h, o);
-    },
-    ["2"]: function(x, y, w, h, o) {
-      this["."](x, y, w, h, o);
-    },
   },
 };
 
@@ -583,7 +587,9 @@ export const mini_theme = {
   normal: {
     [""]: "#f0f", // very error
     ["."]: "#f00", // error
-    ["0"]: "#f00", // error
+    ["0"]: "#f00",
+    ["1"]: "#f00",
+    ["2"]: "#f00",
     [","]: "#56c",
     ["+"]: "#0ff",
     // objects
@@ -608,13 +614,14 @@ export const mini_theme = {
     ["."]: "#111",
     ["0"]: "#888",
     ["1"]: "#888",
+    ["2"]: "#111",
   },
   grass: {
     ["."]: "#351",
     ["0"]: "#842",
     ["1"]: "#842",
     ["2"]: "#351",
-    ["portal"]: "#85a",
+    // ["portal"]: "#85a",
   },
   wood: {
     ["."]: "#652",
@@ -625,12 +632,14 @@ export const mini_theme = {
   wood2: {
     ["."]: "#256",
     ["0"]: "#abc",
-    ["1"]: "#cba",
+    ["1"]: "#abc",
     ["2"]: "#256",
   },
   warp: {
     ["."]: "#635",
     ["0"]: "#b7a",
+    ["1"]: "#b7a",
+    ["2"]: "#635",
     ["portal"]: "#8a5",
   },
 };
@@ -642,8 +651,8 @@ export const player_theme = {
     // draw.polygon(4, x, y, w * 0.6, player.move_a + Math.PI / 4);
     ctx.fill();
     // draw player direction
-    ctx.fillStyle = "#000";
-    if (player.move_x || player.move_y) {
+    ctx.fillStyle = "#111";
+    if (!player.paused && (player.move_x || player.move_y)) {
       ctx.translate(x, y);
       ctx.rotate(Math.atan2(-player.move_x, player.move_y));
       draw.rectangle(w * 0.15, w * 0.375, w * 0.07, h * 0.07);
@@ -662,7 +671,7 @@ export const player_theme = {
   },
   outline: function(x, y, w, h) {
     ctx.strokeStyle = "#e448";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = Math.max(1, view.size * 0.003);
     draw.rectangle(x, y, w, h);
     ctx.stroke();
   },
