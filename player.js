@@ -5,7 +5,6 @@ import { panel } from "./panel.js";
 import { particle } from "./particle.js";
 import { physics, player_bodies } from "./physics.js";
 import { util } from "./util.js";
-import { draw } from "./draw.js";
 
 export const player = {
   x: map.start_point.x,
@@ -194,6 +193,7 @@ export const player = {
       else if (o.type === "star" && !o.star?.collected && (o.door == undefined || o.door?.open)) {
         o.star.collected = true;
         map.stars_collected.push(o.star.id);
+        panel.update_doors(map.get_doors("star"));
       }
       else if (o.type === "door") {
         if (o.door.open) {

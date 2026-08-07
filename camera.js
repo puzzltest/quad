@@ -4,6 +4,7 @@ import { maps, map } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
 import { draw, svg } from "./draw.js";
+import { particle } from "./particle.js";
 
 export const camera = {
   cx: 0,
@@ -273,21 +274,29 @@ export const theme = {
       }
     },
     ["door"]: function(x, y, w, h, o) {
-      ctx.fillStyle = "#eee";
-      ctx.strokeStyle = "#eee";
-      ctx.lineWidth = w * 0.05;
+      const is_star = o.door?.rule === "star";
+      ctx.fillStyle = is_star ? "#ffb" : "#eee";
+      if (is_star) {
+        ctx.shadowColor = "#ffb";
+        ctx.shadowBlur = w * 0.3;
+      }
       draw.rectangle(x, y, w * 0.8, h * 0.8);
-      if (o.door?.open) ctx.stroke();
-      else {
+      if (o.door?.open) {
+        ctx.strokeStyle = is_star ? "#ffb" : "#eee";
+        ctx.lineWidth = w * 0.05;
+        ctx.stroke();
+      } else {
         ctx.fill();
-        if (o.door?.countdown) {
-          // todo make countdown visual
-          ctx.fillStyle = "#1116";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          draw.set_font(w * 0.4);
-          ctx.fillText(-o.door?.number || 0, x, y, w, h);
-        }
+      }
+      if ((o.door?.countdown && !o.door?.open) || is_star) {
+        // todo make countdown visual
+        ctx.fillStyle = o.door?.open ? "#eee9" : "#1116";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        draw.set_font(w * 0.4);
+        ctx.fillText((is_star ? o.door?.at_least : -o.door?.number) || 0, x, y, w, h);
+        ctx.shadowColor = undefined;
+        ctx.shadowBlur = 0;
       }
     },
     ["sign"]: function(x, y, w, h, o) {
@@ -299,44 +308,43 @@ export const theme = {
     },
     ["star"]: function(x, y, w, h, o) {
       // draw base
-      ctx.fillStyle = "#8bc";
+      ctx.fillStyle = "#cc8";
+      ctx.shadowColor = "#ffb";
+      ctx.shadowBlur = w * 0.5;
       draw.rectangle(x, y, w, h);
       ctx.fill();
-      ctx.fillStyle = "#7ab";
+      ctx.fillStyle = "#bb7";
       draw.rectangle(x, y, w * 0.7, h * 0.7);
       ctx.fill();
-      ctx.shadowColor = "#bef";
-      ctx.shadowBlur = w * 0.5;
       draw.star(4, x, y, w * 0.45, w * 0.1, v.time / 60);
       if (!o.star.collected) {
-        ctx.strokeStyle = "#bef";
+        ctx.strokeStyle = "#ffb";
         ctx.lineWidth = w * 0.02;
         ctx.stroke();
         ctx.stroke();
       } else {
-        ctx.fillStyle = "#bef";
+        ctx.fillStyle = "#ffb";
         ctx.fill();
         ctx.fill();
       }
       ctx.shadowColor = undefined;
       ctx.shadowBlur = 0;
-      /*
-      particle.create({
-        type: "star",
-        x: o.x,
-        y: o.y,
-        vx: 0.1,
-        vy: 0.1,
-        rvx: 0.2,
-        rvy: 0.2,
-        r: camera.size / 2,
-        vr: camera.size * -0.015,
-        rvr: 0,
-        a: v.time / 60 + Math.PI / 4,
-        va: 0.01, // 0.1
-        rva: 0,
-        fill: "#bef3",
-      });*/
+      // if (util.rand() < 0.5) particle.create({
+      //   type: "star",
+      //   x: o.x,
+      //   y: o.y,
+      //   vx: 0,
+      //   vy: 0,
+      //   rvx: 0.1,
+      //   rvy: 0.1,
+      //   r: camera.size * 0.4,
+      //   vr: camera.size * -0.01,
+      //   rvr: 0,
+      //   a: v.time / 60 + Math.PI / 4,
+      //   va: 0,
+      //   rva: 1,
+      //   fill: "#ffb8",
+      // });
     },
     ["wire"]: function(x, y, w, h, o) {
       if (o.rule == undefined) return;
@@ -600,13 +608,15 @@ export const mini_theme = {
       return o.panel?.solved ? "#8da" : "#baf";
     },
     ["door"]: function(o) {
-      if (!o?.door?.open) return "#eee";
+      if (!o?.door?.open) return o?.door?.rule === "star" ? "#ffc" : "#eee";
       return " ";
     },
     ["portal"]: "#85a",
     ["sign"]: "#a85",
-    ["star"]: "#7ab", // #bef? todo function
-    ["symbol"]: () => " ",
+    ["star"]: "#cc8", // #bef? todo function
+    ["symbol"]: function(o) {
+      return " ";
+    },
     ["link"]: "#0000",
     ["wire"]: "#0000",
   },

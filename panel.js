@@ -908,6 +908,10 @@ panel_draw_symbols.waterdrop = function(s, x, y, w, h, state) {
   ctx.fillText(n, x, y + w * 0.1);
 };
 
+panel_draw_symbols.red = function(s, x, y, w, h, state) {
+  // todo
+};
+
 // todo symbols.amogus
 
 panel_draw_symbols.snake = function(s, x, y, w, h) {
@@ -1440,16 +1444,20 @@ sign_functions["answer :)"] = function(o) {
   }
 };
 
-symbol_functions.arrow_left = function() {
+symbol_functions.arrow_left = function(o) {
+  map.physics_ref.teleport_player(o.x, o.y, o.z);
   map.physics_ref.move_player(-50 * player.speed, 0);
 };
-symbol_functions.arrow_right = function() {
+symbol_functions.arrow_right = function(o) {
+  map.physics_ref.teleport_player(o.x, o.y, o.z);
   map.physics_ref.move_player(50 * player.speed, 0);
 };
-symbol_functions.arrow_up = function() {
+symbol_functions.arrow_up = function(o) {
+  map.physics_ref.teleport_player(o.x, o.y, o.z);
   map.physics_ref.move_player(0, -50 * player.speed);
 };
-symbol_functions.arrow_down = function() {
+symbol_functions.arrow_down = function(o) {
+  map.physics_ref.teleport_player(o.x, o.y, o.z);
   map.physics_ref.move_player(0, 50 * player.speed);
 };
 
@@ -1499,7 +1507,8 @@ symbol_functions.art_warning = function(o) {
 };
 
 symbol_functions.art_snail = function(o) {
-  panel.talk.text = ["i'm just trying to get to the other side, i heard the grass there is greener.", "[developer's note: it's not. it's #335511 always.]"];
+  if (map.visited.has("28")) panel.talk.text = ["oops i didn't know it's your home!! i'll go somewhere else...", "bye :("];
+  else panel.talk.text = ["i'm just trying to get to the other side, i heard the grass there is greener.", "[developer's note: it's not. it's #335511 always.]"];
   panel.talk.toggle(o);
 };
 

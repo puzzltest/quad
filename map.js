@@ -1419,6 +1419,10 @@ const init_lookups = () => {
     if (o.door?.id != undefined) {
       door_lookup[o.door.id] = o;
     }
+    if (o.door?.rule === "star") {
+      if (door_connections.star == undefined) door_connections.star = [];
+      door_connections.star.push(o);
+    }
     for (const pid of o.door?.panels ?? []) {
       if (door_connections[pid] == undefined) door_connections[pid] = [];
       door_connections[pid].push(o);
@@ -1462,7 +1466,7 @@ export const map = {
     }
   },
   z_themes: {
-    [-99]: "warp",
+    [-2]: "warp",
     [-1]: "grey",
     [0]: "grass",
     [1]: "wood",
@@ -1555,6 +1559,11 @@ export const map = {
       const state = map.get_panel(pid)?.panel?.state;
       if (state && !state[door.y][door.x]) door.open = true;
       else door.open = false;
+      if (door.invert) door.open = !door.open;
+      return (door.open !== old);
+    }
+    else if (door.rule === "star") {
+      door.open = map.stars_collected.length >= (door.at_least ?? 0);
       if (door.invert) door.open = !door.open;
       return (door.open !== old);
     }
@@ -1701,6 +1710,7 @@ export const map = {
       map.stars_collected.push(asteroid);
       map.get_star(asteroid).star.collected = true;
     }
+    map.panel_ref.update_doors(map.get_doors("star"));
     map.visited.clear();
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);

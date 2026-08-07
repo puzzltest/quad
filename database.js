@@ -8,6 +8,7 @@ import { physics } from "./physics.js";
 import { init_load } from "./index.js";
 import { panel } from "./panel.js";
 import lzstring from 'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm';
+import { player } from "./player.js";
 
 const params = new URLSearchParams(document.location.search);
 const local = util.is_local();
@@ -191,10 +192,13 @@ firebase.clear = function() {
       panel.active = false;
       panel.o = null;
       reinit_everything(util.decompress_safe(raw));
-      physics.init();
-      physics.tick();
       map.name = map_id;
+      player.x = map.start_point.x;
+      player.y = map.start_point.y;
+      player.z = map.start_point.z;
+      physics.init();
       init_load();
+      physics.tick();
     });
   }
 })();

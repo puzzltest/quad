@@ -393,7 +393,6 @@ const touch_handler = function(event) {
     mouse.x = mouse.touches[0][0];
     mouse.y = mouse.touches[0][1];
     mouse.id = mouse.touches[0][2];
-    // console.log(mouse.touches);
   } else {
     // mouse.x = false;
     // mouse.y = false;
@@ -508,6 +507,8 @@ window.addEventListener("touchstart", touch_handler);
 window.addEventListener("touchmove", touch_handler);
 window.addEventListener("touchend", touch_handler);
 window.addEventListener("touchend", touchend_handler);
+window.addEventListener("touchcancel", touch_handler);
+window.addEventListener("touchcancel", touchend_handler);
 window.addEventListener("mousedown", mousedown_handler);
 window.addEventListener("mousedown", mouse_handler);
 window.addEventListener("mousemove", mouse_handler);
