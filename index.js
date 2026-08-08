@@ -68,6 +68,8 @@ export const init_load = function() {
       const raw_save = localStorage.getItem("save");
       if (raw_save) {
         map.load(raw_save);
+      } else {
+        map.loaded = true;
       }
     }
   } else {
@@ -284,7 +286,7 @@ const tick = function(time) {
   v.realtime = time;
   v.button_press = {};
   camera.tick();
-  physics.tick();
+  physics.tick(dt);
   player.tick();
   particle.tick();
   firebase.tick(time);
@@ -482,6 +484,14 @@ const key_tick = function(event) {
   player.pre_move(dx * 100, dy * 100);
 };
 
+const key_clear = function(event) {
+  v.keys = {};
+  player.move_x = 0;
+  player.move_y = 0;
+  player.acted = false;
+  player.act_time = -1;
+};
+
 const scroll_handler = function(event) {
   event.preventDefault();
   return false;
@@ -515,6 +525,8 @@ window.addEventListener("mousemove", mouse_handler);
 window.addEventListener("mouseup", mouseup_handler);
 window.addEventListener("mouseup", mouse_handler);
 window.addEventListener("beforeunload", before_unload);
+window.addEventListener("blur", key_clear);
+document.addEventListener("visibilitychange", function() { if (document.hidden) key_clear(); });
 
 // this is me spamming to fix the funny canvas sliding problem on iOS
 window.addEventListener("contextmenu", scroll_handler);

@@ -179,7 +179,7 @@ panel.draw = function() {
     const panel_w = size_ * p.w;
     const panel_h = size_ * p.h;
     ctx.fillStyle = p.correct ? "#8daa" : "#bafa";
-    draw.rectangle(view.cx, view.cy, panel_w + view.size * 0.15, panel_h + view.size * 0.15);
+    draw.rectangle(view.cx, view.cy, view.size + 1, view.size + 1);
     ctx.fill();
     x = view.cx;
     y = view.cy;
@@ -1514,6 +1514,11 @@ symbol_functions.art_snail = function(o) {
 
 symbol_functions.art_mess = function(o) {
   panel.talk.text = ["i used to be a really famous footballer until my pet lion went missing :(", "can you help me find him? you should know his name..."];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_person_1 = function(o) {
+  panel.talk.text = ["[developer's note: hello i forgot what i wanted to say]"];
   panel.talk.toggle(o);
 };
 

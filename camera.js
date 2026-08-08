@@ -105,6 +105,7 @@ camera.draw = function() {
 
   // draw objects
   for (const o of map.search_objects(Math.floor(camera.x) - 1.5, Math.floor(camera.y) - 1.5, z, Math.ceil(camera.scale) + 3, Math.ceil(camera.scale) + 3)) {
+    if (o.invisible === 2) continue;
     if (o.invisible) {
       const d = util.distance2(player.x, player.y, o.x, o.y);
       if (d <= 2) {
@@ -137,7 +138,7 @@ camera.draw = function() {
   const [xx, yy] = camera.convert(player.x, player.y);
   player_theme[player.mode](xx, yy, size * player.size, size * player.size);
   const oo = map.get_object(player.x + player.dx, player.y + player.dy, player.z) ?? map.get_object(player.x, player.y, player.z);
-  if (oo) {
+  if (oo && oo.invisible !== 2) {
     const [xx2, yy2] = camera.convert(oo?.x, oo?.y);
     player_theme.outline(xx2, yy2, size, size);
   }

@@ -238,6 +238,12 @@ export const player = {
     return result;
   },
   load: function(o) {
+    if (!o || !map.levels.includes(o.z)) {
+      o = o ?? {};
+      o.x = map.start_point.x;
+      o.y = map.start_point.y;
+      o.z = map.start_point.z;
+    }
     player.set_position(o);
     for (const k in o) {
       player[k] = o[k]; // ok

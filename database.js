@@ -183,6 +183,7 @@ firebase.clear = function() {
 };
 
 (function() {
+  console.log(window.location.pathname);
   const params = new URLSearchParams(window.location.search);
   const map_id = params.get("map");
   if (map_id && map_id !== "old") {
@@ -193,6 +194,7 @@ firebase.clear = function() {
       panel.o = null;
       reinit_everything(util.decompress_safe(raw));
       map.name = map_id;
+      map.loaded = false;
       player.x = map.start_point.x;
       player.y = map.start_point.y;
       player.z = map.start_point.z;
@@ -241,10 +243,10 @@ temp.load = function(code = false) {
       }
       const raw = zipson.stringify(JSON.parse(data));
       if (raw) {
+        if (!map.load(raw)) return;
         localStorage.setItem("save", raw);
-        localStorage.setItem("code", params.get("save"));
-        map.load(raw);
         map.save();
+        localStorage.setItem("code", params.get("save"));
         setTimeout(() => window.location.href = "/", 200);
       }
     });
@@ -255,8 +257,8 @@ temp.load = function(code = false) {
       } else {
         const raw = zipson.stringify(JSON.parse(data));
         if (raw) {
+          if (!map.load(raw)) return;
           localStorage.setItem("save", raw);
-          map.load(raw);
           map.save();
           localStorage.setItem("code", code);
           firebase.set("/quad/savestats/" + code, {

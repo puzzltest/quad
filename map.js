@@ -1602,6 +1602,7 @@ export const map = {
 
   // save/load
   save: function() {
+    if (!map.loaded) return false;
     const save = {
       player: map.player_ref.save(),
       visited: [...map.visited],
@@ -1630,14 +1631,18 @@ export const map = {
     } else {
       const compressed = util.compress(JSON.stringify(save));
       localStorage.setItem("save_" + map.name, compressed);
-      // console.log("saved", compressed);
     }
+    return true;
   },
+
+  loaded: false,
 
   load: function(raw) {
     try {
+      map.loaded = false;
       if (map.name === "old") {
         map.load_(zipson.parse(raw));
+        map.loaded = true;
         return true;
       } else {
         if (!raw || raw.length <= 0) {
@@ -1649,6 +1654,7 @@ export const map = {
         } else {
           map.load_(JSON.parse(util.decompress(raw)));
         }
+        map.loaded = true;
         return true;
       }
     } catch (e) {
@@ -1664,7 +1670,7 @@ export const map = {
       try {
         const o = map.get_panel(pid);
         const p = o.panel;
-        const s = save?.panels[pid];
+        const s = save?.panels?.[pid];
         if (s) o.seen = true;
         if (s?.state != undefined) {
           p.state = [];
@@ -1705,7 +1711,7 @@ export const map = {
     map.panel_ref.update_doors(Object.values(panel_lookup));
     map.panel_ref.update_doors(Object.values(door_lookup));
     map.stars_collected = [];
-    for (const asteroid of save.stars) {
+    for (const asteroid of save.stars ?? []) {
       if (!map.get_star(asteroid)) continue;
       map.stars_collected.push(asteroid);
       map.get_star(asteroid).star.collected = true;
