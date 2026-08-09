@@ -103,7 +103,7 @@ const velocityIterations = 8;
 const positionIterations = 3;
 physics.tick = function(dt) {
   if (player.paused) return;
-  worlds[player.z].step((dt ?? 16) / 700, velocityIterations, positionIterations);
+  worlds[player.z].step(Math.min(16, dt ?? 16) / 700, velocityIterations, positionIterations);
   worlds[player.z].clearForces();
 };
 

@@ -1,10 +1,9 @@
-import { canvas, ctx, v, view, mouse } from "./index.js";
+import { ctx, v, view } from "./index.js";
 import { the_id } from "./database.js";
-import { maps, map } from "./map.js";
+import { map } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
 import { draw, svg } from "./draw.js";
-import { particle } from "./particle.js";
 
 export const camera = {
   cx: 0,

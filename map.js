@@ -1466,6 +1466,7 @@ export const map = {
     }
   },
   z_themes: {
+    [-99]: "warp",
     [-2]: "warp",
     [-1]: "grey",
     [0]: "grass",
