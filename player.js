@@ -225,6 +225,12 @@ export const player = {
     if (!map.visited.has(id)) map.visited.add(id);
   },
 
+  add_map_marker: function() {
+    if (map.stars_collected.length <= 0) return;
+    if (map.markers.length >= map.stars_collected.length) map.markers.pop();
+    map.markers.push({ x: Math.round(player.x), y: Math.round(player.y), z: Math.round(player.z), });
+  },
+
   save: function() {
     const result = {
       x: this.x,

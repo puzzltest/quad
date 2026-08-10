@@ -14,6 +14,7 @@ export const camera = {
   scale: 0,
   smoothness: 0.09,
   get tscale() {
+    if (map.panel_ref.talk.active) return 5;
     return map.get_scale(player.x, player.y, player.z);
   },
   get x() {

@@ -5,7 +5,6 @@ import { player } from "./player.js";
 import { util } from "./util.js";
 import { temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
-// import { generate, count } from 'https://cdn.jsdelivr.net/npm/random-words@2.0.1/+esm'
 import { english10, english20, english35, english40, english50 } from 'https://cdn.jsdelivr.net/npm/wordlist-js@2.0.0/+esm';
 
 export const panel = {
@@ -15,10 +14,13 @@ export const panel = {
   active: false,
   time: 0,
   o: null,
+  letters: {},
   lock_mode: false,
   total_solved: 0,
   total_correct: 0,
   touch_state: {},
+  words: new Set(),
+  words_loaded: false,
   sign: {
     active: false,
     time: 0,
@@ -59,7 +61,7 @@ const sign_pictures = {};
 const symbol_functions = {};
 const door_custom = {};
 
-panel.init = function() {
+panel.init = async function() {
   panel.active = false;
   panel.sign.active = false;
   panel.talk.active = false;
@@ -69,6 +71,8 @@ panel.init = function() {
   map.util_ref = util;
   map.v_ref = v;
   panel.randomizer.init();
+  await util.loadlist(panel.words);
+  panel.words_loaded = true;
 };
 
 panel.activate = function() {
@@ -334,6 +338,10 @@ panel.draw_map = function() {
     ctx.save();
     draw.rectangle(x, y, w * 0.92, h * 0.92);
     ctx.clip();
+    const check = panel.mousecheck();
+    if (check) {
+      player.add_map_marker();
+    }
     const scale = 50;
     const size = view.size / scale + 1;
     for (let x = Math.floor(panel.map.x - scale / 2); x <= panel.map.x + scale / 2 + 1; x++) {
@@ -374,16 +382,27 @@ panel.draw_map = function() {
     ctx.fill();
     ctx.stroke();
     ctx.globalAlpha *= 0.5;
-    for (const ok in player.others) {
-      if (ok === the_id) continue;
-      const op = player.others[ok];
-      if (op.z != player.z || op.m !== map.name) continue;
-      const m = map.get_map(Math.floor(op.x), Math.floor(op.y), Math.floor(op.z));
-      if (m && m.id && !map.visited.has(m.id)) continue;
-      px = view.cx + (op.x - panel.map.x) * view.size / scale;
-      py = view.cy + (op.y - panel.map.y) * view.size / scale;
-      ctx.fillStyle = "#5e4f";
-      ctx.strokeStyle = "#ffff";
+    // for (const ok in player.others) {
+    //   if (ok === the_id) continue;
+    //   const op = player.others[ok];
+    //   if (op.z != player.z || op.m !== map.name) continue;
+    //   const m = map.get_map(Math.floor(op.x), Math.floor(op.y), Math.floor(op.z));
+    //   if (m && m.id && !map.visited.has(m.id)) continue;
+    //   px = view.cx + (op.x - panel.map.x) * view.size / scale;
+    //   py = view.cy + (op.y - panel.map.y) * view.size / scale;
+    //   ctx.fillStyle = "#5e4";
+    //   ctx.strokeStyle = "#eee";
+    //   ctx.lineWidth = size * 0.05;
+    //   draw.circle(px, py, size * 0.3);
+    //   ctx.fill();
+    //   ctx.stroke();
+    // }
+    for (const marker of map.markers) {
+      if (marker.z !== player.z) continue;
+      px = view.cx + (marker.x - panel.map.x) * view.size / scale;
+      py = view.cy + (marker.y - panel.map.y) * view.size / scale;
+      ctx.fillStyle = "#5e4";
+      ctx.strokeStyle = "#eee";
       ctx.lineWidth = size * 0.05;
       draw.circle(px, py, size * 0.3);
       ctx.fill();
@@ -424,7 +443,7 @@ panel.update_panel = function(optional_pid) {
 panel.check_correct = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
   const p = o.panel;
-  let wrongmode = false, offmode = false;
+  let wrongmode = false;
   if (p.random) return p.solved;
   if (p.answer) {
     return panel.check_answer(p.state, p.answer);
@@ -435,6 +454,7 @@ panel.check_correct = function(optional_pid) {
     if (function_name === "wrong") { wrongmode = true; continue; }
     if (panel_checks[function_name](p) == false) return false;
   }
+  panel.letters = {};
   // check all symbols
   for (const symbol_name in p.symbols) {
     for (let y = 0; y < p.h; y++) {
@@ -448,6 +468,24 @@ panel.check_correct = function(optional_pid) {
       }
     }
   }
+  // check after
+  const ks = Object.keys(panel.letters);
+  if (ks.length > 0) {
+    let word = "";
+    for (let i = 1; i <= Math.max(...ks); i++) {
+      if (!panel.letters[i]) return false;
+      word += " abcdefghijklmnopqrstuvwxyz"[panel.letters[i]];
+    }
+    if (!panel.words.has(word)) return false;
+  }
+  return true;
+};
+
+panel.put_letter = function(s, n) {
+  if (s > "0") return true;
+  s = parseInt(s, 36);
+  if (panel.letters[s] != undefined && panel.letters[s] !== n) return false;
+  panel.letters[s] = n;
   return true;
 };
 
@@ -462,8 +500,8 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   }
   else if (name === "diagonal") {
     let total = 0, dirs = util.dir5x;
-    if (parseInt(s, 36) > 9) {
-      s = parseInt(s, 36) - 9;
+    if (s > "9") {
+      s = s === "j" ? 0 : parseInt(s, 36) - 9;
       dirs = util.dir9;
     }
     for (const [dx, dy] of dirs) {
@@ -606,7 +644,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     const n = util.shape_is_number(shape);
     if ((s == 1 || s == "a") && util.size_of_shape(shape) === 1) return false;
     if (s > "9") {
-      const ss = parseInt(s, 36) - 9;
+      const ss = s === "j" ? 0 : parseInt(s, 36) - 9;
       for (let i = 0; i < 3; i++) {
         if (("" + util.shape_is_number(shape)) == ss) return true;
         bfs_result = util.rotate_bfs_result(bfs_result);
@@ -625,7 +663,74 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     return (area >= +parseInt(s, 36));
   }
   else if (name === "red") {
-    // todo
+    let c = p.state[y][x], a = 0;
+    for (const [dx, dy, b] of util.dir8b) a += b * +(c === p.state[(y + dy + p.h) % p.h][(x + dx + p.w) % p.w]);
+    for (let i = 0; i < util.numbers[0].length; i++) {
+      if (a === util.numbers[0][i]) {
+        return panel.put_letter(s, i + 1);
+      }
+    }
+    return false;
+  }
+  else if (name === "orange") {
+    const area = util.bfs(p.state, x, y).length;
+    if (area > 26) return false;
+    return panel.put_letter(s, area);
+  }
+  else if (name === "yellow") {
+    let a = 0;
+    for (const [dx, dy, b] of util.dir9b) a += b * (+p.state[(y + dy + p.h) % p.h][(x + dx + p.w) % p.w]);
+    for (let i = 0; i < util.numbers[1].length; i++) {
+      if (a === util.numbers[1][i] || 511 - a === util.numbers[1][i]) {
+        return panel.put_letter(s, i + 1);
+      }
+    }
+    return false;
+  }
+  else if (name === "green") {
+    let a = 0;
+    for (let i = 4, b = 1; i >= 0; i--, b *= 2) {
+      a += b * (+p.state[y][(x + i + p.w) % p.w]);
+    }
+    if (a > 26) return false;
+    return panel.put_letter(s, a);
+  }
+  else if (name === "cyan") {
+    let a = "";
+    for (let i = x, l = 0; i <= p.w; i++) {
+      if (i < p.w && +p.state[y][i]) l += 1;
+      else {
+        if (l > 0) a += l > 1 ? "2" : "1";
+        l = 0;
+      }
+    }
+    a = parseInt(a, 3);
+    for (let i = 0; i < util.numbers[2].length; i++) {
+      if (a === util.numbers[2][i]) {
+        return panel.put_letter(s, i + 1);
+      }
+    }
+    return false;
+  }
+  else if (name === "blue") {
+    let a = 0;
+    for (const [dx, dy, b] of util.dir6b) a += b * (+p.state[(y + dy + p.h) % p.h][(x + dx + p.w) % p.w]);
+    for (let i = 0; i < util.numbers[3].length; i++) {
+      if (a === util.numbers[3][i]) {
+        return panel.put_letter(s, i + 1);
+      }
+    }
+    return false;
+  }
+  else if (name === "purple") {
+    let a = 0;
+    for (const [dx, dy, b] of util.dir9b) a += b * (+p.state[(y + dy + p.h) % p.h][(x + dx + p.w) % p.w]);
+    for (let i = 0; i < util.numbers[4].length; i++) {
+      if (a === util.numbers[4][i] || 511 - a === util.numbers[4][i]) {
+        return panel.put_letter(s, i + 1);
+      }
+    }
+    return false;
   }
   else { // unknown symbol name
     console.error("unknown symbol name: " + name);
@@ -908,9 +1013,31 @@ panel_draw_symbols.waterdrop = function(s, x, y, w, h, state) {
   ctx.fillText(n, x, y + w * 0.1);
 };
 
-panel_draw_symbols.red = function(s, x, y, w, h, state) {
-  // todo
+const symbol_colours = {
+  red: "#d65",
+  blue: "#56b",
+  green: "#6c5",
+  yellow: "#cb4",
+  cyan: "#4cc",
+  purple: "#c4c",
+  orange: "#d84",
 };
+for (const symbol in symbol_colours) {
+  panel_draw_symbols[symbol] = function(s, x, y, w, h, state) {
+    ctx.fillStyle = symbol_colours[symbol];
+    ctx.stroke();
+    draw.polygon(3, x, y + h * 0.09, w * 0.4, Math.PI / 6);
+    ctx.fill();
+    if (s > "0") {
+      ctx.fillStyle = "#111";
+      const n = parseInt(s, 36);
+      draw.set_font(n > 9 ? w * 0.25 : w * 0.32, "bold");
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(n, x, y + h * 0.08);
+    }
+  };
+}
 
 // todo symbols.amogus
 
@@ -1513,12 +1640,20 @@ symbol_functions.art_snail = function(o) {
 };
 
 symbol_functions.art_mess = function(o) {
-  panel.talk.text = ["i used to be a really famous footballer until my pet lion went missing :(", "can you help me find him? you should know his name..."];
+  panel.talk.text = ["i used to be a really famous footballer until my pet lion went missing...", "can you help me find him? you should know his name..."];
   panel.talk.toggle(o);
 };
 
 symbol_functions.art_person_1 = function(o) {
-  panel.talk.text = ["[developer's note: hello i forgot what i wanted to say]"];
+  const s = map.stars_collected.length;
+  if (s <= 0) panel.talk.text = ["i like stars. do you have any?", "seems like it's a no :("];
+  else if (s <= 5) panel.talk.text = ["click on the map to add or remove a little dot at your location!"];
+  else panel.talk.text = ["how did you get so many stars???", "share some please >:)"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_beaver = function(o) {
+  panel.talk.text = ["boo"];
   panel.talk.toggle(o);
 };
 

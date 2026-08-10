@@ -44,13 +44,13 @@ export const mouse = {
   y: false,
 };
 
-const init = function() {
+const init = async function() {
   map.init();
   player.init();
   camera.init();
   physics.init();
   physics.tick();
-  panel.init();
+  await panel.init();
   sound.init();
   canvas_init();
   resize();
@@ -58,6 +58,7 @@ const init = function() {
   requestAnimationFrame(tick);
   // load
   init_load();
+  firebase.init_map();
 };
 
 export const init_load = function() {
@@ -436,7 +437,6 @@ const keydown = function(event) {
   const no_mod = !event.ctrlKey && !event.metaKey && !event.altKey;
   if (no_mod) event.preventDefault();
   if (event.repeat) return;
-  v.keys[event.code] = true;
   // restart
   if (event.code === "KeyR" && panel.active && no_mod) {
     panel.clearstate();
@@ -449,8 +449,10 @@ const keydown = function(event) {
     }
   }
   if ((event.code === "Space" || event.code === "Enter") && no_mod) {
-    player.act();
+    if (panel.map.active && map.stars_collected >= 0) player.add_map_marker();
+    else player.act();
   }
+  v.keys[event.code] = true;
   // teleport...
   if (util.is_local() && event.code === "KeyT") {
     const [x, y] = camera.convertback(mouse.x / v.ratio, mouse.y / v.ratio);
@@ -479,7 +481,7 @@ const key_tick = function(event) {
     dy += 1;
   }
   if (v.keys.Space || v.keys.Enter) {
-    player.act();
+    if (!panel.map.active) player.act();
   }
   player.pre_move(dx * 100, dy * 100);
 };

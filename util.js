@@ -8,6 +8,10 @@ export const util = {
   dir4x: [[1, 1], [-1, 1], [-1, -1], [1, -1]],
   dir5x: [[0, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]],
   seg7: ["abcdef", "bc", "abdeg", "abcdg", "bcfg", "acdfg", "acdefg", "abc", "abcdefg", "abcdfg"],
+  dir6b: [[0, 0, 32], [0, 1, 16], [0, 2, 8], [1, 0, 4], [1, 1, 2], [1, 2, 1]],
+  dir8b: [[1, 0, 128], [1, 1, 64], [0, 1, 32], [-1, 1, 16], [-1, 0, 8], [-1, -1, 4], [0, -1, 2], [1, -1, 1]],
+  dir9b: [[0, 0, 256], [1, 0, 128], [1, 1, 64], [0, 1, 32], [-1, 1, 16], [-1, 0, 8], [-1, -1, 4], [0, -1, 2], [1, -1, 1]],
+  numbers: [[48,40,36,34,33,160,96,24,20,130,18,17,144,80,12,10,9,136,72,6,5,66,129,65,132,192],[479,508,127,505,383,287,254,477,375,311,349,124,283,223,255,415,463,31,307,295,253,173,433,341,429,358],[5,67,70,22,1,43,25,40,4,53,23,49,8,7,26,52,77,16,13,2,14,41,17,68,71,76],[32,48,36,38,34,52,54,50,20,22,40,56,44,46,42,60,62,58,28,30,41,57,23,45,47,43],[241,253,124,247,255,127,199,223,31,497,509,380,503,511,383,455,479,287,261,276,321,336,263,284,449,368]],
   pi: Math.PI,
   sqrt2: Math.sqrt(2.0),
   sqrt3: Math.sqrt(3.0),
@@ -374,6 +378,26 @@ export const util = {
       "iPhone",
       "iPod"
     ].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+  },
+  loadlist: async function(set) {
+    const q = await fetch("/w.txt");
+    const r = q.body.getReader();
+    const d = new TextDecoder("utf-8");
+    let s = "";
+    while (1) {
+      const v = await r.read();
+      if (v.done) break;
+      s += d.decode(v.value, { stream: true, });
+      let b = s.indexOf("\n");
+      while (b >= 0) {
+        const l = s.substring(0, b).trim();
+        if (l) set.add(l);
+        s = s.substring(b + 1);
+        b = s.indexOf("\n");
+      }
+    }
+    const l = s.trim();
+    if (l) set.add(l);
   },
 };
 

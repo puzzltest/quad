@@ -1453,6 +1453,7 @@ export const map = {
   levels: [],
   solvable_panels: 0,
   stars_collected: [],
+  markers: [],
   all_ids: new Set(),
   visited: new Set(),
   get total_stars() {
@@ -1607,6 +1608,7 @@ export const map = {
     const save = {
       player: map.player_ref.save(),
       visited: [...map.visited],
+      markers: [...map.markers],
       panels: {},
       signs: {},
       stars: map.stars_collected,
@@ -1722,6 +1724,7 @@ export const map = {
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);
     }
+    map.markers = save.markers ?? [];
   },
 
   init_tiles: function() {

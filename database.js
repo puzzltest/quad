@@ -182,8 +182,7 @@ firebase.clear = function() {
   firebase.remove("/quad/positions/");
 };
 
-(function() {
-  console.log(window.location.pathname);
+firebase.init_map = function() {
   const params = new URLSearchParams(window.location.search);
   const map_id = params.get("map");
   if (map_id && map_id !== "old") {
@@ -203,7 +202,7 @@ firebase.clear = function() {
       physics.tick();
     });
   }
-})();
+};
 
 
 
