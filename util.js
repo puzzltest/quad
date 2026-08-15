@@ -72,6 +72,9 @@ export const util = {
   to_component: function(a) {
     return Math.floor(a).toString(16).padStart(2, "0");
   },
+  sadd: function(c, n) { // :(
+    return String.fromCharCode(c.charCodeAt(0) + n);
+  },
   radius2: function(x, y) {
     return x * x + y * y;
   },

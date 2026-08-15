@@ -449,8 +449,8 @@ const keydown = function(event) {
     }
   }
   if ((event.code === "Space" || event.code === "Enter") && no_mod) {
-    if (panel.map.active && map.stars_collected >= 0) player.add_map_marker();
-    else player.act();
+    // if (panel.map.active) player.add_map_marker();
+    player.act();
   }
   v.keys[event.code] = true;
   // teleport...

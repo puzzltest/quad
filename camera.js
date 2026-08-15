@@ -295,9 +295,25 @@ export const theme = {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         draw.set_font(w * 0.4);
-        ctx.fillText((is_star ? o.door?.at_least : -o.door?.number) || 0, x, y, w, h);
-        ctx.shadowColor = undefined;
-        ctx.shadowBlur = 0;
+        ctx.fillText((is_star ? o.door?.at_least : -o.door?.number) || 0, x, y, w);
+        if (is_star) {
+          ctx.shadowColor = undefined;
+          ctx.shadowBlur = 0;
+        } else {
+          const d = util.distance2(player.x, player.y, o.x, o.y);
+          if (d < 3) {
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, (3 - d) / 2);
+            ctx.fillStyle = "#eeec";
+            draw.rectangle(x, y - h * 0.8, w, h * 0.4);
+            ctx.fill();
+            ctx.fillStyle = "#111e";
+            draw.set_font(w * 0.3);
+            const at = o.door?.at_least;
+            ctx.fillText((at + o.door?.number) + "/" + at, x, y - h * 0.8, w);
+            ctx.restore();
+          }
+        }
       }
     },
     ["sign"]: function(x, y, w, h, o) {

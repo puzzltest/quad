@@ -443,7 +443,7 @@ panel.update_panel = function(optional_pid) {
 panel.check_correct = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
   const p = o.panel;
-  let wrongmode = false;
+  let off = false;
   if (p.random) return p.solved;
   if (p.answer) {
     return panel.check_answer(p.state, p.answer);
@@ -451,7 +451,7 @@ panel.check_correct = function(optional_pid) {
   // check "global" conditions
   if (panel_checks[p.id] && (panel_checks[p.id](p) == false)) return false;
   for (const function_name of p.checks ?? []) { // additional custom check functions
-    if (function_name === "wrong") { wrongmode = true; continue; }
+    if (function_name === "wrong") { off = true; continue; }
     if (panel_checks[function_name](p) == false) return false;
   }
   panel.letters = {};
@@ -461,9 +461,13 @@ panel.check_correct = function(optional_pid) {
       for (let x = 0; x < p.w; x++) {
         const s = p.symbols[symbol_name][y][x];
         if (s !== ".") {
-          const c = panel.check_symbol_correct(p, symbol_name, s, x, y);
-          if (!wrongmode && c == false) return false;
-          if (wrongmode && c == true) return false;
+          const sss = off ? panel.off_symbol(symbol_name, s) : s;
+          let wrong = true;
+          for (const ss of sss) {
+            const c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+            if (c != false) wrong = false;
+          }
+          if (wrong) return false;
         }
       }
     }
@@ -487,6 +491,28 @@ panel.put_letter = function(s, n) {
   if (panel.letters[s] != undefined && panel.letters[s] !== n) return false;
   panel.letters[s] = n;
   return true;
+};
+
+panel.off_symbol = function(name, s) {
+  if (name === "circle" || name === "ruing" || name === "copyright" || Object.keys(symbol_colours).includes(name)) {
+    return s;
+  }
+  let result = "", a = ["0", "a"], b = ["9", "z"];
+  if (name === "diagonal" || name === "shapenumber") {
+    if (s === "a") return "jb";
+    if (s === "j") return "a";
+  }
+  else if (name === "ring" || name === "donut" || name === "squaring" || name === "balance") {
+    b.push("1", "3");
+    a.push("2");
+  }
+  else if (name === "ringnumber" || name === "ringhole") {
+    if (s === "9") return "8a";
+    else if (s === "a") return "9b";
+  }
+  if (!a.includes(s)) result += util.sadd(s, -1);
+  if (!b.includes(s)) result += util.sadd(s, 1);
+  return result;
 };
 
 panel.check_symbol_correct = function(p, name, s, x, y) {
@@ -537,7 +563,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   }
   else if (name === "ruing") {
     if (!p.ruin) {
-      console.warn("no ruin shape!")
+      console.warn("no shape!");
       return false;
     }
     if (s == 0)
@@ -1025,7 +1051,6 @@ const symbol_colours = {
 for (const symbol in symbol_colours) {
   panel_draw_symbols[symbol] = function(s, x, y, w, h, state) {
     ctx.fillStyle = symbol_colours[symbol];
-    ctx.stroke();
     draw.polygon(3, x, y + h * 0.09, w * 0.4, Math.PI / 6);
     ctx.fill();
     if (s > "0") {
@@ -1067,6 +1092,30 @@ panel_draw_symbols.equality = function(s, x, y, w, h) {
   draw.line(x - w * 0.23, y - h * 0.1, x + w * 0.23, y - h * 0.1);
   draw.line(x - w * 0.23, y + h * 0.1, x + w * 0.23, y + h * 0.1);
   ctx.stroke();
+};
+
+panel_draw_symbols.x3 = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.08;
+  draw.rectangle(x - w * 0.33, y, w * 0.33, h * 0.33);
+  ctx.stroke();
+  draw.rectangle(x, y, w * 0.33, h * 0.33);
+  ctx.stroke();
+  draw.rectangle(x + w * 0.33, y, w * 0.33, h * 0.33);
+  ctx.stroke();
+  draw.line(x - w * 0.3, y - h * 0.3, x + w * 0.3, y + h * 0.3);
+  draw.line(x - w * 0.3, y + h * 0.3, x + w * 0.3, y - h * 0.3);
+  ctx.stroke();
+};
+
+panel_draw_symbols.mirror = function(s, x, y, w, h) {
+  ctx.save();
+  ctx.lineWidth = w * 0.08;
+  draw.rectangle(x, y, w, h);
+  ctx.stroke();
+  ctx.setLineDash([w * 0.1, w * 0.1]);
+  draw.line(x, y - h * 0.5, x, y + h * 0.5);
+  ctx.stroke();
+  ctx.restore();
 };
 
 panel_draw_symbols.wrong = function(s, x, y, w, h) {
@@ -1422,8 +1471,60 @@ panel_checks.equality = function(p) {
   return f.every(a => a === f[0]);
 };
 
+panel_checks.x3 = function(p) {
+  for (let y = 0; y < p.h; y++) {
+    for (let x = 1, a = 0; x < p.w; x++) {
+      if (p.state[y][x-1] === p.state[y][x]) {
+        a++;
+        if (a >= 2) return false;
+      } else a = 0;
+    }
+  }
+  for (let x = 0; x < p.w; x++) {
+    for (let y = 1, a = 0; y < p.h; y++) {
+      if (p.state[y-1][x] === p.state[y][x]) {
+        a++;
+        if (a >= 2) return false;
+      } else a = 0;
+    }
+  }
+  return true;
+};
+
 panel_checks.mirror = function(p) {
-  // todo
+  let yes = true;
+  for (let y = 0; y < p.h; y++) {
+    for (let x = 0; x < Math.floor(p.w / 2); x++) {
+      if (p.state[y][x] !== p.state[y][p.w - x - 1]) {
+        yes = false;
+        break;
+      }
+    }
+    if (!yes) break;
+  }
+  if (yes) return true;
+  else yes = true;
+  for (let x = 0; x < p.w; x++) {
+    for (let y = 0; y < Math.floor(p.h / 2); y++) {
+      if (p.state[y][x] !== p.state[p.h - y - 1][x]) {
+        yes = false;
+        break;
+      }
+    }
+    if (!yes) break;
+  }
+  if (yes) return true;
+  else yes = true;
+  for (let y = 0; y < p.h; y++) {
+    for (let x = 0; x < Math.floor((p.w + 1) / 2); x++) {
+      if (p.state[y][x] !== p.state[p.h - y - 1][p.w - x - 1]) {
+        yes = false;
+        break;
+      }
+    }
+    if (!yes) break;
+  }
+  if (yes) return true;
   return false;
 };
 
