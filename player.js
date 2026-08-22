@@ -233,6 +233,7 @@ export const player = {
   },
   self: function(activate) {
     if (activate && (panel.active || panel.map.active || player.paused)) return;
+    if (map.name === "old") return;
     panel.active = activate;
     player.self_active = activate;
     if (activate) {
@@ -264,9 +265,16 @@ export const player = {
   },
 
   add_map_marker: function() {
-    if (map.stars_collected.length <= 0) return;
-    if (map.markers.length >= map.stars_collected.length) map.markers.pop();
-    map.markers.push({ x: Math.round(player.x), y: Math.round(player.y), z: Math.round(player.z), });
+    if (map.total_stars <= 0) return;
+    const x = Math.round(player.x), y = Math.round(player.y), z = Math.round(player.z);
+    for (const m of map.markers) {
+      if (m.x === x && m.y === y && m.z === z) {
+        map.markers.splice(map.markers.indexOf(m), 1);
+        return;
+      }
+    }
+    if (map.markers.length >= map.total_stars) return;
+    map.markers.push({ x, y, z });
   },
 
   save: function() {

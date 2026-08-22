@@ -1736,7 +1736,7 @@ symbol_functions.art_mess = function(o) {
 };
 
 symbol_functions.art_person_1 = function(o) {
-  const s = map.stars_collected.length;
+  const s = map.total_stars;
   if (s <= 0) panel.talk.text = ["i like stars. do you have any?", "seems like it's a no :("];
   else if (s <= 5) panel.talk.text = ["click on the map to add or remove a little dot at your location!"];
   else panel.talk.text = ["how did you get so many stars???", "share some please >:)"];
@@ -1745,6 +1745,16 @@ symbol_functions.art_person_1 = function(o) {
 
 symbol_functions.art_beaver = function(o) {
   panel.talk.text = ["boo"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_pipe = function(o) {
+  panel.talk.text = ["no, i'm not a reference to anything in particular"];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_click = function(o) {
+  panel.talk.text = ["did you know... you can click-", "click.", "click on yourself ˙-˙ for something special to pop up!"];
   panel.talk.toggle(o);
 };
 

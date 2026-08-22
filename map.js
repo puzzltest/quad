@@ -1565,7 +1565,7 @@ export const map = {
       return (door.open !== old);
     }
     else if (door.rule === "star") {
-      door.open = map.stars_collected.length >= (door.at_least ?? 0);
+      door.open = map.total_stars >= (door.at_least ?? 0);
       if (door.invert) door.open = !door.open;
       return (door.open !== old);
     }
