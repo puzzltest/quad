@@ -42,6 +42,17 @@ export const mouse = {
   hold_time: {},
   x: false,
   y: false,
+  check: function() {
+    for (const t of mouse.newtaps.concat(mouse.newdrags)) {
+      if (!t.active) return;
+      if (ctx.isPointInPath(t.x, t.y)) {
+        t.active = false;
+        // sound.play("tap");
+        return t;
+      }
+    }
+    return false;
+  }
 };
 
 const init = async function() {
@@ -79,6 +90,7 @@ export const init_load = function() {
 };
 
 const joystick_mouse = function(x, y, id) {
+  if (id === -1 && mouse.start_point[-1] == null) return;
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(s.x, s.y)) {
     player.pre_move(x / v.ratio - view.jx, y / v.ratio - view.jy);
@@ -86,6 +98,7 @@ const joystick_mouse = function(x, y, id) {
 };
 
 const joybutton_mouse = function(x, y, id) {
+  if (id === -1 && mouse.start_point[-1] == null) return;
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     player.act();
@@ -99,6 +112,7 @@ const joybutton_mouse = function(x, y, id) {
 v.button_press.lock = false;
 v.button_time.lock = -1;
 const lock_button_mouse = function(x, y, id) {
+  if (id === -1 && mouse.start_point[-1] == null) return;
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     /*
@@ -117,6 +131,7 @@ const lock_button_mouse = function(x, y, id) {
 };
 
 const clear_button_mouse = function(x, y, id) {
+  if (id === -1 && mouse.start_point[-1] == null) return;
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     const t = mouse.hold_time[id];

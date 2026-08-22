@@ -1,4 +1,4 @@
-import { ctx, v, view } from "./index.js";
+import { ctx, mouse, v, view } from "./index.js";
 import { the_id } from "./database.js";
 import { map } from "./map.js";
 import { player } from "./player.js";
@@ -136,12 +136,12 @@ camera.draw = function() {
 
   // draw player too!
   const [xx, yy] = camera.convert(player.x, player.y);
-  player_theme[player.mode](xx, yy, size * player.size, size * player.size);
   const oo = map.get_object(player.x + player.dx, player.y + player.dy, player.z) ?? map.get_object(player.x, player.y, player.z);
-  if (oo && oo.invisible !== 2) {
+  if (oo && oo.invisible !== 2) { // (draw outline first)
     const [xx2, yy2] = camera.convert(oo?.x, oo?.y);
     player_theme.outline(xx2, yy2, size, size);
   }
+  player_theme[player.mode](xx, yy, size * player.size, size * player.size);
 
   ctx.restore();
 
@@ -302,15 +302,16 @@ export const theme = {
         } else {
           const d = util.distance2(player.x, player.y, o.x, o.y);
           if (d < 3) {
+            const a = Math.abs(player.x - o.x) > 0.75 || player.y >= o.y ? 1 : -1;
             ctx.save();
             ctx.globalAlpha = Math.min(1, (3 - d) / 2);
             ctx.fillStyle = "#eeec";
-            draw.rectangle(x, y - h * 0.8, w, h * 0.4);
+            draw.rectangle(x, y - a * h * 0.8, w, h * 0.4);
             ctx.fill();
             ctx.fillStyle = "#111e";
             draw.set_font(w * 0.3);
             const at = o.door?.at_least;
-            ctx.fillText((at + o.door?.number) + "/" + at, x, y - h * 0.8, w);
+            ctx.fillText((at + o.door?.number) + "/" + at, x, y - a * h * 0.8, w);
             ctx.restore();
           }
         }
@@ -376,7 +377,7 @@ export const theme = {
         ctx.shadowColor = "#fff";
         ctx.shadowBlur = Math.round(w * 0.25);
       }
-      ctx.lineCap = "square";
+      ctx.lineCap = "round";
       ctx.lineWidth = w * 0.08;
       for (const d of o.dirs) {
         const [dx, dy] = util.dir5[d];
@@ -523,7 +524,7 @@ export const theme = {
       ctx.fill();
       ctx.strokeStyle = "#eee2";
       ctx.lineWidth = w * 0.04;
-      ctx.lineCap = "round";
+      ctx.lineCap = "square";
       draw.line(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
       draw.line(x - w / 2, y + h * 0.115, x + w * 0.115, y - h * 0.5);
       draw.line(x + w * 0.1, y + h * 0.5, x + w * 0.5, y + h * 0.1);
@@ -553,7 +554,7 @@ export const theme = {
       ctx.fill();
       ctx.strokeStyle = "#eee2";
       ctx.lineWidth = w * 0.04;
-      ctx.lineCap = "round";
+      ctx.lineCap = "square";
       // draw.line(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
       // draw.line(x - w / 2, y + h * 0.115, x + w * 0.115, y - h * 0.5);
       // draw.line(x + w * 0.1, y + h * 0.5, x + w * 0.5, y + h * 0.1);
@@ -673,10 +674,22 @@ export const mini_theme = {
 
 export const player_theme = {
   normal: function(x, y, w, h) {
+    if (map.panel_ref.active || map.panel_ref.map.active) return;
     ctx.fillStyle = "#eee";
     draw.rectangle(x, y, w, h);
+    // draw.circle(x, y, w * 0.5);
     // draw.polygon(4, x, y, w * 0.6, player.move_a + Math.PI / 4);
     ctx.fill();
+    draw.rectangle(x, y, w * 1.5, h * 1.5);
+    const check = mouse.check();
+    if (check) {
+      player.self(true);
+    }
+    // draw emoji
+    if (player.emoji) {
+      if (player.emoji_time <= v.time) player.emoji = 0;
+      player_theme.emoji(x, y, w, h, player.emoji, player.emoji_time - v.time);
+    }
     // draw player direction
     ctx.fillStyle = "#111";
     if (!player.paused && (player.move_x || player.move_y)) {
@@ -697,19 +710,54 @@ export const player_theme = {
     }
   },
   outline: function(x, y, w, h) {
+    if (map.panel_ref.active || map.panel_ref.map.active) return;
     ctx.strokeStyle = "#e448";
     ctx.lineWidth = Math.max(1, view.size * 0.003);
     draw.rectangle(x, y, w, h);
     ctx.stroke();
+    const check = mouse.check();
+    if (check) {
+      player.act();
+    }
   },
   other: function(x, y, w, h, o) {
-    ctx.fillStyle = "#eee6";
+    ctx.fillStyle = "#eee8";
     draw.rectangle(x, y, w, h);
     ctx.fill();
-    ctx.fillStyle = "#1116";
+    ctx.fillStyle = "#1118";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     draw.set_font(w * 0.45);
     ctx.fillText(o.p, x, y, w, h);
+    // draw emoji
+    if (o.e) {
+      player_theme.emoji(x, y, w, h, Math.floor(o.e / 1000), o.e % 1000);
+    }
+  },
+  emoji: function(x, y, w, h, n, t) {
+    if (n <= 0) return;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, t / 50);
+    y -= w;
+    if (n === 1) ctx.fillStyle = "#fe6";
+    if (n === 2) ctx.fillStyle = "#f77";
+    draw.circle(x, y, w * 0.4);
+    ctx.fill();
+    draw.rectangle(x, y + w * 0.45, w * 0.1, w * 0.1 + 1);
+    ctx.fill();
+    if (n <= 2) {
+      ctx.fillStyle = "#111";
+      ctx.strokeStyle = "#111";
+      ctx.lineWidth = w * 0.05;
+      ctx.lineCap = "round";
+      if (n === 1) draw.arc(x, y, w * 0.2, Math.PI / 2 - 1, Math.PI / 2 + 1);
+      if (n === 2) draw.arc(x, y + w * 0.3, w * 0.2, - Math.PI / 2 + 0.8, - Math.PI / 2 - 0.8, true);
+      ctx.stroke();
+      draw.circle(x - w * 0.12, y - w * 0.12, w * 0.05);
+      ctx.fill();
+      draw.circle(x + w * 0.12, y - w * 0.12, w * 0.05);
+      ctx.fill();
+    }
+    ctx.restore();
   },
 };

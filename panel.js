@@ -155,17 +155,6 @@ panel.talk.deactivate = function() {
 
 };
 
-panel.mousecheck = function() {
-  for (const t of mouse.newtaps.concat(mouse.newdrags)) {
-    if (ctx.isPointInPath(t.x, t.y)) {
-      t.active = false;
-      // sound.play("tap");
-      return t;
-    }
-  }
-  return false;
-};
-
 panel.resize = function() {
   panel.size = view.size * 0.85;
   panel.x = 0;//view.cx - panel.size / 2;
@@ -183,6 +172,7 @@ panel.draw = function() {
     const panel_w = size_ * p.w;
     const panel_h = size_ * p.h;
     ctx.fillStyle = p.correct ? "#8daa" : "#bafa";
+    if (player.self_active) ctx.fillStyle = "#c76a";
     draw.rectangle(view.cx, view.cy, view.size + 1, view.size + 1);
     ctx.fill();
     x = view.cx;
@@ -222,13 +212,13 @@ panel.draw = function() {
         }
         if (n === 2) {
           ctx.strokeStyle = p.correct ? "#8da" : "#baf";
-          if (locked) ctx.strokeStyle = "#c76";
+          if (locked || player.self_active) ctx.strokeStyle = "#c76";
           ctx.lineWidth = size * 0.05;
           ctx.stroke();
-          const check = panel.mousecheck();
+          const check = mouse.check();
           if (check) {
             let state = panel.touch_state[check.id] ?? 1;
-            if (panel.lock_mode) {
+            if (panel.lock_mode && !player.self_active) {
               p.lock[j][i] = check.drag ? state : 1 - locked;
               state = 1 - locked;
             } else if (!locked) {
@@ -338,7 +328,7 @@ panel.draw_map = function() {
     ctx.save();
     draw.rectangle(x, y, w * 0.92, h * 0.92);
     ctx.clip();
-    const check = panel.mousecheck();
+    const check = mouse.check();
     if (check) {
       player.add_map_marker();
     }
@@ -486,7 +476,7 @@ panel.check_correct = function(optional_pid) {
 };
 
 panel.put_letter = function(s, n) {
-  if (s > "0") return true;
+  if (+s === 0) return true;
   s = parseInt(s, 36);
   if (panel.letters[s] != undefined && panel.letters[s] !== n) return false;
   panel.letters[s] = n;

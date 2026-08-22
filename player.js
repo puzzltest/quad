@@ -1,5 +1,6 @@
 import { camera } from "./camera.js";
 import { firebase, the_id } from "./database.js";
+import { v } from "./index.js";
 import { map, tiledef } from "./map.js";
 import { panel } from "./panel.js";
 import { particle } from "./particle.js";
@@ -16,12 +17,15 @@ export const player = {
   speed: 15,
   size: 0.75,
   mode: "normal",
+  self_active: false,
+  emoji: 0,
+  emoji_time: -1,
   others: {},
   init: function() {
     map.physics_ref = physics;
     firebase.send = function() {
       // firebase.set("/quad/timestamp", serverTimestamp());
-      firebase.set("/quad/positions/" + the_id, {
+      const o = {
         id: the_id,
         x: util.round_to(player.x, 100),
         y: util.round_to(player.y, 100),
@@ -29,7 +33,9 @@ export const player = {
         // t: serverTimestamp(),
         m: map.name,
         p: map.panel_ref.total_solved,
-      });
+      };
+      if (player.emoji) o.e = player.emoji * 1000 + (player.emoji_time - v.time);
+      firebase.set("/quad/positions/" + the_id, o);
     };
   },
   tick: function() {
@@ -89,7 +95,7 @@ export const player = {
     player.move_y += dy;
   },
   get paused() {
-    return panel.active || panel.sign.active || panel.talk.active; // || panel.map.active;
+    return (panel.active && !player.self_active) || panel.sign.active || panel.talk.active; // || panel.map.active;
   },
   get can_move() {
     return !this.paused;
@@ -138,6 +144,10 @@ export const player = {
     // ok it's actually a new button press now
     if (panel.map.active) {
       panel.map.active = false;
+      return;
+    }
+    if (player.self_active) {
+      player.self(false);
       return;
     }
     const { x, y, z } = player.xyz;
@@ -216,6 +226,34 @@ export const player = {
     panel.map.active = true;
     panel.map.z = player.z;
     panel.map.static = false;
+  },
+  act3: function(n) {
+    player.emoji = n;
+    player.emoji_time = v.time + 120;
+  },
+  self: function(activate) {
+    if (activate && (panel.active || panel.map.active || player.paused)) return;
+    panel.active = activate;
+    player.self_active = activate;
+    if (activate) {
+      panel.o = map.get_panel("self");
+      panel.clearstate();
+      panel.activate();
+    } else {
+      let d = 1, s = 0;
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+          s += d * +panel.o.panel.state[i][j];
+          d *= 2;
+        }
+      }
+      const index = util.self.indexOf(s) + 1;
+      if (index > 0) {
+        player.act3(index);
+      }
+      panel.o = null;
+      panel.deactivate();
+    }
   },
 
   update_map_visited: function() {
