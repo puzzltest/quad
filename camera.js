@@ -738,20 +738,25 @@ export const player_theme = {
     if (n <= 0) return;
     ctx.save();
     ctx.globalAlpha = Math.min(1, t / 50);
+    const a = util.bounce(t, 30);
     y -= w;
     if (n === 1) ctx.fillStyle = "#fe6";
-    if (n === 2) ctx.fillStyle = "#f77";
+    else if (n === 2) ctx.fillStyle = "#f77";
+    else if (n === 3) ctx.fillStyle = "#7bf";
+    else if (n === 4) ctx.fillStyle = "#6ed";
     draw.circle(x, y, w * 0.4);
     ctx.fill();
     draw.rectangle(x, y + w * 0.45, w * 0.1, w * 0.1 + 1);
     ctx.fill();
-    if (n <= 2) {
+    if (n <= 4) {
       ctx.fillStyle = "#111";
       ctx.strokeStyle = "#111";
       ctx.lineWidth = w * 0.05;
       ctx.lineCap = "round";
       if (n === 1) draw.arc(x, y, w * 0.2, Math.PI / 2 - 1, Math.PI / 2 + 1);
-      if (n === 2) draw.arc(x, y + w * 0.3, w * 0.2, - Math.PI / 2 + 0.8, - Math.PI / 2 - 0.8, true);
+      else if (n === 2) draw.arc(x, y + w * 0.3, w * 0.2, - Math.PI / 2 + 0.8, - Math.PI / 2 - 0.8, true);
+      else if (n === 3) draw.line(x - w * 0.18, y + w * 0.12, x + w * 0.18, y + w * 0.12);
+      else if (n === 4) draw.line(x - w * 0.18, y + w * (0.1 + 0.04 * a), x + w * 0.18, y + w * (0.14 - 0.04 * a));
       ctx.stroke();
       draw.circle(x - w * 0.12, y - w * 0.12, w * 0.05);
       ctx.fill();

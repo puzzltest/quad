@@ -1754,7 +1754,7 @@ symbol_functions.art_pipe = function(o) {
 };
 
 symbol_functions.art_click = function(o) {
-  panel.talk.text = ["did you know... you can click-", "click.", "click on yourself ˙-˙ for something special to pop up!"];
+  panel.talk.text = ["did you know... you can click-", "oops i forgit.", "click on yourself [˙-˙] for a pop up!"];
   panel.talk.toggle(o);
 };
 

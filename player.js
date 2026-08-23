@@ -14,7 +14,7 @@ export const player = {
   dx: 0,
   dy: 0,
   d: 0,
-  speed: 15,
+  speed: 22,
   size: 0.75,
   mode: "normal",
   self_active: false,
@@ -130,7 +130,7 @@ export const player = {
   get xyz() {
     const x = Math.round(player.x);
     const y = Math.round(player.y);
-    const z = player.z;
+    const z = Math.round(player.z);
     return { x, y, z };
   },
   acted: false,
@@ -223,13 +223,21 @@ export const player = {
   },
   act2: function() {
     if (player.paused) return;
-    panel.map.active = true;
-    panel.map.z = player.z;
-    panel.map.static = false;
+    const { x, y, z } = player.xyz;
+    const o = map.get_object(x, y, z);
+    if (o && o.symbol?.type === "art_flower_") {
+      player.set_position(o.x, o.y, o.z + 1);
+      player.act_time = -1;
+    }
+    else {
+      panel.map.active = true;
+      panel.map.z = player.z;
+      panel.map.static = false;
+    }
   },
   act3: function(n) {
     player.emoji = n;
-    player.emoji_time = v.time + 120;
+    player.emoji_time = v.time + 180;
   },
   self: function(activate) {
     if (activate && (panel.active || panel.map.active || player.paused)) return;
@@ -238,7 +246,7 @@ export const player = {
     player.self_active = activate;
     if (activate) {
       panel.o = map.get_panel("self");
-      panel.clearstate();
+      // panel.clearstate(); // hmmm
       panel.activate();
     } else {
       let d = 1, s = 0;
@@ -266,7 +274,7 @@ export const player = {
 
   add_map_marker: function() {
     if (map.total_stars <= 0) return;
-    const x = Math.round(player.x), y = Math.round(player.y), z = Math.round(player.z);
+    const { x, y, z } = player.xyz;
     for (const m of map.markers) {
       if (m.x === x && m.y === y && m.z === z) {
         map.markers.splice(map.markers.indexOf(m), 1);

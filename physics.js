@@ -101,9 +101,9 @@ physics.create = function(type, x, y, z) {
 const timeStep = 1 / 60; // unused for now?
 const velocityIterations = 8;
 const positionIterations = 3;
-physics.tick = function(dt) {
+physics.tick = function(dt = 16) {
   if (player.paused) return;
-  worlds[player.z].step(Math.min(16, dt ?? 16) / 700, velocityIterations, positionIterations);
+  worlds[player.z].step(timeStep, velocityIterations, positionIterations); // Math.min(16, dt ?? 16) / 1000
   worlds[player.z].clearForces();
 };
 
