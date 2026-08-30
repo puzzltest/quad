@@ -95,6 +95,7 @@ export const init_load = function() {
 };
 
 const joystick_mouse = function(x, y, id) {
+  if (v.block) return;
   if (id === -1 && mouse.start_point[-1] == null) return;
   const s = mouse.start_point[id] ?? { x, y };
   if (ctx.isPointInPath(s.x, s.y)) {
@@ -103,8 +104,9 @@ const joystick_mouse = function(x, y, id) {
 };
 
 const joybutton_mouse = function(x, y, id) {
+  if (v.block) return;
   if (id === -1 && mouse.start_point[-1] == null) return;
-  const s = mouse.start_point[id] ?? { x, y };
+  const s = mouse.start_point[id]; if (!s) return;
   if (ctx.isPointInPath(x, y) && ctx.isPointInPath(s.x, s.y)) {
     player.act();
     const t = mouse.hold_time[id];

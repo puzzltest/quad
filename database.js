@@ -28,7 +28,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120001; // remember to change...
+export const VERSION = 120002; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -163,6 +163,7 @@ firebase.tick = function(time) {
     firebase.update2_time = time;
     firebase.clear();
     firebase.send();
+    if (temp.account.logged_in) temp.account.save();
   }
   if (map.name !== "old") return;
   // if (time - firebase.update3_time > 3000) {
@@ -336,10 +337,11 @@ temp.account = {
   },
   on: function() {
     player.act_time = -1;
+    player.acted = true;
     temp.account.active = true;
   },
   off: function() {
-    document.getElementById("account").remove();
+    document.getElementById("account")?.remove();
     temp.account.active = false;
   },
   lb_l: null,
@@ -355,6 +357,7 @@ temp.account = {
 };
 
 temp.accountant = function() {
+  if (temp.account.active) return;
   const div = document.createElement("div");
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
@@ -487,6 +490,7 @@ temp.accountant = function() {
 };
 
 temp.accountbear = function() {
+  if (temp.account.active) return;
   const div = document.createElement("div");
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
@@ -508,6 +512,7 @@ temp.accountbear = function() {
 };
 
 temp.accountcow = function() {
+  if (temp.account.active) return;
   const div = document.createElement("div");
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
