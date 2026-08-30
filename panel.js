@@ -1691,7 +1691,8 @@ symbol_functions.save = async function(o) {
       if (window.confirm("create a new save?")) window.prompt("saved! copy this:", temp.save(the_id));
     }
   } else {
-    await temp.account.save();
+    const success = await temp.account.save();
+    if (!success) return;
     for (let i = 0; i < 10; i++) {
       particle.create({
         type: "ring",

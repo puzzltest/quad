@@ -68,7 +68,7 @@ table {
   margin: 25px auto;
   border-collapse: collapse;
   font-size: 1em;
-  box-shadow: 0 0 20px "#eee22";
+  box-shadow: 0 0 2em #eee9;
   min-width: 50vw;
 }
 table thead tr {
@@ -86,17 +86,8 @@ th, td {
   padding: 12px 12px;
   text-align: center;
 }
-table.calendar thead tr {
-  border-top: 0.2em solid var(--white);
-  border-left: 0.2em solid var(--white);
-  border-right: 0.2em solid var(--white);
-}
-table.calendar tbody tr {
-  border-left: 0.2em solid var(--white);
-  border-right: 0.2em solid var(--white);
-}
 table tbody tr {
-  border-bottom: 1px solid var(--white);
+  border-bottom: 1px solid #eee9;
 }
 table tbody tr:nth-of-type(odd) {
   background-color: #3336;
@@ -105,5 +96,5 @@ table tbody tr:nth-of-type(even) {
   background-color: #2226;
 }
 table tbody tr:last-of-type {
-  border-bottom: 0.2em solid #eee8;
+  border-bottom: 0.2em solid #eee9;
 }

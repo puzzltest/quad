@@ -1,5 +1,5 @@
 import { camera } from "./camera.js";
-import { firebase, the_id } from "./database.js";
+import { firebase, temp, the_id } from "./database.js";
 import { v } from "./index.js";
 import { map, tiledef } from "./map.js";
 import { panel } from "./panel.js";
@@ -16,7 +16,7 @@ export const player = {
   d: 0,
   speed: 22,
   size: 0.75,
-  mode: "normal",
+  skin: "normal",
   self_active: false,
   emoji: 0,
   emoji_time: -1,
@@ -26,14 +26,16 @@ export const player = {
     firebase.send = function() {
       // firebase.set("/quad/timestamp", serverTimestamp());
       const o = {
-        id: the_id,
+        id: the_id, // hmmm is there a better way to do this
         x: util.round_to(player.x, 100),
         y: util.round_to(player.y, 100),
-        z: player.z,
         // t: serverTimestamp(),
-        m: map.name,
         p: map.panel_ref.total_solved,
       };
+      if (player.z) o.z = player.z;
+      if (map.name !== "new") o.m = map.name;
+      if (player.skin !== "normal") o.s = player.skin;
+      if (temp.account.logged_in && temp.account.data?.name) o.n = temp.account.data.name;
       if (player.emoji) o.e = player.emoji * 1000 + (player.emoji_time - v.time);
       firebase.set("/quad/positions/" + the_id, o);
     };
@@ -203,6 +205,7 @@ export const player = {
       else if (o.type === "star" && !o.star?.collected && (o.door == undefined || o.door?.open)) {
         o.star.collected = true;
         map.stars_collected.push(o.star.id);
+        panel.update_doors(map.get_doors(o.star.id));
         panel.update_doors(map.get_doors("star"));
       }
       else if (o.type === "door") {
@@ -294,7 +297,7 @@ export const player = {
       dx: this.dx,
       dy: this.dy,
       d: this.d,
-      mode: this.mode,
+      s: this.skin,
     };
     return result;
   },
@@ -306,9 +309,10 @@ export const player = {
       o.z = map.start_point.z;
     }
     player.set_position(o);
-    for (const k in o) {
-      player[k] = o[k]; // ok
-    }
+    player.dx = o.dx;
+    player.dy = o.dy;
+    player.d = o.d;
+    player.skin = o.s ?? "normal";
     camera.cx = o.x;
     camera.cy = o.y;
     camera.tx = camera.cx;

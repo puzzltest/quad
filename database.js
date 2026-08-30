@@ -28,7 +28,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120002; // remember to change...
+export const VERSION = 120100; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -153,6 +153,7 @@ firebase.time = 0;
 firebase.update_time = 30;
 firebase.update2_time = -30000; // also do it at the start
 firebase.update3_time = 0;
+// firebase.update4_time = 0;
 firebase.tick = function(time) {
   firebase.time = time;
   if (time - firebase.update_time > 30) { // ms
@@ -163,11 +164,13 @@ firebase.tick = function(time) {
     firebase.update2_time = time;
     firebase.clear();
     firebase.send();
+  }
+  if (time - firebase.update3_time > 30000) {
+    firebase.update3_time = time;
     if (temp.account.logged_in) temp.account.save();
   }
-  if (map.name !== "old") return;
-  // if (time - firebase.update3_time > 3000) {
-  //   firebase.update3_time = time;
+  // if (time - firebase.update4_time > 3000) {
+  //   firebase.update4_time = time;
   //   if (local) temp.save("local");
   //   else temp.autosave();
   // }
@@ -196,6 +199,8 @@ firebase.init_map = function() {
       physics.init();
       init_load();
       physics.tick();
+      if (temp.account.logged_in) temp.account.load();
+      v.map_done = true;
     });
   }
 };
@@ -283,18 +288,27 @@ temp.account = {
     return temp.account.user != null;
   },
   save: async function() {
+    if (!v.map_done || !map.loaded || !temp.account.data?.name) return false;
     const uid = temp.account.user?.uid;
-    if (!uid) return;
-    if (map.name === "old") return;
+    if (!uid) return false;
+    if (map.name === "old") return false;
     await firebase.set(`/qac/users/${uid}/saves/${map.name}`, map.save());
-    await firebase.set(`/qac/lb/${uid}/`, { n: temp.account.data.name, p: panel.total_solved, s: map.total_stars });
+    await firebase.set(`/qac/lb/${map.name}/${uid}/`, { n: temp.account.data.name, p: panel.total_solved, s: map.total_stars });
+    return true;
+  },
+  load: async function() { // also saves
+    const uid = temp.account.user?.uid;
+    if (!uid) return false;
+    const save = temp.account.data?.saves?.[map.name];
+    if (!save) return false;
+    if (!map.load(save, true)) return false;
+    return true;
   },
   register_unpw: function(username, password, then_fn, error_fn = console.error) {
     const email = username + "@qat.pages.dev";
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (cred) => {
         const user = cred.user;
-        const prefix = `/qac/users/${user.uid}/`;
         try {
           await firebase.set(`/qac/users/${user.uid}/name`, username);
           await firebase.set(`/qac/names/${username.toLowerCase()}`, user.uid);
@@ -305,20 +319,20 @@ temp.account = {
   },
   login_unpw: function(username, password, then_fn, error_fn = console.error) {
     const email = username + "@qat.pages.dev";
+    temp.account.data = null;
     signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
         const user = cred.user;
         firebase.get(`/qac/users/${user.uid}`, async function(data) {
           try {
-            const save = data.saves?.[map.name];
-            if (save) map.load(save);
-            await firebase.set(`/qac/users/${user.uid}/saves/${map.name}`, map.save());
+            // already handled by onauthstatechanged below
             then_fn?.(data);
           } catch (e) { error_fn(e); }
         });
       }).catch(error_fn);
   },
-  logout: function(then_fn, error_fn = console.error) {
+  logout: async function(then_fn, error_fn = console.error) {
+    await temp.account.save();
     signOut(auth).then(() => {
       then_fn?.();
     }).catch(error_fn);
@@ -327,12 +341,16 @@ temp.account = {
     onAuthStateChanged(auth, async (u) => {
       temp.account.user = u;
       v.logged_in = temp.account.logged_in;
-      if (u != null) {
-        const prefix = `/qac/users/${u.uid}/`;
-        firebase.listen(prefix, function(data) {
-          temp.account.data = data ?? {};
-        });
-      }
+      if (u == null) return;
+      firebase.listen(`/qac/users/${u.uid}/`, async function(data) {
+        if (!data) return;
+        if (temp.account.data == null && v.map_done) {
+          temp.account.data = data;
+          if (await temp.account.load()) await temp.account.save();
+        } else {
+          temp.account.data = data;
+        }
+      });
     });
   },
   on: function() {
@@ -346,7 +364,7 @@ temp.account = {
   },
   lb_l: null,
   on_lb: function(then_fn) {
-    temp.account.lb_l = firebase.listen("/qac/lb/", function(lb) {
+    temp.account.lb_l = firebase.listen(`/qac/lb/${map.name}/`, function(lb) {
       then_fn?.(lb);
     });
   },
@@ -376,6 +394,8 @@ temp.accountant = function() {
   document.body.appendChild(div);
   document.getElementById("close").addEventListener("click", temp.account.off);
   const input_user = document.getElementById("user");
+  let input_user_listener = (_) => { };
+  input_user.addEventListener("keydown", function(event) { input_user_listener(event); });
   const h2 = document.querySelector("h2");
   const nex = document.getElementById("nex");
   const spin = document.getElementById("spin");
@@ -421,9 +441,9 @@ temp.accountant = function() {
       const input_pass = document.getElementById("pass");
       const spun = document.getElementById("spun");
       let valid2 = yes;
-      input_user.addEventListener("keydown", function(event) {
+      input_user_listener = function(event) {
         if (event.code === "Enter") input_pass.focus();
-      });
+      };
       if (!yes) {
         const input_pass2 = document.getElementById("pass2");
         function same() {
@@ -485,7 +505,7 @@ temp.accountant = function() {
     }
   }
   next();
-  input_user.addEventListener("input", next);
+  // input_user.addEventListener("input", next);
   temp.account.on();
 };
 

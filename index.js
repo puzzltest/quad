@@ -1,3 +1,5 @@
+// reading any part of the source code is not required for any puzzle
+
 import { camera } from "./camera.js";
 import { firebase, temp, the_id, VERSION } from "./database.js";
 import { map } from "./map.js";
@@ -16,6 +18,7 @@ export const v = {
   width: 0,
   height: 0,
   mobile: false,
+  map_done: false,
   logged_in: false,
   time: 0,
   realtime: 0,

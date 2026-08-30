@@ -128,9 +128,9 @@ camera.draw = function() {
   for (const other_id in player.others) {
     if (other_id === the_id) continue;
     const other = player.others[other_id];
-    if (other.z == player.z && other.m === map.name) {
+    if ((other.z ?? 0) == player.z && (other.m ?? "new") === map.name) {
       const [ox, oy] = camera.convert(other.x, other.y);
-      player_theme.other(ox, oy, size * player.size, size * player.size, other);
+      player_theme.other(other.s ?? "normal", ox, oy, size * player.size, size * player.size, other);
     }
   };
 
@@ -139,9 +139,9 @@ camera.draw = function() {
   const oo = map.get_object(player.x + player.dx, player.y + player.dy, player.z) ?? map.get_object(player.x, player.y, player.z);
   if (oo && oo.invisible !== 2) { // (draw outline first)
     const [xx2, yy2] = camera.convert(oo?.x, oo?.y);
-    player_theme.outline(xx2, yy2, size, size);
+    player_theme.outline(player.skin, xx2, yy2, size, size);
   }
-  player_theme[player.mode](xx, yy, size * player.size, size * player.size);
+  player_theme.player(player.skin, xx, yy, size * player.size, size * player.size);
 
   ctx.restore();
 
@@ -674,7 +674,7 @@ export const mini_theme = {
 };
 
 export const player_theme = {
-  normal: function(x, y, w, h) {
+  player: function(s, x, y, w, h) {
     if (map.panel_ref.active || map.panel_ref.map.active) return;
     ctx.fillStyle = "#eee";
     draw.rectangle(x, y, w, h);
@@ -710,7 +710,7 @@ export const player_theme = {
       ctx.fill();
     }
   },
-  outline: function(x, y, w, h) {
+  outline: function(s, x, y, w, h) {
     if (map.panel_ref.active || map.panel_ref.map.active) return;
     ctx.strokeStyle = "#e448";
     ctx.lineWidth = Math.max(1, view.size * 0.003);
@@ -721,7 +721,7 @@ export const player_theme = {
     //   player.act();
     // }
   },
-  other: function(x, y, w, h, o) {
+  other: function(s, x, y, w, h, o) {
     ctx.fillStyle = "#eee8";
     draw.rectangle(x, y, w, h);
     ctx.fill();
@@ -729,7 +729,16 @@ export const player_theme = {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     draw.set_font(w * 0.45);
-    ctx.fillText(o.p, x, y, w, h);
+    ctx.fillText(o.p ?? 0, x, y);
+    // draw name
+    if (o.n) {
+      ctx.fillStyle = "#eee8";
+      draw.rectangle(x, y + h * 0.55, w * 0.15 * (1 + o.n.length), h * 0.1);
+      ctx.fill();
+      ctx.fillStyle = "#1118";
+      draw.set_font(w * 0.2);
+      ctx.fillText(o.n, x, y + h * 0.5);
+    }
     // draw emoji
     if (o.e) {
       player_theme.emoji(x, y, w, h, Math.floor(o.e / 1000), o.e % 1000);

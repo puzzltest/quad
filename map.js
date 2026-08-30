@@ -1579,7 +1579,7 @@ export const map = {
     for (const pid of door.panels ?? []) {
       const pane = map.get_panel(pid)?.panel;
       if (!pane) {
-        if (map.get_star(pid)?.collected) number++;
+        if (map.get_star(pid)?.star?.collected) number++;
         continue;
       }
       const corr = (door.rule === "solved" ? pane?.solved : pane?.correct) === true;
@@ -1648,11 +1648,11 @@ export const map = {
 
   loaded: false,
 
-  load: function(raw) {
+  load: function(raw, skip_player = false) {
     try {
       map.loaded = false;
       if (map.name === "old") {
-        map.load_(zipson.parse(raw));
+        map.load_(zipson.parse(raw), skip_player);
         map.loaded = true;
         return true;
       } else {
@@ -1663,7 +1663,7 @@ export const map = {
             panels: {}, signs: {}, stars: [],
           });
         } else {
-          map.load_(JSON.parse(util.decompress(raw)));
+          map.load_(JSON.parse(util.decompress(raw)), skip_player);
         }
         map.loaded = true;
         return true;
@@ -1674,9 +1674,9 @@ export const map = {
     }
   },
 
-  load_: function(o) {
+  load_: function(o, skip_player) {
     const save = o;
-    map.player_ref.load(save.player);
+    if (!skip_player) map.player_ref.load(save.player);
     for (const pid in panel_lookup) {
       try {
         const o = map.get_panel(pid);
@@ -1726,13 +1726,14 @@ export const map = {
       if (!map.get_star(asteroid)) continue;
       if (!map.stars_collected.includes(asteroid)) map.stars_collected.push(asteroid);
       map.get_star(asteroid).star.collected = true;
+      map.panel_ref.update_doors(map.get_doors(asteroid));
     }
     map.panel_ref.update_doors(map.get_doors("star"));
     // map.visited.clear();
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);
     }
-    map.markers = save.markers ?? []; // todo merge markers too? (but how)
+    if (!skip_player) map.markers = save.markers ?? []; // todo merge markers too? (but how)
   },
 
   init_tiles: function() {
