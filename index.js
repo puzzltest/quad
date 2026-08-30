@@ -446,7 +446,6 @@ const mouse_handler = function(event) {
 };
 
 const touchend_handler = function(event) {
-  if (v.block) return;
   for (const touch of event.changedTouches) {
     delete mouse.start_point[touch.identifier];
     delete mouse.hold_time[touch.identifier];
@@ -454,7 +453,6 @@ const touchend_handler = function(event) {
 };
 
 const mouseup_handler = function(event) {
-  if (v.block) return;
   delete mouse.start_point[-1];
   delete mouse.hold_time[-1];
 };

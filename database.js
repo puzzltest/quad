@@ -28,7 +28,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120000; // remember to change...
+export const VERSION = 120001; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -334,6 +334,10 @@ temp.account = {
       }
     });
   },
+  on: function() {
+    player.act_time = -1;
+    temp.account.active = true;
+  },
   off: function() {
     document.getElementById("account").remove();
     temp.account.active = false;
@@ -356,12 +360,14 @@ temp.accountant = function() {
   div.id = "account";
   div.innerHTML = `
     <div id="one">
+    <form>
     <input type="text" style="display: none;">
     <input type="password" style="display: none;">
     <h2></h2>
     <p>username: <input id="user" type="text" placeholder="" autocomplete="qat"><br style="margin: 0.6em;"><span id="spin"></span></p>
     <p id="nex"></p>
     <p><input id="close" type="button" value="close"></p>
+    </form>
     </div><div id="two"></div>
   `.trim();
   document.body.appendChild(div);
@@ -391,7 +397,7 @@ temp.accountant = function() {
       if (yes) {
         h2.textContent = "log in";
         nex.innerHTML = `
-          password: <input id="pass" type="password">
+          password: <input id="pass" type="password" autocomplete="current-password">
           <br>
           <span id="spin"></span>
           <br style="margin: 0.6em;">
@@ -400,9 +406,9 @@ temp.accountant = function() {
       } else {
         h2.textContent = "register";
         nex.innerHTML = `
-          &nbsp; &nbsp; &nbsp; &nbsp; password: <input id="pass" type="password">
+          &nbsp; &nbsp; &nbsp; &nbsp; password: <input id="pass" type="password" autocomplete="new-password">
           <br style="margin: 0.6em;">
-          password (again): <input id="pass2" type="password">
+          password (again): <input id="pass2" type="password" autocomplete="new-password">
           <br>
           <span id="spun"></span>
           <br style="margin: 0.6em;">
@@ -477,7 +483,7 @@ temp.accountant = function() {
   }
   next();
   input_user.addEventListener("input", next);
-  temp.account.active = true;
+  temp.account.on();
 };
 
 temp.accountbear = function() {
@@ -498,7 +504,7 @@ temp.accountbear = function() {
       temp.accountant();
     });
   });
-  temp.account.active = true;
+  temp.account.on();
 };
 
 temp.accountcow = function() {
@@ -526,6 +532,7 @@ temp.accountcow = function() {
       else return b.s - a.s;
     });
     const tbody = document.querySelector("tbody");
+    tbody.innerHTML = "";
     let i = 0;
     for (const o of leaderboard) {
       const tr = document.createElement("tr");
@@ -534,13 +541,16 @@ temp.accountcow = function() {
       tbody.appendChild(tr);
     }
   });
-  document.getElementById("close").addEventListener("click", temp.account.off_lb);
   function lb_keydown(event) {
     if (event.code === "Escape" || event.code === "Enter" || event.code === "Space") {
       temp.account.off_lb();
       window.removeEventListener("keydown", lb_keydown);
     }
   }
+  document.getElementById("close").addEventListener("click", function(_) {
+    temp.account.off_lb();
+    window.removeEventListener("keydown", lb_keydown);
+  });
   window.addEventListener("keydown", lb_keydown);
-  temp.account.active = true;
+  temp.account.on();
 };
