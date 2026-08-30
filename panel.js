@@ -6,6 +6,7 @@ import { util } from "./util.js";
 import { temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
 import { english10, english20, english35, english40, english50 } from 'https://cdn.jsdelivr.net/npm/wordlist-js@2.0.0/+esm';
+import { particle } from "./particle.js";
 
 export const panel = {
   x: 0,
@@ -1679,30 +1680,54 @@ symbol_functions.arrow_down = function(o) {
   map.physics_ref.move_player(0, 50 * player.speed);
 };
 
-symbol_functions.save = function() {
-  const current_code = localStorage.getItem("code");
-  if (current_code) {
-    const new_save = !window.confirm("save to code: '" + current_code + "'? (cancel to make new save)");
-    if (new_save) window.prompt("new save created! copy this:", temp.save(the_id));
-    else window.alert("saved to " + temp.save(current_code));
+symbol_functions.save = async function(o) {
+  if (map.name === "old") {
+    const current_code = localStorage.getItem("code");
+    if (current_code) {
+      const new_save = !window.confirm("save to code: '" + current_code + "'? (cancel to make new save)");
+      if (new_save) window.prompt("new save created! copy this:", temp.save(the_id));
+      else window.alert("saved to " + temp.save(current_code));
+    } else {
+      if (window.confirm("create a new save?")) window.prompt("saved! copy this:", temp.save(the_id));
+    }
   } else {
-    if (window.confirm("create a new save?")) window.prompt("saved! copy this:", temp.save(the_id));
+    await temp.account.save();
+    for (let i = 0; i < 10; i++) {
+      particle.create({
+        type: "ring",
+        x: o.x,
+        y: o.y,
+        o: 1,
+        r: camera.size / 2,
+        vr: 5 + i,
+        rvr: 0,
+        vo: -0.02 - 0.002 * i,
+        stroke: "lime",
+        linewidth: camera.size * 0.1,
+      });
+    }
   }
 };
 
 symbol_functions.load = function() {
-  const code = window.prompt("load from 10-letter code:", localStorage.getItem("code"));
-  if (!code) return;
-  if ((code?.length ?? 0) !== 10) {
-    window.alert("not 10 letters!");
-    return;
+  if (map.name === "old") {
+    const code = window.prompt("load from 10-letter code:", localStorage.getItem("code"));
+    if (!code) return;
+    if ((code?.length ?? 0) !== 10) {
+      window.alert("not 10 letters!");
+      return;
+    }
+    temp.load(code);
+  } else {
+    // hmmm
   }
-  temp.load(code);
 };
 
 symbol_functions.account = function() {
-  if (window.confirm("open google pop-up?")) {
-    // todo
+  if (temp.account.logged_in) {
+    temp.accountbear();
+  } else {
+    temp.accountant();
   }
 };
 
@@ -1712,6 +1737,10 @@ symbol_functions.map = function() {
   panel.map.y = player.y;
   panel.map.z = player.z;
   panel.map.static = true;
+};
+
+symbol_functions.leaderboard = function() {
+  temp.accountcow();
 };
 
 symbol_functions.art_test = function(o) {
@@ -1754,8 +1783,18 @@ symbol_functions.art_pipe = function(o) {
 };
 
 symbol_functions.art_click = function(o) {
-  panel.talk.text = ["did you know... you can click-", "oops i forgit.", "click on yourself [˙-˙] for a pop up!"];
+  panel.talk.text = ["did you know... you can click-", "(oh i forgot what to say.)", "click on yourself [˙-˙] for a pop up!"];
   panel.talk.toggle(o);
+};
+
+door_custom.door_start_1234 = function(door) {
+  const answers = [0, "000\n001\n000", "000\n001\n010", "010\n001\n010", "010\n101\n010"];
+  for (let i = 1; i <= 4; i++) {
+    if (!panel.check_answer(map.get_panel("start_t_" + i).panel.state, answers[i].split("\n"))) {
+      return false;
+    }
+  }
+  return true;
 };
 
 door_custom.door_0_1234 = function(door) {

@@ -1578,6 +1578,10 @@ export const map = {
     let number = 0;
     for (const pid of door.panels ?? []) {
       const pane = map.get_panel(pid)?.panel;
+      if (!pane) {
+        if (map.get_star(pid)?.collected) number++;
+        continue;
+      }
       const corr = (door.rule === "solved" ? pane?.solved : pane?.correct) === true;
       if (corr) number++;
     }
@@ -1610,16 +1614,19 @@ export const map = {
       visited: [...map.visited],
       markers: [...map.markers],
       panels: {},
-      signs: {},
+      // signs: {},
       stars: map.stars_collected,
     };
     for (const pid in panel_lookup) {
       const o = map.get_panel(pid);
       const p = o.panel;
-      const panelsave = {
-        state: p.state,
-        solved: p.solved,
-      };
+      const panelsave = {};
+      if (p.solved) {
+        panelsave.solved = p.solved;
+      }
+      if (p.state.flat().includes(1)) {
+        panelsave.state = p.state;
+      }
       if (p.lock.flat().includes(1)) {
         panelsave.lock = p.lock;
       }
@@ -1631,11 +1638,12 @@ export const map = {
     if (map.name === "old") {
       const zipped = zipson.stringify(save);
       localStorage.setItem("save", zipped);
+      return "";
     } else {
       const compressed = util.compress(JSON.stringify(save));
       localStorage.setItem("save_" + map.name, compressed);
+      return compressed;
     }
-    return true;
   },
 
   loaded: false,
@@ -1666,8 +1674,8 @@ export const map = {
     }
   },
 
-  load_: function(raw) {
-    const save = raw;
+  load_: function(o) {
+    const save = o;
     map.player_ref.load(save.player);
     for (const pid in panel_lookup) {
       try {
@@ -1699,7 +1707,7 @@ export const map = {
             p.lock.push(temp);
           }
         }
-        if (!p?.solved && !p?.revoke && s?.solved) { // todo add a save version, and check if save version < revoke version (outdated), else don't revoke
+        if (!p?.solved && !p?.revoke && s?.solved) { // todo add a save version (hmm)
           p.solved = true;
           map.panel_ref.total_solved++;
         }
@@ -1713,18 +1721,18 @@ export const map = {
     }
     map.panel_ref.update_doors(Object.values(panel_lookup));
     map.panel_ref.update_doors(Object.values(door_lookup));
-    map.stars_collected = [];
+    // map.stars_collected = [];
     for (const asteroid of save.stars ?? []) {
       if (!map.get_star(asteroid)) continue;
-      map.stars_collected.push(asteroid);
+      if (!map.stars_collected.includes(asteroid)) map.stars_collected.push(asteroid);
       map.get_star(asteroid).star.collected = true;
     }
     map.panel_ref.update_doors(map.get_doors("star"));
-    map.visited.clear();
+    // map.visited.clear();
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);
     }
-    map.markers = save.markers ?? [];
+    map.markers = save.markers ?? []; // todo merge markers too? (but how)
   },
 
   init_tiles: function() {

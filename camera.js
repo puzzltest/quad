@@ -247,6 +247,7 @@ export const theme = {
       ctx.fillStyle = o.symbol?.fill ?? "#eee";
       const t = o.symbol.type;
       if (svg[t]) {
+        if (t === "save" && !v.logged_in) return;
         draw.svg(t, x, y, w);
       } else {
         draw.art(t.substring(4), x, y, w);
@@ -715,10 +716,10 @@ export const player_theme = {
     ctx.lineWidth = Math.max(1, view.size * 0.003);
     draw.rectangle(x, y, w, h);
     ctx.stroke();
-    const check = mouse.check();
-    if (check) {
-      player.act();
-    }
+    // const check = mouse.check();
+    // if (check) {
+    //   player.act();
+    // }
   },
   other: function(x, y, w, h, o) {
     ctx.fillStyle = "#eee8";

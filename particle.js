@@ -21,13 +21,14 @@ particle.tick = function() {
       p.delay -= 1;
       continue;
     }
+    p.o += p.vo;
     p.x += p.vx;
     p.y += p.vy;
     p.a += p.va + Math.PI * 2;
     p.a %= Math.PI * 2;
     p.r += p.vr;
     p.t -= 1;
-    if ((p.t <= 0 && p.t > -1) || p.r <= 0 || p.r > Math.max(v.width, v.height) /*|| p.x + p.r < 0 || p.y + p.r < 0 || p.x - p.r > v.width || p.y - p.r > v.height*/) { // wow what a long line
+    if ((p.t <= 0 && p.t > -1) || p.r <= 0 || p.r > Math.max(v.width, v.height) || p.o <= 0 || p.o > 1.01 /*|| p.x + p.r < 0 || p.y + p.r < 0 || p.x - p.r > v.width || p.y - p.r > v.height*/) { // wow what a long line
       p.active = false;
     }
   }
@@ -38,14 +39,17 @@ particle.draw = function() {
   ctx.save();
   draw.rect(view.x, view.y, view.size, view.size);
   ctx.clip();
+  ctx.globalAlpha = 1;
   for (const p of particles) {
     if (p.delay > 0) continue;
     if (p.fill) ctx.fillStyle = p.fill;
     if (p.stroke) ctx.strokeStyle = p.stroke;
+    if (p.linewidth) ctx.lineWidth = p.linewidth;
     let { x, y } = p;
     if (p.coordinates === "camera") {
       [ x, y ] = camera.convert(x, y);
     }
+    ctx.globalAlpha = p.o;
     if (p.type === "square") {
       draw.polygon(4, x, y, p.r, p.a);
       ctx.fill();
@@ -75,13 +79,15 @@ particle.create = function(o) {
     coordinates: o.coord ?? "camera",
     x: o.x,
     y: o.y,
-    a: o.a || 0,
     r: o.r ?? o.size / 2,
+    a: o.a || 0,
     t: o.t ?? -1,
+    o: o.o ?? 1,
     vx: (o.vx || 0),
     vy: (o.vy || 0),
-    va: (o.va || 0),
     vr: (o.vr || 0),
+    va: (o.va || 0),
+    vo: (o.vo || 0),
     fill: o.fill ?? undefined,
     stroke: o.stroke ?? undefined,
     linewidth: o.linewidth ?? 1,

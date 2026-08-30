@@ -16,11 +16,15 @@ export const v = {
   width: 0,
   height: 0,
   mobile: false,
+  logged_in: false,
   time: 0,
   realtime: 0,
   button_press: {},
   button_time: {},
   keys: {},
+  get block() {
+    return temp.account.active;
+  },
 };
 
 export const view = {
@@ -69,6 +73,7 @@ const init = async function() {
   requestAnimationFrame(tick);
   // load
   init_load();
+  temp.account.init();
   firebase.init_map();
 };
 
@@ -365,6 +370,7 @@ const resize = function() {
 };
 
 const touchstart_handler = function(event) {
+  if (v.block) return;
   event.preventDefault();
   for (const touch of event.changedTouches) {
     const o = {
@@ -379,6 +385,7 @@ const touchstart_handler = function(event) {
 };
 
 const mousedown_handler = function(event) {
+  if (v.block) return;
   const o = {
     x: event.clientX * v.ratio,
     y: event.clientY * v.ratio,
@@ -394,6 +401,7 @@ const mousedown_handler = function(event) {
 };
 
 const touch_handler = function(event) {
+  if (v.block) return;
   event.preventDefault();
   mouse.touches = [];
   for (const touch of event.touches) {
@@ -418,6 +426,7 @@ const touch_handler = function(event) {
 };
 
 const mouse_handler = function(event) {
+  if (v.block) return;
   if (event.buttons & 2) panel.lock_mode = true;
   else panel.lock_mode = false;
   mouse.touches = [[event.clientX * v.ratio, event.clientY * v.ratio, -1]];
@@ -437,6 +446,7 @@ const mouse_handler = function(event) {
 };
 
 const touchend_handler = function(event) {
+  if (v.block) return;
   for (const touch of event.changedTouches) {
     delete mouse.start_point[touch.identifier];
     delete mouse.hold_time[touch.identifier];
@@ -444,11 +454,16 @@ const touchend_handler = function(event) {
 };
 
 const mouseup_handler = function(event) {
+  if (v.block) return;
   delete mouse.start_point[-1];
   delete mouse.hold_time[-1];
 };
 
 const keydown = function(event) {
+  if (v.block) {
+    if (event.code === "Escape") temp.account.off();
+    return;
+  }
   const no_mod = !event.ctrlKey && !event.metaKey && !event.altKey;
   if (no_mod) event.preventDefault();
   if (event.repeat) return;
@@ -460,7 +475,8 @@ const keydown = function(event) {
     if (panel.map.active) {
       panel.map.active = false;
     } else {
-      player.act2();
+      if (player.self_active) player.self(false);
+      player.act2(true);
     }
   }
   if ((event.code === "Space" || event.code === "Enter") && no_mod) {
@@ -481,6 +497,7 @@ const keyup = function(event) {
 };
 
 const key_tick = function(event) {
+  if (v.block) return;
   let dx = 0;
   let dy = 0;
   if (v.keys.ArrowLeft || v.keys.KeyA) {

@@ -221,12 +221,13 @@ export const player = {
       return false;
     }
   },
-  act2: function() {
+  act2: function(is_map = false) {
     if (player.paused) return;
     const { x, y, z } = player.xyz;
     const o = map.get_object(x, y, z);
-    if (o && o.symbol?.type === "art_flower_") {
-      player.set_position(o.x, o.y, o.z + 1);
+    if (!is_map && o && o.symbol?.type?.startsWith("art_flower_")) {
+      const dz = o.symbol.dz ?? 1;
+      player.set_position(o.x, o.y, o.z + dz);
       player.act_time = -1;
     }
     else {
