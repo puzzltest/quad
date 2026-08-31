@@ -1,6 +1,6 @@
 // import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove, onChildAdded, onChildChanged, onChildRemoved } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { getAuth, onAuthStateChanged, updateProfile, EmailAuthProvider, updateEmail, getAdditionalUserInfo, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import { reinit_everything, map } from "./map.js";
 import { util } from "./util.js";
@@ -28,7 +28,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120100; // remember to change...
+export const VERSION = 120200; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -38,7 +38,7 @@ function connect() {
   firebase.increment("/quad/connections", 1);
   firebase.disconnect_increment("/quad/connections", -1);
   firebase.disconnect_remove("/quad/positions/" + the_id);
-  firebase.listen("/quad/positions/", function(positions) {
+  firebase.listen_child("/quad/positions/", function(positions) {
     firebase.others = positions;
   });
   firebase.listen("/quad/version/", function(new_ver) {
@@ -78,19 +78,42 @@ function connect() {
     }
   });
 
-  firebase.listen = function(path, listener) {
+  firebase.listen = function(path, listener, error_function = console.error) {
     return onValue(ref(db, path), (snapshot) => {
       listener(snapshot.val());
-    }, console.error);
-  }
+    }, error_function);
+  };
 
-  firebase.get = function(path, getter_function) {
+  firebase.listen_child = function(path, listener, error_function = console.error) {
+    const result = {};
+    const reference = ref(db, path);
+    const removefn1 = onChildAdded(reference, (snapshot) => {
+      result[snapshot.key] = snapshot.val();
+      listener(result);
+    }, error_function);
+    const removefn2 = onChildChanged(reference, (snapshot) => {
+      result[snapshot.key] = snapshot.val();
+      listener(result);
+    }, error_function);
+    const removefn3 = onChildRemoved(reference, (snapshot) => {
+      delete result[snapshot.key];
+      listener(result);
+    }, error_function);
+    listener(result);
+    return function() {
+      removefn1();
+      removefn2();
+      removefn3();
+    };
+  };
+
+  firebase.get = function(path, getter_function, error_function = console.error) {
     return onValue(ref(db, path), (snapshot) => {
       getter_function(snapshot.val());
-    }, {
+    }, error_function, {
       onlyOnce: true,
     });
-  }
+  };
 
   firebase.promise_get = async function(path, getter_function) {
     return new Promise((resolve, reject) => {
@@ -99,6 +122,8 @@ function connect() {
           getter_function(data);
         }
         resolve(data);
+      }, function(error) {
+        reject(error);
       });
     });
   }
@@ -167,7 +192,7 @@ firebase.tick = function(time) {
   }
   if (time - firebase.update3_time > 30000) {
     firebase.update3_time = time;
-    if (temp.account.logged_in) temp.account.save();
+    if (temp.account.logged_in) temp.account.save(false);
   }
   // if (time - firebase.update4_time > 3000) {
   //   firebase.update4_time = time;
@@ -282,27 +307,57 @@ temp.load = function(code = false) {
 temp.account = {
   active: false,
   user: null,
-  data: null,
+  data: {},
   after_auth_fns: [],
   get logged_in() {
     return temp.account.user != null;
   },
-  save: async function() {
+  lb_progress: -1,
+  puzls: new Set(),
+  save: async function(big = false) {
     if (!v.map_done || !map.loaded || !temp.account.data?.name) return false;
     const uid = temp.account.user?.uid;
     if (!uid) return false;
+    const username = temp.account.data?.name;
     if (map.name === "old") return false;
-    await firebase.set(`/qac/users/${uid}/saves/${map.name}`, map.save());
-    await firebase.set(`/qac/lb/${map.name}/${uid}/`, { n: temp.account.data.name, p: panel.total_solved, s: map.total_stars });
+    const lb_progress = panel.total_solved + map.total_stars;
+    const d = temp.account.data;
+    if (big || lb_progress > temp.account.lb_progress && d.name) {
+      await firebase.set(`/qac/lb/${map.name}/${uid}/`, { n: d.name, p: panel.total_solved, s: map.total_stars });
+      const map_save = map.save();
+      await firebase.set(`/qac/users/${uid}/saves/${map.name}`, map_save);
+      if (!d.saves) d.saves = {};
+      d.saves[map.name] = map_save;
+      const solved_pids = map.solved_panel_ids, uploaded_solved_pids = [...temp.account.puzls];
+      for (const pid of solved_pids) {
+        if (temp.account.puzls.has(pid)) continue;
+        await firebase.set(`/qac/puzls/${map.name}__${pid}/${username}`, serverTimestamp());
+        temp.account.puzls.add(pid);
+        uploaded_solved_pids.push(pid);
+      }
+      await firebase.set(`/qac/users/${uid}/puzls/${map.name}`, uploaded_solved_pids);
+      if (!d.puzls) d.puzls = {};
+      d.puzls[map.name] = uploaded_solved_pids;
+      temp.account.lb_progress = lb_progress;
+    }
     return true;
   },
   load: async function() { // also saves
     const uid = temp.account.user?.uid;
     if (!uid) return false;
+    temp.account.load_puzls();
     const save = temp.account.data?.saves?.[map.name];
     if (!save) return false;
     if (!map.load(save, true)) return false;
     return true;
+  },
+  load_puzls: function() {
+    const uid = temp.account.user?.uid;
+    if (!uid) return false;
+    temp.account.puzls.clear();
+    for (const pid of temp.account.data?.puzls?.[map.name] ?? []) {
+      temp.account.puzls.add(pid);
+    }
   },
   register_unpw: function(username, password, then_fn, error_fn = console.error) {
     const email = username + "@qat.pages.dev";
@@ -311,8 +366,9 @@ temp.account = {
         const user = cred.user;
         try {
           await firebase.set(`/qac/users/${user.uid}/name`, username);
+          temp.account.data.name = username;
           await firebase.set(`/qac/names/${username.toLowerCase()}`, user.uid);
-          await temp.account.save();
+          await temp.account.save(true);
           then_fn?.();
         } catch (e) { error_fn(e); }
       }).catch(error_fn);
@@ -332,8 +388,10 @@ temp.account = {
       }).catch(error_fn);
   },
   logout: async function(then_fn, error_fn = console.error) {
-    await temp.account.save();
+    await temp.account.save(true);
     signOut(auth).then(() => {
+      temp.account.lb_progress = -1;
+      temp.account.puzls.clear();
       then_fn?.();
     }).catch(error_fn);
   },
@@ -342,13 +400,14 @@ temp.account = {
       temp.account.user = u;
       v.logged_in = temp.account.logged_in;
       if (u == null) return;
-      firebase.listen(`/qac/users/${u.uid}/`, async function(data) {
+      firebase.get(`/qac/users/${u.uid}/`, async function(data) {
         if (!data) return;
-        if (temp.account.data == null && v.map_done) {
+        if (temp.account.data?.name == null && v.map_done) {
           temp.account.data = data;
-          if (await temp.account.load()) await temp.account.save();
+          if (await temp.account.load()) await temp.account.save(true);
         } else {
           temp.account.data = data;
+          temp.account.load_puzls();
         }
       });
     });
@@ -364,7 +423,7 @@ temp.account = {
   },
   lb_l: null,
   on_lb: function(then_fn) {
-    temp.account.lb_l = firebase.listen(`/qac/lb/${map.name}/`, function(lb) {
+    temp.account.lb_l = firebase.listen_child(`/qac/lb/${map.name}/`, function(lb) {
       then_fn?.(lb);
     });
   },
@@ -546,7 +605,7 @@ temp.accountcow = function() {
     </table>
   `.trim();
   document.body.appendChild(div);
-  temp.account.on_lb(function(lb) {
+  function generate(lb) {
     const leaderboard = [];
     for (const uid in lb) {
       const o = lb[uid];
@@ -557,14 +616,24 @@ temp.accountcow = function() {
       else return b.s - a.s;
     });
     const tbody = document.querySelector("tbody");
+    if (!tbody) return;
     tbody.innerHTML = "";
     let i = 0;
     for (const o of leaderboard) {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${++i}</td><td>${o.n}</td><td>${o.p}</td><td>${o.s}</td>`;
+      for (const s of [++i, o.n, o.p, o.s]) {
+        const td = document.createElement("td");
+        td.textContent = `${s}`;
+        tr.appendChild(td);
+      }
       if (o.uid === temp.account.user?.uid) tr.classList.add("you");
       tbody.appendChild(tr);
     }
+  };
+  let tout = null;
+  temp.account.on_lb(function(lb) {
+    if (tout) clearTimeout(tout);
+    tout = setTimeout(() => { tout = null; generate(lb) }, 100); // ms
   });
   function lb_keydown(event) {
     if (event.code === "Escape" || event.code === "Enter" || event.code === "Space") {

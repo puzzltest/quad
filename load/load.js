@@ -56,7 +56,7 @@ window.addEventListener("load", async function(event) {
   });
   const div = document.querySelector("div");
   const span = document.querySelector("span");
-  firebase.listen("/quad/positions/", function(data) {
+  firebase.listen_child("/quad/positions/", function(data) {
     let s = "";
     for (const id in data) {
       const o = data[id];

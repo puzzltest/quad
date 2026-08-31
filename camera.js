@@ -171,10 +171,24 @@ camera.draw = function() {
     draw.set_font(view.size * 0.045, "bold");
     ctx.fillText(`🧩 ${map.panel_ref?.total_solved}` + `/${map.solvable_panels}`, view.cx + view.size * 0.58, view.cy - view.size * 0.56);
   }
-  if (map.total_stars > 0) {
+  if (map.total_stars > 0 || map.panel_ref.active) {
     ctx.textAlign = "left";
     draw.set_font(view.size * 0.045, "bold");
-    ctx.fillText(map.panel_ref.map.active ? `🟢 ${map.total_stars - map.markers.length}` : `⭐ ${map.total_stars}`, view.cx - view.size * 0.58, view.cy - view.size * 0.56);
+    let left_str = "";
+    if (map.panel_ref.map.active) {
+      left_str = `🟢 ${map.total_stars - map.markers.length}`;
+    } else if (map.panel_ref.active) {
+      left_str = `👥 ${map.panel_ref.lb.length}`;
+    } else {
+      left_str = `⭐ ${map.total_stars}`;
+    }
+    ctx.fillText(left_str, view.cx - view.size * 0.58, view.cy - view.size * 0.56);
+    ctx.beginPath();
+    ctx.rect(view.cx - view.size * 0.625, view.cy - view.size * 0.625, view.size * 0.3, view.size * 0.15);
+    const check = mouse.check();
+    if (check) {
+      // todo click on it
+    }
   }
   const players = Object.keys(player?.others ?? {})?.length ?? 0;
   if (players > 0) {

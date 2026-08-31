@@ -486,6 +486,9 @@ const keydown = function(event) {
     // if (panel.map.active) player.add_map_marker();
     player.act();
   }
+  if (event.code === "Escape" && no_mod) {
+    if (panel.active || panel.map.active || player.self_active) player.act();
+  }
   v.keys[event.code] = true;
   // teleport...
   if (util.is_local() && event.code === "KeyT") {

@@ -3,7 +3,7 @@ import { camera, mini_theme } from "./camera.js";
 import { map, objects } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
-import { temp, the_id } from "./database.js";
+import { firebase, temp, the_id } from "./database.js";
 import { draw } from "./draw.js";
 import { english10, english20, english35, english40, english50 } from 'https://cdn.jsdelivr.net/npm/wordlist-js@2.0.0/+esm';
 import { particle } from "./particle.js";
@@ -22,6 +22,12 @@ export const panel = {
   touch_state: {},
   words: new Set(),
   words_loaded: false,
+  lb: [],
+  lbfn: {
+    f: null,
+    t: null,
+    id: "",
+  },
   sign: {
     active: false,
     time: 0,
@@ -87,11 +93,37 @@ panel.activate = function() {
     if (!panel.randomizer.load(p.id)) {
       panel.active = false;
       panel.deactivate();
+      return;
       // panel.o.panel.correct = false;
       // panel.update_correct();
       // panel.o = null;
     }
   }
+  if (panel.lbfn.t) {
+    clearTimeout(panel.lbfn.t);
+    panel.lbfn.t = null;
+  }
+  if (panel.lbfn.id !== p.id || panel.lbfn.f == null) {
+    panel.lbfn.f?.();
+    panel.lbfn.id = p.id;
+    panel.lbfn.f = firebase.listen_child(`/qac/puzls/${map.name}__${p.id}/`, function(lb) {
+      panel.lb = [];
+      for (const name in lb) {
+        panel.lb.push({ name, time: lb[name], });
+      }
+    });
+  }
+};
+
+panel.deactivate = function() {
+  clearTimeout(panel.lbfn.t);
+  panel.lbfn.t = setTimeout(function() {
+    panel.lbfn.f?.();
+    panel.lbfn.f = null;
+    panel.lbfn.t = null;
+    panel.lbfn.id = null;
+    panel.lb = [];
+  }, 30000);
 };
 
 panel.clearstate = function() {
@@ -104,10 +136,6 @@ panel.clearstate = function() {
       }
     }
   }
-};
-
-panel.deactivate = function() {
-
 };
 
 panel.sign.toggle = function(o) {
@@ -1691,7 +1719,7 @@ symbol_functions.save = async function(o) {
       if (window.confirm("create a new save?")) window.prompt("saved! copy this:", temp.save(the_id));
     }
   } else {
-    const success = await temp.account.save();
+    const success = await temp.account.save(true);
     if (!success) return;
     for (let i = 0; i < 10; i++) {
       particle.create({

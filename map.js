@@ -1459,6 +1459,15 @@ export const map = {
   get total_stars() {
     return this.stars_collected.length;
   },
+  get solved_panel_ids() {
+    const result = [];
+    for (const pid in panel_lookup) {
+      if (panel_lookup[pid].panel.solved) {
+        result.push(pid);
+      }
+    }
+    return result;
+  },
   init: function() {
     map.solvable_panels = 0;
     for (const pid in panel_lookup) {
