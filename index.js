@@ -49,8 +49,8 @@ export const mouse = {
   hold_time: {},
   x: false,
   y: false,
-  check: function() {
-    for (const t of mouse.newtaps.concat(mouse.newdrags)) {
+  check: function(include_drag = false) {
+    for (const t of include_drag ? mouse.newtaps.concat(mouse.newdrags) : mouse.newtaps) {
       if (!t.active) return;
       if (ctx.isPointInPath(t.x, t.y)) {
         t.active = false;

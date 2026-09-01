@@ -252,7 +252,7 @@ panel.draw = function() {
           if (locked || player.self_active) ctx.strokeStyle = "#c76";
           ctx.lineWidth = size * 0.05;
           ctx.stroke();
-          const check = mouse.check();
+          const check = mouse.check(true);
           if (check) {
             let state = panel.touch_state[check.id] ?? 1;
             if (panel.lock_mode && !player.self_active) {
@@ -799,7 +799,7 @@ panel.update_correct = function(optional_pid) {
     o.seen = true;
     if (!p.solved) {
       panel.total_solved++;
-      if (panel.hidden || panel.invisible) panel.total_solved_h++;
+      if (panel.hidden || o.invisible) panel.total_solved_h++;
       if (temp.account.data?.name) panel.lb.push({ name: temp.account.data?.name, time: 1e20 });
     }
     p.solved = true;
