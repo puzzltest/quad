@@ -23,8 +23,10 @@ export const panel = {
   words: new Set(),
   words_loaded: false,
   lb: [],
+  lb2: [],
   lbfn: {
     f: null,
+    g: null,
     t: null,
     id: "",
   },
@@ -108,21 +110,26 @@ panel.activate = function() {
     panel.lbfn.id = p.id;
     panel.lbfn.f = firebase.listen_child(`/qac/puzls/${map.name}__${p.id}/`, function(lb) {
       panel.lb = [];
+      panel.lb2 = [];
       for (const name in lb) {
-        panel.lb.push({ name, time: lb[name], });
+        const l = ["me", "example"].includes(name) ? panel.lb2 : panel.lb;
+        l.push({ name, time: lb[name], });
       }
+      panel.lbfn.g?.(panel.lb, panel.lb2);
     });
   }
 };
 
 panel.deactivate = function() {
   clearTimeout(panel.lbfn.t);
+  panel.lbfn.g = null;
   panel.lbfn.t = setTimeout(function() {
     panel.lbfn.f?.();
     panel.lbfn.f = null;
     panel.lbfn.t = null;
     panel.lbfn.id = null;
     panel.lb = [];
+    panel.lb2 = [];
   }, 30000);
 };
 
@@ -788,7 +795,10 @@ panel.update_correct = function(optional_pid) {
   const f = o.body?.getFixtureList();
   if (p.correct) {
     panel.total_correct++;
-    if (!p.solved) panel.total_solved++;
+    if (!p.solved) {
+      panel.total_solved++;
+      if (temp.account.data?.name) panel.lb.push({ name: temp.account.data?.name, time: 1e20 });
+    }
     p.solved = true;
     if (p.fresh) {
       p.solvecount = (p.solvecount ?? 0) + 1;

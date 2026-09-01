@@ -1454,6 +1454,7 @@ export const map = {
   solvable_panels: 0,
   stars_collected: [],
   markers: [],
+  marker_jump: 0,
   all_ids: new Set(),
   visited: new Set(),
   get total_stars() {

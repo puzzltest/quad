@@ -1,5 +1,5 @@
 import { ctx, mouse, v, view } from "./index.js";
-import { the_id } from "./database.js";
+import { temp, the_id } from "./database.js";
 import { map } from "./map.js";
 import { player } from "./player.js";
 import { util } from "./util.js";
@@ -187,7 +187,8 @@ camera.draw = function() {
     ctx.rect(view.cx - view.size * 0.625, view.cy - view.size * 0.625, view.size * 0.3, view.size * 0.15);
     const check = mouse.check();
     if (check) {
-      // todo click on it
+      if (map.panel_ref.active) temp.accountdog();
+      else map.marker_jump++;
     }
   }
   const players = Object.keys(player?.others ?? {})?.length ?? 0;

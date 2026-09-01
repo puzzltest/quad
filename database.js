@@ -28,7 +28,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120200; // remember to change...
+export const VERSION = 120300; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -615,7 +615,7 @@ temp.accountcow = function() {
       if (a.p !== b.p) return b.p - a.p;
       else return b.s - a.s;
     });
-    const tbody = document.querySelector("tbody");
+    const tbody = div.querySelector("tbody");
     if (!tbody) return;
     tbody.innerHTML = "";
     let i = 0;
@@ -645,6 +645,63 @@ temp.accountcow = function() {
     temp.account.off_lb();
     window.removeEventListener("keydown", lb_keydown);
   });
+  window.addEventListener("keydown", lb_keydown);
+  temp.account.on();
+};
+
+temp.accountdog = function() {
+  if (temp.account.active) return;
+  const div = document.createElement("div");
+  if (document.getElementById("account")) document.getElementById("account").remove();
+  div.id = "account";
+  div.innerHTML = `
+    <h2>solves <input id="close" type="button" value="close"> </h2>
+    <table>
+      <thead><tr>
+        <th>#</th> <th>name</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  `.trim();
+  document.body.appendChild(div);
+  function generate(lb, lb2) {
+    const leaderboard = lb.concat(lb2);
+    leaderboard.sort((a, b) => {
+      return a.time - b.time;
+    });
+    const tbody = div.querySelector("tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    let i = 0;
+    for (const o of leaderboard) {
+      const tr = document.createElement("tr");
+      for (const s of [++i, o.name]) {
+        const td = document.createElement("td");
+        td.textContent = `${s}`;
+        tr.appendChild(td);
+      }
+      if (o.name === temp.account.data?.name) tr.classList.add("you");
+      tbody.appendChild(tr);
+    }
+  };
+  let tout = null;
+  generate(panel.lb, panel.lb2);
+  panel.lbfn.g = function(lb, lb2) {
+    if (tout) clearTimeout(tout);
+    tout = setTimeout(() => { tout = null; generate(lb, lb2) }, 100); // ms
+  };
+  function off() {
+    panel.lbfn.g = null;
+    if (tout) clearTimeout(tout);
+    temp.account.off();
+    window.removeEventListener("keydown", lb_keydown);
+  }
+  function lb_keydown(event) {
+    if (event.code === "Escape" || event.code === "Enter" || event.code === "Space") {
+      off();
+    }
+  }
+  document.getElementById("close").addEventListener("click", off);
   window.addEventListener("keydown", lb_keydown);
   temp.account.on();
 };
