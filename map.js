@@ -1630,12 +1630,11 @@ export const map = {
     for (const pid in panel_lookup) {
       const o = map.get_panel(pid);
       const p = o.panel;
+      if (!o.seen) continue;
       const panelsave = {};
+      panelsave.state = p.state;
       if (p.solved) {
         panelsave.solved = p.solved;
-      }
-      if (p.state.flat().includes(1)) {
-        panelsave.state = p.state;
       }
       if (p.lock.flat().includes(1)) {
         panelsave.lock = p.lock;
@@ -1684,14 +1683,18 @@ export const map = {
     }
   },
 
-  load_: function(o, skip_player) {
+  load_: function(o, weak) {
     const save = o;
-    if (!skip_player) map.player_ref.load(save.player);
+    if (!weak) map.player_ref.load(save.player);
     for (const pid in panel_lookup) {
       try {
         const o = map.get_panel(pid);
         const p = o.panel;
         const s = save?.panels?.[pid];
+        if (s?.solvecount && (!p?.solvecount || p.solvecount < s.solvecount)) {
+          p.solvecount = s.solvecount;
+        }
+        if (weak && (p?.solved || !s?.solved)) continue;
         if (s) o.seen = true;
         if (s?.state != undefined) {
           p.state = [];
@@ -1721,9 +1724,6 @@ export const map = {
           p.solved = true;
           map.panel_ref.total_solved++;
         }
-        if (s?.solvecount) {
-          p.solvecount = s.solvecount;
-        }
         map.panel_ref.update_panel(pid);
       } catch (e) {
         console.error(e);
@@ -1743,7 +1743,7 @@ export const map = {
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);
     }
-    if (!skip_player) map.markers = save.markers ?? []; // todo merge markers too? (but how)
+    if (!weak) map.markers = save.markers ?? []; // todo merge markers too? (but how)
   },
 
   init_tiles: function() {

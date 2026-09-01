@@ -137,7 +137,7 @@ panel.clearstate = function() {
   const p = panel.o.panel;
   for (let y = 0; y < p.h; y++) {
     for (let x = 0; x < p.w; x++) {
-      p.lock[y][x] = 0;
+      if (+p.lock[y][x] == 1) continue;
       if (+p.map[y][x] == 2) {
         p.state[y][x] = 0;
       }

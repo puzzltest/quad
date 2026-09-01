@@ -747,12 +747,12 @@ export const player_theme = {
     ctx.fillText(o.p ?? 0, x, y);
     // draw name
     if (o.n) {
+      // ctx.fillStyle = "#eee8";
+      // draw.rectangle(x, y + h * 0.6, w * 0.12 * (2 + o.n.length), h * 0.2);
+      // ctx.fill();
       ctx.fillStyle = "#eee8";
-      draw.rectangle(x, y + h * 0.55, w * 0.15 * (1 + o.n.length), h * 0.1);
-      ctx.fill();
-      ctx.fillStyle = "#1118";
       draw.set_font(w * 0.2);
-      ctx.fillText(o.n, x, y + h * 0.5);
+      ctx.fillText(o.n, x, y + h * 0.6);
     }
     // draw emoji
     if (o.e) {
