@@ -13,6 +13,8 @@ export const camera = {
   ty: 0,
   scale: 0,
   smoothness: 0.09,
+  show_hidden: false,
+  marker_index: 0,
   get tscale() {
     if (map.panel_ref.talk.active) return 5;
     return map.get_scale(player.x, player.y, player.z);
@@ -169,7 +171,21 @@ camera.draw = function() {
   if (map.panel_ref.total_solved > 0) {
     ctx.textAlign = "right";
     draw.set_font(view.size * 0.045, "bold");
-    ctx.fillText(`🧩 ${map.panel_ref?.total_solved}` + `/${map.solvable_panels}`, view.cx + view.size * 0.58, view.cy - view.size * 0.56);
+    if (camera.show_hidden) {
+      ctx.save();
+      ctx.fillStyle = "#eee";
+      ctx.globalCompositeOperation = "difference";
+      ctx.fillText(`🧩 ${map.panel_ref?.total_solved}` + `/${map.solvable_panels_total}`, view.cx + view.size * 0.58, view.cy - view.size * 0.56);
+      ctx.restore();
+    } else {
+      ctx.fillText(`🧩 ${map.panel_ref?.total_solved}` + `/${map.solvable_panels}`, view.cx + view.size * 0.58, view.cy - view.size * 0.56);
+    }
+    ctx.beginPath();
+    ctx.rect(view.cx + view.size * 0.225, view.cy - view.size * 0.625, view.size * 0.4, view.size * 0.15);
+    const check = mouse.check();
+    if (check) {
+      camera.show_hidden = !camera.show_hidden;
+    }
   }
   if (map.total_stars > 0 || map.panel_ref.active) {
     ctx.textAlign = "left";
@@ -188,7 +204,7 @@ camera.draw = function() {
     const check = mouse.check();
     if (check) {
       if (map.panel_ref.active) temp.accountdog();
-      else map.marker_jump++;
+      else camera.marker_index++;
     }
   }
   const players = Object.keys(player?.others ?? {})?.length ?? 0;

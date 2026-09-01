@@ -26,6 +26,9 @@ export const util = {
   halfbounce: function(t, a) {
     return -Math.min((t % (a * 2)) - a, 0) / a;
   },
+  clamp: function(n, a, b) {
+    return Math.min(Math.max(n, a), b);
+  },
   round_to: function(n, mult) {
     return Math.round((n + Number.EPSILON) * mult) / mult;
   },

@@ -18,6 +18,7 @@ export const panel = {
   letters: {},
   lock_mode: false,
   total_solved: 0,
+  total_solved_h: 0,
   total_correct: 0,
   touch_state: {},
   words: new Set(),
@@ -795,8 +796,10 @@ panel.update_correct = function(optional_pid) {
   const f = o.body?.getFixtureList();
   if (p.correct) {
     panel.total_correct++;
+    o.seen = true;
     if (!p.solved) {
       panel.total_solved++;
+      if (panel.hidden || panel.invisible) panel.total_solved_h++;
       if (temp.account.data?.name) panel.lb.push({ name: temp.account.data?.name, time: 1e20 });
     }
     p.solved = true;

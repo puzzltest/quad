@@ -103,7 +103,7 @@ const velocityIterations = 8;
 const positionIterations = 3;
 physics.tick = function(dt = 16) {
   if (player.paused) return;
-  worlds[player.z].step(timeStep, velocityIterations, positionIterations); // Math.min(16, dt ?? 16) / 1000
+  worlds[player.z].step(util.clamp(dt, 0, 30) / 1000, velocityIterations, positionIterations); // Math.min(16, dt ?? 16) / 1000
   worlds[player.z].clearForces();
 };
 
@@ -119,5 +119,5 @@ physics.teleport_player = function(x, y, z, v) {
   if (z == undefined) z = player.z;
   player_bodies[z].setPosition(new Vec2(x, y));
   if (v != undefined) player_bodies[z].setLinearVelocity(v || new Vec2(0, 0));
-  worlds[z].clearForces();
+  worlds[z].clearForces(); // todo maybe don't clear all forces? hmmm
 };

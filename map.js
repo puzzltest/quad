@@ -1452,13 +1452,16 @@ export const map = {
   v_ref: null,
   levels: [],
   solvable_panels: 0,
+  solvable_panels_h: 0,
   stars_collected: [],
   markers: [],
-  marker_jump: 0,
   all_ids: new Set(),
   visited: new Set(),
   get total_stars() {
     return this.stars_collected.length;
+  },
+  get solvable_panels_total() {
+    return this.solvable_panels + this.solvable_panels_h;
   },
   get solved_panel_ids() {
     const result = [];
@@ -1473,7 +1476,8 @@ export const map = {
     map.solvable_panels = 0;
     for (const pid in panel_lookup) {
       if (panel_lookup[pid].panel.unsolvable) continue;
-      map.solvable_panels++;
+      if (panel_lookup[pid].panel.hidden) map.solvable_panels_h++;
+      else map.solvable_panels++;
     }
   },
   z_themes: {

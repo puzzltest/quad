@@ -354,9 +354,10 @@ const canvas_init = function() {
 };
 
 const resize = function() {
-  v.ratio = Math.min(2, window.devicePixelRatio);
   v.width = window.innerWidth;
   v.height = window.innerHeight;
+  const max_ratio = util.round_to(Math.sqrt(2500000 / v.width / v.height), 100);
+  v.ratio = Math.min(max_ratio, window.devicePixelRatio);
   canvas.width = v.width * v.ratio;
   canvas.height = v.height * v.ratio;
   ctx.scale(v.ratio, v.ratio);
