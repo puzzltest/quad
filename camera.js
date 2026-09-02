@@ -110,9 +110,10 @@ camera.draw = function() {
     if (o.invisible === 2) continue;
     if (o.invisible) {
       const d = util.distance2(player.x, player.y, o.x, o.y);
-      if (d <= 2) {
+      const n = (o.portal || o.symbol) ? 1.5 : 2;
+      if (d <= n) {
         ctx.save();
-        ctx.globalAlpha = (2 - d) / 2;
+        ctx.globalAlpha = (n - d) / n;
       } else continue;
     }
     const s = o.type;
@@ -255,10 +256,10 @@ export const theme = {
     },
     ["1"]: function(x, y, w, h, o) {
       const d = util.distance2(player.x, player.y, o.x, o.y);
-      if (d <= 1.1) {
+      if (d <= 1.35) {
         ctx.save();
         theme[map.z_themes[o.z]]["."](x, y, w, h, o);
-        ctx.globalAlpha = d / 1.1;
+        ctx.globalAlpha = d / 1.35;
         theme[map.z_themes[o.z]]["0"](x, y, w, h, o);
         ctx.restore();
       } else theme[map.z_themes[o.z]]["0"](x, y, w, h, o);

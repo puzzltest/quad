@@ -1474,6 +1474,7 @@ export const map = {
   },
   init: function() {
     map.solvable_panels = 0;
+    map.solvable_panels_h = 0;
     for (const pid in panel_lookup) {
       if (panel_lookup[pid].panel.unsolvable) continue;
       if (panel_lookup[pid].panel.hidden || panel_lookup[pid].invisible) map.solvable_panels_h++;
