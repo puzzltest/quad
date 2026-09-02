@@ -11929,7 +11929,7 @@ export const init_object = function(o) {
     o.title = sign.title;
     o.content = sign.content;
     o.fontsize = sign.fontsize > 1 ? sign.fontsize / 250 : sign.fontsize;
-    o.fontcolor = sign.fontcolor;
+    o.fontcolor = sign.fontcolor ?? "#eee";
   }
 };
 

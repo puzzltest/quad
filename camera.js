@@ -212,6 +212,12 @@ camera.draw = function() {
     ctx.textAlign = "right";
     draw.set_font(view.size * 0.045, "bold");
     ctx.fillText(`⬜ ${players}`, view.cx + view.size * 0.58, view.cy + view.size * 0.56);
+    ctx.beginPath();
+    ctx.rect(view.cx + view.size * 0.275, view.cy + view.size * 0.475, view.size * 0.35, view.size * 0.15);
+    const check = mouse.check();
+    if (check) {
+      temp.accountcow();
+    }
   }
 };
 

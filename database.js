@@ -1,13 +1,12 @@
 // import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get, update, increment, onDisconnect, runTransaction, serverTimestamp, remove, onChildAdded, onChildChanged, onChildRemoved } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-import { getAuth, onAuthStateChanged, updateProfile, EmailAuthProvider, updateEmail, getAdditionalUserInfo, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, set, onValue, update, increment, onDisconnect, runTransaction, serverTimestamp, remove, onChildAdded, onChildChanged, onChildRemoved } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import { reinit_everything, map } from "./map.js";
 import { util } from "./util.js";
 import { physics } from "./physics.js";
 import { init_load, v } from "./index.js";
 import { panel } from "./panel.js";
-import lzstring from 'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm';
 import { player } from "./player.js";
 
 const params = new URLSearchParams(document.location.search);
@@ -28,7 +27,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120303; // remember to change...
+export const VERSION = 120305; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
