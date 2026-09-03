@@ -664,7 +664,7 @@ temp.accountdog = function() {
   `.trim();
   document.body.appendChild(div);
   function generate(lb, lb2) {
-    const leaderboard = lb.concat(lb2);
+    const leaderboard = lb.length > 0 ? lb : lb.concat(lb2);
     leaderboard.sort((a, b) => {
       return a.time - b.time;
     });
