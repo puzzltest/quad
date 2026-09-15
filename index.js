@@ -534,6 +534,7 @@ const key_clear = function(event) {
 };
 
 const scroll_handler = function(event) {
+  if (document.getElementById("account")?.contains(event.target)) return;
   event.preventDefault();
   return false;
 };

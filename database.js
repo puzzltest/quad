@@ -573,10 +573,12 @@ temp.accountbear = function() {
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
   div.innerHTML = `
+  <div id="acccount">
     <h2>account</h2>
     <p>change nickname coming soon</p>
     <p><input id="logout" type="button" value="logout"></p>
     <p><input id="close" type="button" value="close"></p>
+  </div>
   `.trim();
   document.body.appendChild(div);
   document.getElementById("close").addEventListener("click", temp.account.off);
@@ -595,6 +597,7 @@ temp.accountcow = function() {
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
   div.innerHTML = `
+  <div id="acccount">
     <h2>leaderboard <input id="close" type="button" value="close"> </h2>
     <table>
       <thead><tr>
@@ -602,6 +605,7 @@ temp.accountcow = function() {
       </tr></thead>
       <tbody></tbody>
     </table>
+  </div>
   `.trim();
   document.body.appendChild(div);
   function generate(lb) {
@@ -636,14 +640,15 @@ temp.accountcow = function() {
   });
   function lb_keydown(event) {
     if (event.code === "Escape" || event.code === "Enter" || event.code === "Space") {
-      temp.account.off_lb();
-      window.removeEventListener("keydown", lb_keydown);
+      off();
     }
   }
-  document.getElementById("close").addEventListener("click", function(_) {
+  function off() {
     temp.account.off_lb();
     window.removeEventListener("keydown", lb_keydown);
-  });
+  }
+  document.getElementById("close").addEventListener("click", off);
+  div.addEventListener("click", (event) => event.target === div ? off() : false);
   window.addEventListener("keydown", lb_keydown);
   temp.account.on();
 };
@@ -654,6 +659,7 @@ temp.accountdog = function() {
   if (document.getElementById("account")) document.getElementById("account").remove();
   div.id = "account";
   div.innerHTML = `
+  <div id="acccount">
     <h2>solves <input id="close" type="button" value="close"> </h2>
     <table>
       <thead><tr>
@@ -661,6 +667,7 @@ temp.accountdog = function() {
       </tr></thead>
       <tbody></tbody>
     </table>
+  </div>
   `.trim();
   document.body.appendChild(div);
   function generate(lb, lb2) {
@@ -701,6 +708,7 @@ temp.accountdog = function() {
     }
   }
   document.getElementById("close").addEventListener("click", off);
+  div.addEventListener("click", (event) => event.target === div ? off() : false);
   window.addEventListener("keydown", lb_keydown);
   temp.account.on();
 };
