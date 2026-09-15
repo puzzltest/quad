@@ -113,7 +113,7 @@ panel.activate = function() {
       panel.lb = [];
       panel.lb2 = [];
       for (const name in lb) {
-        const l = ["me", "example"].includes(name) ? panel.lb2 : panel.lb;
+        const l = temp.account.lb_hide.includes(name) ? panel.lb2 : panel.lb;
         l.push({ name, time: lb[name], });
       }
       panel.lbfn.g?.(panel.lb, panel.lb2);

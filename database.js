@@ -27,7 +27,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120401; // remember to change...
+export const VERSION = 120402; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -311,6 +311,8 @@ temp.account = {
   get logged_in() {
     return temp.account.user != null;
   },
+  lb_hide: ["me", "example"],
+  lb_testers: ["me", "example"], // unused
   lb_progress: -1,
   puzls: new Set(),
   save: async function(big = false) {
@@ -612,6 +614,7 @@ temp.accountcow = function() {
     const leaderboard = [];
     for (const uid in lb) {
       const o = lb[uid];
+      if (temp.account.lb_hide.includes(o.n)) continue;
       leaderboard.push({ uid, n: o.n, p: o.p, s: o.s, });
     }
     leaderboard.sort((a, b) => {
