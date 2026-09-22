@@ -27,7 +27,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120402; // remember to change...
+export const VERSION = 120403; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;

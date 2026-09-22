@@ -1791,13 +1791,13 @@ symbol_functions.art_test = function(o) {
 };
 
 symbol_functions.art_warning = function(o) {
-  panel.talk.text = ["don't say i didn't warn you"];
+  panel.talk.text = ["possibly scary puzzles ahead!"];
   panel.talk.toggle(o);
 };
 
 symbol_functions.art_snail = function(o) {
-  if (map.visited.has("28")) panel.talk.text = ["oops i didn't know it's your home!! i'll go somewhere else...", "bye :("];
-  else panel.talk.text = ["i'm just trying to get to the other side, i heard the grass there is greener.", "[developer's note: it's not. it's #335511 always.]"];
+  // if (map.visited.has("28")) panel.talk.text = ["oops i didn't know it's your home!! i'll go somewhere else...", "bye :("];
+  panel.talk.text = ["zzz... trying to get to the other side of the passage... heard the grass there is greener...", "[note: it's not, it's #335511 always]"];
   panel.talk.toggle(o);
 };
 
@@ -1809,7 +1809,7 @@ symbol_functions.art_mess = function(o) {
 symbol_functions.art_person_1 = function(o) {
   const s = map.total_stars;
   if (s <= 0) panel.talk.text = ["i like stars. do you have any?", "seems like it's a no :("];
-  else if (s <= 5) panel.talk.text = ["click on the map to add or remove a little dot at your location!"];
+  else if (s <= 9) panel.talk.text = ["click on the map to add or remove a little dot at your location!"];
   else panel.talk.text = ["how did you get so many stars???", "share some please >:)"];
   panel.talk.toggle(o);
 };

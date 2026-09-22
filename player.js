@@ -231,7 +231,8 @@ export const player = {
     if (!is_map && o && o.symbol?.type?.startsWith("art_flower_")) {
       const dz = o.symbol.dz ?? 1;
       player.set_position(o.x, o.y, o.z + dz);
-      player.act_time = -1;
+      player.act_time = 1;
+      player.acted = true;
     }
     else {
       panel.map.active = true;
