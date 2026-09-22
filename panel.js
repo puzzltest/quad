@@ -1834,6 +1834,11 @@ symbol_functions.art_amogus = function(o) {
   panel.talk.toggle(o);
 };
 
+symbol_functions.art_flower__ = function(o) {
+  panel.talk.text = ["did you know you could press and hold the button"];
+  panel.talk.toggle(o);
+};
+
 door_custom.door_start_1234 = function(door) {
   const answers = [0, "000\n001\n000", "000\n001\n010", "010\n001\n010", "010\n101\n010"];
   for (let i = 1; i <= 4; i++) {
