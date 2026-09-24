@@ -1139,6 +1139,21 @@ panel_draw_symbols.x3 = function(s, x, y, w, h) {
   ctx.stroke();
 };
 
+panel_draw_symbols.x4 = function(s, x, y, w, h) {
+  ctx.lineWidth = w * 0.07;
+  draw.rectangle(x - w * 0.375, y, w * 0.25, h * 0.25);
+  ctx.stroke();
+  draw.rectangle(x - w * 0.125, y, w * 0.25, h * 0.25);
+  ctx.stroke();
+  draw.rectangle(x + w * 0.125, y, w * 0.25, h * 0.25);
+  ctx.stroke();
+  draw.rectangle(x + w * 0.375, y, w * 0.25, h * 0.25);
+  ctx.stroke();
+  draw.line(x - w * 0.25, y - h * 0.35, x + w * 0.25, y + h * 0.35);
+  draw.line(x - w * 0.35, y + h * 0.25, x + w * 0.35, y - h * 0.25);
+  ctx.stroke();
+};
+
 panel_draw_symbols.mirror = function(s, x, y, w, h) {
   ctx.save();
   ctx.lineWidth = w * 0.08;
@@ -1503,25 +1518,27 @@ panel_checks.equality = function(p) {
   return f.every(a => a === f[0]);
 };
 
-panel_checks.x3 = function(p) {
-  for (let y = 0; y < p.h; y++) {
-    for (let x = 1, a = 0; x < p.w; x++) {
-      if (p.state[y][x-1] === p.state[y][x]) {
-        a++;
-        if (a >= 2) return false;
-      } else a = 0;
+for (let i = 3; i <= 4; i++) {
+  panel_checks["x" + i] = function(p) {
+    for (let y = 0; y < p.h; y++) {
+      for (let x = 1, a = 0; x < p.w; x++) {
+        if (p.state[y][x-1] === p.state[y][x]) {
+          a++;
+          if (a >= i - 1) return false;
+        } else a = 0;
+      }
     }
-  }
-  for (let x = 0; x < p.w; x++) {
-    for (let y = 1, a = 0; y < p.h; y++) {
-      if (p.state[y-1][x] === p.state[y][x]) {
-        a++;
-        if (a >= 2) return false;
-      } else a = 0;
+    for (let x = 0; x < p.w; x++) {
+      for (let y = 1, a = 0; y < p.h; y++) {
+        if (p.state[y-1][x] === p.state[y][x]) {
+          a++;
+          if (a >= i - 1) return false;
+        } else a = 0;
+      }
     }
-  }
-  return true;
-};
+    return true;
+  };
+}
 
 panel_checks.mirror = function(p) {
   let yes = true;
@@ -1798,6 +1815,7 @@ symbol_functions.art_warning = function(o) {
 symbol_functions.art_snail = function(o) {
   // if (map.visited.has("28")) panel.talk.text = ["oops i didn't know it's your home!! i'll go somewhere else...", "bye :("];
   panel.talk.text = ["zzz... trying to get to the other side of the passage... heard the grass there is greener...", "[note: it's not, it's #335511 always]"];
+  if (!temp.account.logged_in) panel.talk.text.push("[another note: this way to create an account!]");
   panel.talk.toggle(o);
 };
 
@@ -1819,7 +1837,13 @@ symbol_functions.art_beaver = function(o) {
   panel.talk.toggle(o);
 };
 
+symbol_functions.art_beaver_happy = function(o) {
+  panel.talk.text = ["boo :)"];
+  panel.talk.toggle(o);
+};
+
 symbol_functions.art_pipe = function(o) {
+  if (o.invisible) return;
   panel.talk.text = ["no, i'm not a reference to anything in particular"];
   panel.talk.toggle(o);
 };
@@ -1834,8 +1858,16 @@ symbol_functions.art_amogus = function(o) {
   panel.talk.toggle(o);
 };
 
+symbol_functions.art_bird = function(o) {
+  panel.talk.text = ["CoOo COO COO!", "CoO-o-o cOOo cOOo coO coo cooo-oo-Oo COo. COO-Oo-O cooo-oO-O cOO-oO cOoo cOoo-O COO-O cooo-o cOoo-o coOo-O!"];
+  panel.talk.toggle(o);
+};
+
 symbol_functions.art_flower__ = function(o) {
-  panel.talk.text = ["did you know you could press and hold the button"];
+  panel.talk.text = [
+    "did you know??? you could press and hold the button somewhere in this room for something interesting to happen!",
+    "oops 🫢 i don't think flowers are supposed to talk...",
+  ];
   panel.talk.toggle(o);
 };
 

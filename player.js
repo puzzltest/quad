@@ -20,6 +20,7 @@ export const player = {
   self_active: false,
   emoji: 0,
   emoji_time: -1,
+  pipespam: 0,
   others: {},
   init: function() {
     map.physics_ref = physics;
@@ -156,6 +157,7 @@ export const player = {
     let do_check = true;
     if (player.dx || player.dy) do_check = !player.act_tile(x + player.dx, y + player.dy, z, false, true);
     player.act_tile(x, y, z, true, do_check);
+    if (player.pipespam > 0) player.pipespam--;
   },
   act_tile: function(x, y, z, on, do_check) {
     const tile = map.get_tile(x, y, z);
@@ -180,8 +182,16 @@ export const player = {
         });
       }
     }
-    else if (!on && "012".includes(tile)) {
+    else if (!on && "02".includes(tile)) {
       physics.move_player(-player.dx * player.speed * 5, -player.dy * player.speed * 5);
+      if (o?.symbol?.type === "art_pipe") {
+        player.pipespam += 2;
+        if (player.pipespam > 10) {
+          player.set_position({ x: x + player.dx, y: y + player.dy, z });
+        }
+      } else {
+        player.pipespam = 0;
+      }
     }
     // act on objects
     if (do_check && o != null && typeof o === "object") {
@@ -190,6 +200,7 @@ export const player = {
         panel.sign.toggle(o);
       }
       else if (o.type === "panel" && (o.door == undefined || o.door?.open)) {
+        player.pipespam = 0;
         panel.active = !panel.active;
         panel.o = o;
         if (panel.active) panel.activate();
