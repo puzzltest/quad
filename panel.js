@@ -1863,6 +1863,11 @@ symbol_functions.art_bird = function(o) {
   panel.talk.toggle(o);
 };
 
+symbol_functions.art_cow = function(o) {
+  panel.talk.text = ["mOOoO mOOOO mOOOO!", "moOOOoOOOO MoOoOOoooo mOOOo moOoooOOOOoOOOoOoOoo MooOOOoOoooOOOOOoooo!"];
+  panel.talk.toggle(o);
+};
+
 symbol_functions.art_flower__ = function(o) {
   panel.talk.text = [
     "did you know??? you could press and hold the button somewhere in this room for something interesting to happen!",

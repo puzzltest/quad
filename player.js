@@ -69,9 +69,15 @@ export const player = {
     if (tiledef[tile].water) {
       // physics.teleport_player(x - player.dx, y - player.dy);
     }
-    if (z === 1 && ((x === 18 && player.dx === 1) || (x === 20 && player.dx === -1)) && y >= 19 && y <= 21) {
+    if ((map.name === "old" && z === 1 && ((x === 18 && player.dx === 1) || (x === 20 && player.dx === -1)) && y >= 19 && y <= 21) ||
+        (map.name === "new" && z === 0 && x === 25 && ((y === -21 && player.dy === -1) || (y === -23 && player.dy === 1)))) {
       player.door_staring_counter = (player.door_staring_counter ?? 0) + 1;
-      panel.update_doors([map.get_door("door_staring")]);
+      if (map.name === "old") panel.update_doors([map.get_door("door_staring")]);
+      else if (map.name === "new") {
+        if (player.door_staring_counter === 300) {
+          player.set_position({ x: x, y: y + player.dy * 1.5, z });
+        }
+      }
     } else {
       player.door_staring_counter = 0;
     }
