@@ -1825,6 +1825,11 @@ symbol_functions.art_mess = function(o) {
 };
 
 symbol_functions.art_person_1 = function(o) {
+  panel.talk.text = ["i wonder how long it takes to get to certain puzzles from the start of the maze..."];
+  panel.talk.toggle(o);
+};
+
+symbol_functions.art_person_2 = function(o) {
   const s = map.total_stars;
   if (s <= 0) panel.talk.text = ["i like stars. do you have any?", "seems like it's a no :("];
   else if (s <= 9) panel.talk.text = ["click on the map to add or remove a little dot at your location!"];
