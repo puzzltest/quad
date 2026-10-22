@@ -80,9 +80,18 @@ panel.init = async function() {
   map.player_ref = player;
   map.util_ref = util;
   map.v_ref = v;
+  panel_updates.init();
   panel.randomizer.init();
   await util.loadlist(panel.words);
   panel.words_loaded = true;
+};
+
+panel.reinit = function() {
+  panel.active = false;
+  panel.sign.active = false;
+  panel.talk.active = false;
+  panel_updates.init();
+  panel.randomizer.init();
 };
 
 panel.activate = function() {
@@ -451,6 +460,10 @@ panel.check_answer = function(state, answer) {
 
 panel.update_panel = function(optional_pid) {
   const o = (optional_pid) ? map.get_panel(optional_pid) : panel.o;
+  if (o == null) {
+    console.error("unknown panel id: " + optional_pid);
+    return;
+  }
   const p = o.panel;
   panel_updates[p.id]?.(p);
   for (const function_name of p.updates ?? []) {
@@ -1450,34 +1463,51 @@ panel.randomizer.seed2type = function(words) {
   return type ?? "number_easy";
 };
 
-(function() { // special function for 1234_n and c1234_n
+panel_updates.init = function() {
   for (let i = 1; i < 4; i++) {
-    for (let c = 0; c <= 1; c++) {
+    for (let c = 0; c <= (map.name === "new" ? 2 : 1); c++) {
       const j = i + 1;
-      const prefix = (c ? "c" : "") + "1234_";
-      const n = c ? [0, 2, 3, 7, 9][j] : j;
+      let prefix = "";
+      let n = () => 0;
+      let symbol = c ? "ringnumber" : "number";
+      if (map.name === "old") {
+        prefix = (c ? "c" : "") + "1234_";
+        n = () => c ? [0, 2, 3, 7, 9][j] : j;
+      }
+      else if (map.name === "new") {
+        prefix = "1234_" + "nch"[c] + "_";
+        n = () => [[0, 1, 2, 3, 4], [0, 2, 3, 6, -1], [0, 0, 0, 0, 0]][c][j];
+        if (c === 1 && j === 4) {
+          n = (ns) => (ns + 1).toString(36);
+        } else if (c === 2) {
+          symbol = [0, "ring", "circle", "diagonal", "squaring"][j];
+          n = [0, 0, (ns) => ns % 3, (ns) => (ns + 10).toString(36), (ns) => Math.floor(ns % 6 / 3)][j];
+        }
+      }
       panel_updates[prefix + i] = function(p) {
         const o = map.get_panel(prefix + j);
         if (o) {
           const p2 = o.panel;
           const a = [];
+          let ns = 0;
           for (let y = 0; y < p.h; y++) {
             let s = "";
             for (let x = 0; x < p.w; x++) {
-              s += p.state[y][x] ? n : ".";
+              s += p.state[y][x] ? n(ns++) : ".";
             }
             a.push(s);
           }
-          p2.symbols[c ? "ringnumber" : "number"] = a;
+          p2.symbols[symbol] = a;
           panel.update_panel(prefix + j);
         }
       };
       panel_checks[prefix + j] = function(_) {
         return !!map.get_panel(prefix + i)?.panel?.correct;
       };
+      panel.update_panel(prefix + i);
     }
   }
-})();
+}
 
 panel_checks.nonempty = function(p) {
   for (let y = 0; y < p.h; y++) {

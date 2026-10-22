@@ -211,7 +211,9 @@ firebase.init_map = function() {
   if (map_id !== "old") {
     firebase.listen(`/qat/publish/${map_id}`, function(raw) {
       if (!raw) return;
+      panel.total_correct = 0;
       panel.total_solved = 0;
+      panel.total_solved_h = 0;
       panel.active = false;
       panel.o = null;
       reinit_everything(util.decompress_safe(raw));
@@ -223,6 +225,7 @@ firebase.init_map = function() {
       physics.init();
       init_load();
       physics.tick();
+      panel.reinit();
       if (temp.account.logged_in) temp.account.load();
       v.map_done = true;
     });
