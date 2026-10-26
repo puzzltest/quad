@@ -220,10 +220,7 @@ export const player = {
         camera.jump();
       }
       else if (o.type === "star" && !o.star?.collected && (o.door == undefined || o.door?.open)) {
-        o.star.collected = true;
-        map.stars_collected.push(o.star.id);
-        panel.update_doors(map.get_doors(o.star.id));
-        panel.update_doors(map.get_doors("star"));
+        player.collect_star(o);
       }
       else if (o.type === "door") {
         if (o.door.open) {
@@ -240,6 +237,9 @@ export const player = {
       // no object on this tile
       return false;
     }
+  },
+  act_object: function() {
+    return map.get_object(player.x + player.dx, player.y + player.dy, player.z) ?? map.get_object(player.x, player.y, player.z);
   },
   act2: function(is_map = false) {
     if (player.paused) return;
@@ -285,6 +285,26 @@ export const player = {
       panel.o = null;
       panel.deactivate();
     }
+  },
+  collect_star: function(o) {
+    if (!o) return;
+    const star_id = o.star?.id;
+    o.star.collected = true;
+    map.stars_collected.push(star_id);
+    panel.update_doors(map.get_doors(star_id));
+    panel.update_doors(map.get_doors("star"));
+    const artstar = map.get_symbol(star_id);
+    if (artstar) artstar.invisible = false;
+  },
+  starwarp_from: function(star_id) {
+    const o = map.get_symbol(star_id);
+    if (!o || !map.stars_collected.includes(star_id)) return player.self(true);
+    player.set_position(o.x, o.y, o.z);
+  },
+  starwarp_to: function(star_id) {
+    const o = map.get_star(star_id);
+    if (!o || !map.stars_collected.includes(star_id)) return;
+    player.set_position(o.x, o.y, o.z);
   },
 
   update_map_visited: function() {

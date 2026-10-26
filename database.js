@@ -27,7 +27,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 120503; // remember to change...
+export const VERSION = 130001; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -211,7 +211,6 @@ firebase.init_map = function() {
   if (map_id !== "old") {
     firebase.listen(`/qat/publish/${map_id}`, function(raw) {
       if (!raw) return;
-      panel.total_correct = 0;
       panel.total_solved = 0;
       panel.total_solved_h = 0;
       panel.active = false;

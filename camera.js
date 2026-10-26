@@ -139,7 +139,7 @@ camera.draw = function() {
 
   // draw player too!
   const [xx, yy] = camera.convert(player.x, player.y);
-  const oo = map.get_object(player.x + player.dx, player.y + player.dy, player.z) ?? map.get_object(player.x, player.y, player.z);
+  const oo = player.act_object();
   if (oo && oo.invisible !== 2) { // (draw outline first)
     const [xx2, yy2] = camera.convert(oo?.x, oo?.y);
     player_theme.outline(player.skin, xx2, yy2, size, size);
@@ -722,7 +722,12 @@ export const player_theme = {
     draw.rectangle(x, y, w * 1.5, h * 1.5);
     const check = mouse.check();
     if (check) {
-      player.self(true);
+      const oo = player.act_object();
+      if (oo?.star?.id) {
+        player.starwarp_from(oo.star.id);
+      } else {
+        player.self(true);
+      }
     }
     // draw emoji
     if (player.emoji) {
@@ -788,10 +793,7 @@ export const player_theme = {
     ctx.globalAlpha = Math.min(1, t / 50);
     const a = util.bounce(t, 30);
     y -= w;
-    if (n === 1) ctx.fillStyle = "#fe6";
-    else if (n === 2) ctx.fillStyle = "#f77";
-    else if (n === 3) ctx.fillStyle = "#7bf";
-    else if (n === 4) ctx.fillStyle = "#6ed";
+    ctx.fillStyle = emoji_backgrounds[n] ?? "#eee";
     draw.circle(x, y, w * 0.4);
     ctx.fill();
     draw.rectangle(x, y + w * 0.45, w * 0.1, w * 0.1 + 1);
@@ -810,7 +812,38 @@ export const player_theme = {
       ctx.fill();
       draw.circle(x + w * 0.12, y - w * 0.12, w * 0.05);
       ctx.fill();
+    } else if (n === 5) {
+      ctx.fillStyle = "#435";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      draw.set_font(w * 0.5, "bold");
+      ctx.translate(x, y);
+      ctx.rotate(t / 10);
+      ctx.fillText("?", 0, -w * 0.1 - 1);
+      ctx.resetTransform();
+    } else if (n === 6) {
+      ctx.fillStyle = "#222";
+      draw.circle(x - w * 0.12, y - w * 0.13, w * 0.05);
+      ctx.fill();
+      draw.circle(x + w * 0.12, y - w * 0.13, w * 0.05);
+      ctx.fill();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      draw.set_font(w * 0.5);
+      ctx.translate(x - w * 0.05 * util.bounce(t, 50), y + w * 0.15);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillText("3", 0, 0);
+      ctx.resetTransform();
+    } else if (n === 7) {
+      ctx.fillStyle = "#abc";
+      draw.svg("skull", x, y, w * (0.4 + 0.1 * util.bounce(t, 25)));
+    } else if (n === 8) {
+      draw.art("amogus", x, y, w * 0.7, t / 10);
     }
     ctx.restore();
   },
 };
+
+const emoji_backgrounds = [
+  "#000", "#fe6", "#f77", "#7bf", "#6ed", "#d9f", "#fca", "#123", "#2a6"
+];

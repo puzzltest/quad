@@ -1389,6 +1389,7 @@ export const object_lookup = {};
 export const panel_lookup = {};
 export const sign_lookup = {};
 export const star_lookup = {};
+export const symbol_lookup = {};
 export const door_lookup = {};
 export const door_connections = {};
 export const door_connexions = {};
@@ -1401,6 +1402,7 @@ const init_lookups = () => {
   clear_object(panel_lookup);
   clear_object(sign_lookup);
   clear_object(star_lookup);
+  clear_object(symbol_lookup);
   clear_object(door_lookup);
   clear_object(door_connections);
   clear_object(door_connexions);
@@ -1415,6 +1417,9 @@ const init_lookups = () => {
     }
     if (o.star?.id != undefined) {
       star_lookup[o.star.id] = o;
+    }
+    if (o.symbol?.id != undefined) {
+      symbol_lookup[o.symbol.id] = o;
     }
     if (o.door?.id != undefined) {
       door_lookup[o.door.id] = o;
@@ -1558,6 +1563,9 @@ export const map = {
   },
   get_star: function(id) {
     return star_lookup[id];
+  },
+  get_symbol: function(id) {
+    return symbol_lookup[id];
   },
   get_door: function(id) {
     return door_lookup[id];
@@ -1714,6 +1722,7 @@ export const map = {
             }
             p.state.push(temp);
           }
+          p.statechange = true;
         }
         if (s?.lock != undefined) {
           p.lock = [];
@@ -1744,6 +1753,10 @@ export const map = {
       map.panel_ref.update_doors(map.get_doors(asteroid));
     }
     map.panel_ref.update_doors(map.get_doors("star"));
+    for (const artstar of Object.values(symbol_lookup)) {
+      if (artstar.symbol?.type !== "art_star") continue;
+      artstar.invisible = !map.stars_collected.includes(artstar.symbol.id ?? "");
+    }
     // map.visited.clear();
     for (const v of save.visited ?? []) {
       if (map.all_ids.has(v)) map.visited.add(v);

@@ -7,12 +7,13 @@ export const util = {
   dir9: [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]],
   dir4x: [[1, 1], [-1, 1], [-1, -1], [1, -1]],
   dir5x: [[0, 0], [1, 1], [-1, 1], [-1, -1], [1, -1]],
+  dir4j: [[1, 0], [0, 1], [-1, 0], [0, -1], [2, 0], [0, 2], [-2, 0], [0, -2]],
   seg7: ["abcdef", "bc", "abdeg", "abcdg", "bcfg", "acdfg", "acdefg", "abc", "abcdefg", "abcdfg"],
   dir6b: [[0, 0, 32], [0, 1, 16], [0, 2, 8], [1, 0, 4], [1, 1, 2], [1, 2, 1]],
   dir8b: [[1, 0, 128], [1, 1, 64], [0, 1, 32], [-1, 1, 16], [-1, 0, 8], [-1, -1, 4], [0, -1, 2], [1, -1, 1]],
   dir9b: [[0, 0, 256], [1, 0, 128], [1, 1, 64], [0, 1, 32], [-1, 1, 16], [-1, 0, 8], [-1, -1, 4], [0, -1, 2], [1, -1, 1]],
   numbers: [[48,40,36,34,33,160,96,24,20,130,18,17,144,80,12,10,9,136,72,6,5,66,129,65,132,192],[479,508,127,505,383,287,254,477,375,311,349,124,283,223,255,415,463,31,307,295,253,173,433,341,429,358],[5,67,70,22,1,43,25,40,4,53,23,49,8,7,26,52,77,16,13,2,14,41,17,68,71,76],[32,48,36,38,34,52,54,50,20,22,40,56,44,46,42,60,62,58,28,30,41,57,23,45,47,43],[241,253,124,247,255,127,199,223,31,497,509,380,503,511,383,455,479,287,261,276,321,336,263,284,449,368]],
-  self: [15237130,18284554,32505866,1015818],
+  self: [15237130,18284554,32505866,1015818,4223535,33194304,360127,343150],
   pi: Math.PI,
   sqrt2: Math.sqrt(2.0),
   sqrt3: Math.sqrt(3.0),
@@ -89,12 +90,23 @@ export const util = {
     return x + "," + y;
   },
   // constructs a 2d square matrix (arrays) based on function f
-  construct: function(size, f) {
+  construct_squarray: function(size, f) {
     const result = [];
     for (let i = 0; i < size; i++) {
       const temp = [];
       for (let j = 0; j < size; j++) {
         temp.push(f(j, i)); // f(x, y)
+      }
+      result.push(temp);
+    }
+    return result;
+  },
+  construct_array: function(w, h, f) {
+    const result = [];
+    for (let y = 0; y < h; y++) {
+      const temp = [];
+      for (let x = 0; x < w; x++) {
+        temp.push(f(x, y));
       }
       result.push(temp);
     }
@@ -188,29 +200,35 @@ export const util = {
         if (water[r][c]) result.push({ x: c, y: r });
     return result;
   },
-  bfs: function(a, x, y) {
+  bfs: function(a, x, y, f) { // optional jumpy function
     const result = [];
+    result.loops = 0;
+    result.loopx = 0;
+    result.loopy = 0;
     const the = a[y][x];
-    const visited = {};
-    const q = [{ x, y }]; // q? really?
+    const q = [{ x, y, w: { x, y } }]; // q? really?
+    const visited = { [util.xy2str(x, y)]: q[0] };
     let k;
     while (q.length > 0) {
       const b = q.pop();
-      visited[util.xy2str(b.x, b.y)] = true;
-      for (const [dx, dy] of util.dir4) {
-        const xx = b.x + dx;
-        const yy = b.y + dy;
-        if (a[yy] == undefined || a[yy][xx] == undefined) continue;
-        if (the == a[yy][xx] && !visited[k = util.xy2str(xx, yy)]) {
-          visited[k] = true;
-          q.push({ x: xx, y: yy });
+      for (const d of f ? f(b.x, b.y) : util.dir4) {
+        const xx = b.x + d[0];
+        const yy = b.y + d[1];
+        if (a[yy] == undefined || a[yy][xx] == undefined || the != a[yy][xx]) continue;
+        const v = visited[k = util.xy2str(xx, yy)];
+        const w = { x: b.w.x + (d[2] ?? d[0]), y: b.w.y + (d[3] ?? d[1]) };
+        if (!v) q.push(visited[k] = { x: xx, y: yy, w });
+        else if (f) {
+          result.loops += v.w.x !== w.x || v.w.y !== w.y;
+          result.loopx += v.w.x !== w.x;
+          result.loopy += v.w.y !== w.y;
         }
       }
       result.push(b);
     }
     return result;
   },
-  bfs_all: function(a) {
+  bfs_all: function(a, f) {
     const result = [];
     const visited = {};
     for (let y = 0; y < a.length; y++) {
@@ -229,7 +247,7 @@ export const util = {
         while (q.length > 0) {
           const b = q.pop();
           visited[util.xy2str(b.x, b.y)] = aaa;
-          for (const [dx, dy] of util.dir4) {
+          for (const [dx, dy] of (f ? f(b.x, b.y) : util.dir4)) {
             const xx = b.x + dx;
             const yy = b.y + dy;
             if (a[yy] == undefined || a[yy][xx] == undefined) continue;
@@ -247,17 +265,17 @@ export const util = {
     }
     return result;
   },
-  bfs_aabb: function(bfs_result) {
+  bfs_aabb: function(bfs_result, padding = 0) {
     const xs = [];
     const ys = [];
     for (const { x, y } of bfs_result) {
       xs.push(x);
       ys.push(y);
     }
-    const min_x = Math.min(...xs);
-    const max_x = Math.max(...xs);
-    const min_y = Math.min(...ys);
-    const max_y = Math.max(...ys);
+    const min_x = Math.min(...xs) - padding;
+    const max_x = Math.max(...xs) + padding;
+    const min_y = Math.min(...ys) - padding;
+    const max_y = Math.max(...ys) + padding;
     return {
       min_x, max_x, min_y, max_y,
       x: min_x,
@@ -267,6 +285,9 @@ export const util = {
     };
   },
   bfs_to_shape: function(bfs_result, padding = 0) {
+    return util.bfs_to_shape_direct(bfs_result.map(v => (v.w ?? v)), padding);
+  },
+  bfs_to_shape_direct: function(bfs_result, padding = 0) {
     if (bfs_result.length === 1) return ["0"];
     const xs = [];
     const ys = [];
@@ -293,7 +314,8 @@ export const util = {
   },
   rotate_bfs_result: function(bfs_result) {
     const new_result = [];
-    for (const { x, y } of bfs_result) {
+    for (const v of bfs_result) {
+      const { x, y } = v.w ?? v;
       new_result.push({
         x: y,
         y: -x,
@@ -316,10 +338,15 @@ export const util = {
   shape_is_number: function(shape) {
     return util.check_shape_number(shape);
   },
-  holes_in_shape: function(bfs_result) {
-    const shape = util.bfs_to_shape(bfs_result, 1);
+  shape_is_amogus: function(shape) {
+    return util.check_shape_number(shape, true);
+  },
+  holes_in_shape: function(bfs_result, f) {
+    const shape = util.bfs_to_shape_direct(bfs_result, 1);
+    const aabb = f ? util.bfs_aabb(bfs_result, 1) : 0;
     const result = [];
     const visited = {};
+    const w = shape[0].length, h = shape.length;
     for (let y = 0; y < shape.length; y++) {
       for (let x = 0; x < shape[y].length; x++) {
         if (visited[util.xy2str(x, y)]) continue;
@@ -331,7 +358,7 @@ export const util = {
         while (q.length > 0) {
           const b = q.pop();
           visited[util.xy2str(b.x, b.y)] = true;
-          for (const [dx, dy] of util.dir4) {
+          for (const [dx, dy] of f ? f(b.x + aabb.min_x, b.y + aabb.min_y) : util.dir4) {
             const xx = b.x + dx;
             const yy = b.y + dy;
             if (shape[yy] == undefined || shape[yy][xx] == undefined) continue;
@@ -343,6 +370,22 @@ export const util = {
           if (is_hole) r.push(b);
         }
         if (is_hole) result.push(r);
+      }
+    }
+    return result;
+  },
+  holes_in_torus: function(bfs_result, p, f) {
+    const result = [];
+    const visited = {};
+    const w = p.state[0].length, h = p.state.length;
+    const a = util.construct_array(w, h, () => 0);
+    for (const { x, y } of bfs_result) a[y][x] = 1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (a[y][x] || visited[util.xy2str(x, y)]) continue;
+        const r = util.bfs(a, x, y, f);
+        for (const c of r) visited[util.xy2str(c.x, c.y)] = true;
+        if (!r.loops) result.push(r);
       }
     }
     return result;
@@ -533,7 +576,47 @@ util.check_shape_number = (function() {
     ["1111", "1101", "1111", "0001", "0111"],
     ["1111", "1001", "1111", "0001", "0011"]
   ];
-  const shapes = [shape0, shape1, shape2, shape3, shape4, shape5, shape6, shape7, shape8, shape9]
+
+  const shapeA = [
+    [ "0111",
+      "1100",
+      "1111",
+      "0101",
+    ], [
+      "0111",
+      "1100",
+      "0101",
+    ], [
+      "01111",
+      "11100",
+      "11111",
+      "01001",
+    ], [
+      "01111",
+      "11100",
+      "01001",
+    ], [
+      "0111",
+      "1110",
+      "1111",
+      "0101",
+    ], [
+      "0111",
+      "1110",
+      "0101",
+    ],
+  ];
+  for (const A of [...shapeA]) {
+    const AA = []; let i = 0;
+    for (const a of A) {
+      i++;
+      if (i === 2) AA.push("1".repeat(a.length));
+      AA.push(a);
+    }
+    shapeA.push(AA);
+  }
+
+  const shapes = [shape0, shape1, shape2, shape3, shape4, shape5, shape6, shape7, shape8, shape9];
 
   function shrink(a) {
     if (!a.length) return [];
@@ -588,18 +671,19 @@ util.check_shape_number = (function() {
     return true;
   }
 
-  function findshape(a) {
-    for (let i = 0; i < shapes.length; i++) {
-      for (let j = 0; j < shapes[i].length; j++) {
-        if (equal(shapes[i][j], a)) {
+  function findshape(a, amogus) {
+    const S = amogus ? [shapeA] : shapes;
+    for (let i = 0; i < S.length; i++) {
+      for (const s of S[i]) {
+        if (equal(s, a)) {
           return i;
         }
       }
     }
-    return -1; // no number at all
+    return -1; // no number at all!
   }
 
-  function check(a) {
+  function check(a, amogus = false) {
     let result = a;
     result = convert(result);
     result = shrink(result);
@@ -608,7 +692,7 @@ util.check_shape_number = (function() {
     result = shrink(result);
     result = trim0(result);
     result = transpose(result);
-    return findshape(result);
+    return findshape(result, amogus);
   }
 
   return check;
