@@ -72,6 +72,7 @@ const door_custom = {};
 
 panel.init = async function() {
   panel.active = false;
+  panel.map.active = false;
   panel.sign.active = false;
   panel.talk.active = false;
   map.door_custom = door_custom;
@@ -87,6 +88,7 @@ panel.init = async function() {
 
 panel.reinit = function() {
   panel.active = false;
+  panel.map.active = false;
   panel.sign.active = false;
   panel.talk.active = false;
   panel_updates.init();
@@ -591,28 +593,38 @@ panel.off_symbol = function(name, s) {
 
 panel.bfsf = function(p) {
   let torus, jumpy;
+  const h = p.state.length, w = p.state[0].length;
   if (p.checks?.includes("torus")) {
-    const h = p.state.length, w = p.state[0].length;
     torus = (x, y, dirs = util.dir4) => {
       const result = dirs.map(([dx, dy]) => [
-        (x + dx + w * 5) % w - x,
-        (y + dy + h * 5) % h - y, dx, dy
+        (x + dx + w * 50) % w - x,
+        (y + dy + h * 50) % h - y, dx, dy
       ]);
       return result;
     };
   }
   if (p.symbols.jumpy) {
-    jumpy = (x, y, dirs = util.dir4) => {
+    jumpy = (x, y, dirs = util.dir4, torus = false) => {
       const s = p.symbols.jumpy[y]?.[x];
       if (s === ".") return dirs;
       else if (s == 0) return util.dir8;
-      else if (s == 1) return util.dir4j;
+      else if (s == 1) return dirs.map(([dx, dy]) => {
+        const the = p.state[y][x];
+        let xx = x + dx, yy = y + dy, n = 1;
+        if (torus) {
+          xx = (xx + w) % w, yy = (yy + h) % h;
+          while (!(xx === x && yy === y) && the != p.state[yy][xx]) { xx = (xx + dx + w) % w; yy = (yy + dy + h) % h; n++; };
+        } else {
+          while (p.state[yy]?.[xx] != undefined && the != p.state[yy][xx]) { xx += dx; yy += dy; n++; }
+        }
+        return [dx * n, dy * n];
+      });
       else return dirs;
     };
   }
   if (jumpy && torus) {
     return (x, y, d) => {
-      return torus(x, y, jumpy(x, y, d));
+      return torus(x, y, jumpy(x, y, d, true));
     }
   } else {
     return jumpy ?? torus ?? undefined;

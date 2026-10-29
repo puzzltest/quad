@@ -239,21 +239,24 @@ export const util = {
           r.push(v[0]);
           continue;
         }
-        const aaa = [1]; // lol
+        const aaa = [1]; // reference abuse lol
         const ans = [];
         const the = a[y][x];
-        const q = [{ x, y }];
+        const q = [{ x, y, j: false }];
+        const visited_ = {};
+        visited_[util.xy2str(x, y)] = aaa;
         let k;
         while (q.length > 0) {
           const b = q.pop();
-          visited[util.xy2str(b.x, b.y)] = aaa;
+          if (!b.j) visited[util.xy2str(b.x, b.y)] = aaa;
           for (const [dx, dy] of (f ? f(b.x, b.y) : util.dir4)) {
             const xx = b.x + dx;
             const yy = b.y + dy;
             if (a[yy] == undefined || a[yy][xx] == undefined) continue;
-            if (the == a[yy][xx] && !visited[k = util.xy2str(xx, yy)]) {
-              visited[k] = aaa;
-              q.push({ x: xx, y: yy });
+            if (the == a[yy][xx] && !visited_[k = util.xy2str(xx, yy)]) {
+              const jumped = b.j || (f && !f(xx, yy).filter(([one, two]) => one === -dx && two === -dy).length);
+              visited_[k] = true;
+              q.push({ x: xx, y: yy, j: jumped });
             }
           }
           ans.push(b);
