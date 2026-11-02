@@ -225,8 +225,9 @@ panel.draw = function() {
     ctx.fill();
     x = view.cx;
     y = view.cy;
-    const filtered_checks = p.checks?.filter(check => panel_draw_symbols[check] != undefined);
-    if (filtered_checks?.length >= 1) {
+    const filtered_checks = p.checks?.filter(check => panel_draw_symbols[check] != undefined) ?? [];
+    if (p.symbols_g) filtered_checks.push(...Object.entries(p.symbols_g));
+    if (filtered_checks.length >= 1) {
       // draw checks
       y -= view.size * 0.43;
       ctx.fillStyle = "#111";
@@ -236,7 +237,8 @@ panel.draw = function() {
       ctx.strokeStyle = "#eee";
       x -= (filtered_checks.length - 1) / 2 * view.size * 0.11;
       for (const check of filtered_checks) {
-        panel_draw_symbols[check]?.("", x, y, view.size * 0.07, view.size * 0.07);
+        if (typeof check === "string") panel_draw_symbols[check]?.("", x, y, view.size * 0.07, view.size * 0.07);
+        else panel_draw_symbols["other"]?.(check, x, y, view.size * 0.07, view.size * 0.07);
         x += view.size * 0.11;
       }
       x = view.cx; // reset
@@ -520,8 +522,10 @@ panel.check_correct = function(optional_pid) {
   }
   // check all symbols
   for (const symbol_name in p.symbols) {
+    if (!is_correct) break;
     if (symbol_name === "arrowx") continue;
     for (let y = 0; y < p.h; y++) {
+      if (!is_correct) break;
       for (let x = 0; x < p.w; x++) {
         const s = p.symbols[symbol_name][y][x];
         if (s !== ".") {
@@ -537,7 +541,25 @@ panel.check_correct = function(optional_pid) {
           }
         }
       }
+    }
+  }
+  if (p.symbols_g) for (const [symbol_name, s] of Object.entries(p.symbols_g)) {
+    if (!is_correct) break;
+    if (["arrowx", "ring", "circle"].includes(symbol_name)) continue;
+    const sss = off ? panel.off_symbol(symbol_name, s) : s;
+    for (let y = 0; y < p.h; y++) {
       if (!is_correct) break;
+      for (let x = 0; x < p.w; x++) {
+        let wrong = true;
+        for (const ss of sss) {
+          const c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+          if (c != false) wrong = false;
+        }
+        if (wrong) {
+          is_correct = false;
+          break;
+        }
+      }
     }
   }
   // post-check
@@ -603,9 +625,11 @@ panel.bfsf = function(p) {
       return result;
     };
   }
-  if (p.symbols.jumpy) {
+  if (p.symbols.jumpy || p.symbols_g?.jumpy) {
     jumpy = (x, y, dirs = util.dir4, torus = false) => {
-      const s = p.symbols.jumpy[y]?.[x];
+      if (p.state[y]?.[x] == undefined) return dirs;
+      let s = p.symbols.jumpy?.[y]?.[x] ?? ".";
+      if (s === ".") s = p.symbols_g?.jumpy ?? ".";
       if (s === ".") return dirs;
       else if (s == 0) return util.dir8;
       else if (s == 1) return dirs.map(([dx, dy]) => {
@@ -766,7 +790,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
         }
       }
       const average_x = (total_x / bfs_result.length);
-      const stable = min_x - 0.5001 <= average_x && average_x <= max_x + 0.5001;
+      const stable = (bfs_result.loopx ?? 0) > 0 || (min_x - 0.50001 <= average_x && average_x <= max_x + 0.50001);
       if (s == 0 || s == 2) {
         if (!stable) return false;
       } else if (s == 1 || s == 3) {
@@ -1317,6 +1341,10 @@ panel_draw_symbols.torus = function(s, x, y, w, h) {
   draw.circle(x, y, w * 0.5);
   ctx.stroke();
   ctx.restore();
+};
+
+panel_draw_symbols.other = function([symbol_name, s], x, y, w, h) {
+  panel_draw_symbols[symbol_name]?.(s, x, y, w * 1.15, h * 1.15, 0);
 };
 
 const wordlist = [];

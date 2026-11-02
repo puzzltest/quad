@@ -361,7 +361,7 @@ export const util = {
         while (q.length > 0) {
           const b = q.pop();
           visited[util.xy2str(b.x, b.y)] = true;
-          for (const [dx, dy] of f ? f(b.x + aabb.min_x, b.y + aabb.min_y) : util.dir4) {
+          for (const [dx, dy] of (f && b.x > 0 && b.y > 0 && b.x < w - 1 && b.y < h - 1) ? f(b.x + aabb.min_x, b.y + aabb.min_y) : util.dir4) {
             const xx = b.x + dx;
             const yy = b.y + dy;
             if (shape[yy] == undefined || shape[yy][xx] == undefined) continue;
