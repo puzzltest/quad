@@ -507,9 +507,9 @@ panel.check_correct = function(optional_pid) {
   // pre-check
   if (p.symbols.arrowx) {
     p.statex = [];
-    p.savestate = [];
+    p.newstate = [];
     for (let y = 0; y < p.h; y++) {
-      p.savestate.push([...p.state[y]]);
+      p.newstate.push([...p.state[y]]);
       for (let x = 0; x < p.w; x++) {
         const s = p.symbols.arrowx[y][x];
         if (s === ".") continue;
@@ -517,7 +517,8 @@ panel.check_correct = function(optional_pid) {
       }
     }
     for (const { x, y } of p.statex) {
-      p.state[y][x] = 0; // todo do something different if it's already 0?
+      if (p.newstate[y][x] === 0) return false;
+      p.newstate[y][x] = 0;
     }
   }
   // check all symbols
@@ -532,8 +533,13 @@ panel.check_correct = function(optional_pid) {
           const sss = off ? panel.off_symbol(symbol_name, s) : s;
           let wrong = true;
           for (const ss of sss) {
-            const c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
-            if (c != false) wrong = false;
+            let c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+            if (!c && p.symbols.arrowx && !(symbol_colours[symbol_name] && ss != 0)) {
+              [p.state, p.newstate] = [p.newstate, p.state];
+              c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+              [p.state, p.newstate] = [p.newstate, p.state];
+            }
+            if (c != false && !(wrong = false)) break;
           }
           if (wrong) {
             is_correct = false;
@@ -552,8 +558,13 @@ panel.check_correct = function(optional_pid) {
       for (let x = 0; x < p.w; x++) {
         let wrong = true;
         for (const ss of sss) {
-          const c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
-          if (c != false) wrong = false;
+          let c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+          if (!c && p.symbols.arrowx && !(symbol_colours[symbol_name] && ss != 0)) {
+            [p.state, p.newstate] = [p.newstate, p.state];
+            c = panel.check_symbol_correct(p, symbol_name, ss, x, y);
+            [p.state, p.newstate] = [p.newstate, p.state];
+          }
+          if (c != false && !(wrong = false)) break;
         }
         if (wrong) {
           is_correct = false;
@@ -561,10 +572,6 @@ panel.check_correct = function(optional_pid) {
         }
       }
     }
-  }
-  // post-check
-  if (p.symbols.arrowx) {
-    p.state = p.savestate;
   }
   // check after
   if (is_correct) {
@@ -577,6 +584,7 @@ panel.check_correct = function(optional_pid) {
       }
       if (!panel.words.has(word)) return false;
     }
+    // todo test arrowx's p.newstate for letters too
     return true;
   } else {
     return false;
@@ -770,7 +778,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
     }
   }
   else if (name === "balance") {
-    let bfs_result = util.bfs(st, x, y, f).map((v) => v.w ?? v);
+    let old_bfs_result = util.bfs(st, x, y, f), bfs_result = old_bfs_result.map((v) => v.w ?? v);
     const n = (s == 2 || s == 3) ? 4 : 1;
     for (let i = 0; i < n; i++) {
       let total_x = 0;
@@ -790,7 +798,7 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
         }
       }
       const average_x = (total_x / bfs_result.length);
-      const stable = (bfs_result.loopx ?? 0) > 0 || (min_x - 0.50001 <= average_x && average_x <= max_x + 0.50001);
+      const stable = (old_bfs_result.loops ?? 0) > 0 || (min_x - 0.50001 <= average_x && average_x <= max_x + 0.50001);
       if (s == 0 || s == 2) {
         if (!stable) return false;
       } else if (s == 1 || s == 3) {
@@ -832,6 +840,8 @@ panel.check_symbol_correct = function(p, name, s, x, y) {
   }
   else if (name === "arrowx") {
     const d = util.dir8[+s];
+    x += d[0];
+    y += d[1];
     while (st[y] !== undefined && st[y][x] !== undefined) {
       if (st[y][x]) {
         p.statex.push({x, y});
