@@ -1003,9 +1003,9 @@ panel_draw_symbols.diagonal = function(s, x, y, w, h, state) {
   ctx.rotate(-Math.PI / 4);
   if (parseInt(s, 36) > 9) {
     // rotating
-    s = parseInt(s, 36) - 9;
+    s = s === "j" ? 0 : parseInt(s, 36) - 9;
     ctx.rotate(Math.PI / 4 + (Math.sin(v.time / 25)));
-  }
+  } 
   draw.rectangle(0, 0, w * 0.6, w * 0.6);
   ctx.stroke();
   draw.reset_transform();
