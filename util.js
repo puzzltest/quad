@@ -18,6 +18,8 @@ export const util = {
   sqrt2: Math.sqrt(2.0),
   sqrt3: Math.sqrt(3.0),
   invsqrt2: 1.0 / Math.sqrt(2.0),
+  encoder: new TextEncoder(),
+  decoder: new TextDecoder(),
   lerp: function(a, b, t) {
     return a * (1 - t) + b * t;
   },
@@ -61,6 +63,9 @@ export const util = {
       result += "abcdefghijklmnopqrstuvwxyz"[util.randint(0, 25)];
     }
     return result;
+  },
+  randuints: function(bytes) {
+    return window.crypto.getRandomValues(new Uint8Array(bytes));
   },
   compress: function(s) {
     return lzstring.compressToUTF16(s);
@@ -393,7 +398,7 @@ export const util = {
     }
     return result;
   },
-  copy: function(text) {
+  copy: function(text) { // copied
     function fallbackCopyTextToClipboard(text) {
       var textArea = document.createElement("textarea");
       textArea.value = text;
@@ -425,25 +430,16 @@ export const util = {
     copyTextToClipboard(text);
   },
   is_local: () => (document.location.hostname === "localhost" || document.location.hostname === "127.0.0.1"),
-  is_ios: function() {
-    return [
-      "iPad Simulator",
-      "iPhone Simulator",
-      "iPod Simulator",
-      "iPad",
-      "iPhone",
-      "iPod"
-    ].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-  },
+  is_ios: () => ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) || (navigator.userAgent.includes("Mac") && "ontouchend" in document),
+  // slow functions
+  // zzz
   loadlist: async function(set) {
-    const q = await fetch("/w.txt");
-    const r = q.body.getReader();
-    const d = new TextDecoder("utf-8");
+    const q = await fetch("/w.txt"), r = q.body.getReader();
     let s = "";
-    while (1) {
+    while (123456) {
       const v = await r.read();
       if (v.done) break;
-      s += d.decode(v.value, { stream: true, });
+      s += util.decoder.decode(v.value, { stream: true });
       let b = s.indexOf("\n");
       while (b >= 0) {
         const l = s.substring(0, b).trim();
@@ -454,6 +450,28 @@ export const util = {
     }
     const l = s.trim();
     if (l) set.add(l);
+  },
+  getkey: async function(password, salt) { // not referring to the ti-basic thing lol
+    const name = "PBKDF2", key = await window.crypto.subtle.importKey("raw", util.encoder.encode(password), { name }, false, ["deriveKey"]);
+    return await window.crypto.subtle.deriveKey(
+      { name, hash: "SHA-256", iterations: 123456, salt, },
+      key, { name: "AES-GCM", length: 256, },
+      true, ["encrypt", "decrypt"]
+    );
+  },
+  utoa: function(b) {
+    return new Uint8Array(b).toBase64();
+  },
+  atou: function(a) {
+    return Uint8Array.fromBase64(a);
+  },
+  aes_new: async function(password, data) {
+    const iv = util.randuints(12), salt = util.randuints(16), key = await util.getkey(password, salt);
+    return util.utoa(await new Blob([iv, salt, await window.crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, util.encoder.encode(data))]).arrayBuffer());
+  },
+  aes_check: async function(password, data) {
+    const d = util.atou(data), iv = d.subarray(0, 12), salt = d.subarray(12, 28), a = d.subarray(28);
+    return util.decoder.decode(await window.crypto.subtle.decrypt({ name: "AES-GCM", iv }, await util.getkey(password, salt), a));
   },
 };
 

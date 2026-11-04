@@ -1005,7 +1005,7 @@ panel_draw_symbols.diagonal = function(s, x, y, w, h, state) {
     // rotating
     s = s === "j" ? 0 : parseInt(s, 36) - 9;
     ctx.rotate(Math.PI / 4 + (Math.sin(v.time / 25)));
-  } 
+  }
   draw.rectangle(0, 0, w * 0.6, w * 0.6);
   ctx.stroke();
   draw.reset_transform();
@@ -2109,6 +2109,10 @@ symbol_functions.art_flower__ = function(o) {
     "oops 🫢 i don't think flowers are supposed to talk...",
   ];
   panel.talk.toggle(o);
+};
+
+symbol_functions.art_scan = function(o) {
+  map.physics_ref.teleport_player(o.x - 0.5, o.y - 0.5, o.z);
 };
 
 door_custom.door_start_1234 = function(door) {
