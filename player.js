@@ -135,6 +135,9 @@ export const player = {
     const { x, y, z } = player.xyz;
     return map.get_map(x, y, z)?.id;
   },
+  get hide_map() {
+    return [81, 82].includes(+player.map_id) && Math.round(player.y) !== 27;
+  },
   get paused() {
     return (panel.active && !player.self_active) || panel.sign.active || panel.talk.active; // || panel.map.active;
   },

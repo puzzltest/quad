@@ -364,8 +364,7 @@ panel.draw_map = function() {
   ctx.fillStyle = "#ede";
   draw.roundrectangle(x, y, w, h);
   ctx.fill();
-  console.log(player.map_id);
-  if ([81, 82].includes(+player.map_id)) {
+  if (player.hide_map) {
     draw.set_font(w * 0.4, "bold");
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

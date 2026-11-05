@@ -128,7 +128,7 @@ camera.draw = function() {
   }
 
   // draw other players
-  for (const other_id in player.others) {
+  if (!player.hide_map) for (const other_id in player.others) {
     if (other_id === the_id) continue;
     const other = player.others[other_id];
     if ((other.z ?? 0) == player.z && (other.m ?? "new") === map.name) {
