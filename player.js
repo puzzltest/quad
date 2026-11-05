@@ -122,8 +122,18 @@ export const player = {
     player.move_x += dx;
     player.move_y += dy;
   },
+  get xyz() {
+    const x = Math.round(player.x);
+    const y = Math.round(player.y);
+    const z = Math.round(player.z);
+    return { x, y, z };
+  },
   get velocity() {
     return player_bodies[this.z].getLinearVelocity();
+  },
+  get map_id() {
+    const { x, y, z } = player.xyz;
+    return map.get_map(x, y, z)?.id;
   },
   get paused() {
     return (panel.active && !player.self_active) || panel.sign.active || panel.talk.active; // || panel.map.active;
@@ -157,12 +167,6 @@ export const player = {
     }
     player.move_x = 0;
     player.move_y = 0;
-  },
-  get xyz() {
-    const x = Math.round(player.x);
-    const y = Math.round(player.y);
-    const z = Math.round(player.z);
-    return { x, y, z };
   },
   acted: false,
   act_time: -1,

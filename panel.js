@@ -364,6 +364,15 @@ panel.draw_map = function() {
   ctx.fillStyle = "#ede";
   draw.roundrectangle(x, y, w, h);
   ctx.fill();
+  console.log(player.map_id);
+  if ([81, 82].includes(+player.map_id)) {
+    draw.set_font(w * 0.4, "bold");
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#111";
+    ctx.fillText("???", x, y);
+    return;
+  }
   if (panel.map.static && !(player.move_x === 0 && player.move_y === 0) && player.move_r2 >= 25 * 25) {
     const dx = player.move_nx;
     const dy = player.move_ny;
@@ -390,7 +399,7 @@ panel.draw_map = function() {
       for (let y = Math.floor(panel.map.y - scale / 2); y <= panel.map.y + scale / 2 + 1; y++) {
         const m = map.get_map(x, y, z);
         let t = m?.theme ?? map.z_themes[z] ?? "normal";
-        let s = map.get_tile(x, y, z) ?? ".";
+        let s = z == 1 && x > 50 && x < 64 && y > 3 && y < 17 ? "." : map.get_tile(x, y, z) ?? ".";
         let o = map.get_object(x, y, z);
         if (o?.invisible) o = undefined;
         if (m && m.id && !map.visited.has(m.id)) {
