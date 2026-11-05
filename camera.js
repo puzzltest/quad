@@ -42,7 +42,7 @@ camera.init = function() {
 
 camera.tick = function() {
   camera.scale = util.lerp(camera.scale, camera.tscale, camera.smoothness * 0.75);
-  const offset = camera.tscale / 2;
+  // const offset = camera.tscale / 2;
   if (map.panel_ref.talk.active) {
     camera.tx = map.panel_ref.talk.o.x;
     camera.ty = map.panel_ref.talk.o.y;
@@ -167,7 +167,10 @@ camera.draw = function() {
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#000";
     ctx.font = `${Math.round(view.size * 0.03)}px roboto mono`;
-    ctx.fillText(`(${player.xyz.x},${player.xyz.y},${player.z})`, view.cx - view.size * 0.59, view.cy + view.size * 0.565);
+    const xyz = player.xyz;
+    xyz.x += player.offset.x;
+    xyz.y += player.offset.y;
+    ctx.fillText(`(${xyz.x},${xyz.y},${xyz.z})`, view.cx - view.size * 0.59, view.cy + view.size * 0.565);
   }
   if (map.panel_ref.total_solved > 0) {
     ctx.textAlign = "right";
@@ -282,9 +285,11 @@ export const theme = {
     },
     ["symbol"]: function(x, y, w, h, o) {
       if (!o.symbol) return;
-      ctx.fillStyle = o.symbol?.fill ?? "#eee";
+      ctx.fillStyle = o.symbol.fill ?? "#eee";
       const t = o.symbol.type;
-      if (svg[t]) {
+      if (t === "panel" && o.symbol.id) {
+        theme.normal.panel(x, y, w, h, map.get_panel(o.symbol.id));
+      } else if (svg[t]) {
         if (t === "save" && !v.logged_in) return;
         draw.svg(t, x, y, w);
       } else {
@@ -308,7 +313,7 @@ export const theme = {
         ctx.fillStyle = "#1116";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        const sc = "" + o.panel?.solvecount
+        const sc = "" + o.panel?.solvecount;
         draw.set_font(sc.length === 1 ? w * 0.41 : (sc.length === 2 ? w * 0.35 : w * 0.27));
         ctx.fillText(sc || 0, x, y, w, h);
       }

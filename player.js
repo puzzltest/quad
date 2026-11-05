@@ -14,6 +14,7 @@ export const player = {
   dx: 0,
   dy: 0,
   d: 0,
+  offset: { x: 0, y: 0, }, // coordinate offset
   speed: 22,
   size: 0.75,
   skin: "normal",
@@ -25,9 +26,9 @@ export const player = {
   init: function() {
     map.physics_ref = physics;
     firebase.send = function() {
+      // todo optimise this
       // firebase.set("/quad/timestamp", serverTimestamp());
       const o = {
-        id: the_id, // hmmm is there a better way to do this
         x: util.round_to(player.x, 100),
         y: util.round_to(player.y, 100),
         // t: serverTimestamp(),
@@ -55,7 +56,7 @@ export const player = {
     }
     x = Math.round(x);
     y = Math.round(y);
-    const tile = map.get_tile(x, y, z);
+    /*const tile = map.get_tile(x, y, z);
     if (tiledef[tile].force) {
       const f = tiledef[tile].force;
       let xx = x - player.x;
@@ -68,6 +69,24 @@ export const player = {
     }
     if (tiledef[tile].water) {
       // physics.teleport_player(x - player.dx, y - player.dy);
+    }
+     */
+    const o = map.get_object(x, y, z);
+    if (o?.symbol?.type && o.symbol.type === "art_warp") {
+      const { x: vx, y: vy } = this.velocity;
+      for (let i = 0; i < 4; i++) {
+        if ((o.symbol.d >> i) % 2 && util.dir4[i][0] * vx + util.dir4[i][1] * vy > 0.00001) {
+          const dx =  o.x + (o.symbol.x ?? 0) - x, dy = o.y +(o.symbol.y ?? 0) - y;
+          player.x += dx;
+          player.y += dy;
+          player_bodies[z].setPosition(new planck.Vec2(player.x, player.y));
+          camera.cx += dx;
+          camera.cy += dy;
+          player.offset.x -= dx;
+          player.offset.y -= dy;
+          return;
+        }
+      }
     }
     if ((map.name === "old" && z === 1 && ((x === 18 && player.dx === 1) || (x === 20 && player.dx === -1)) && y >= 19 && y <= 21) ||
         (map.name === "new" && z === 0 && x === 25 && ((y === -21 && player.dy === -1) || (y === -23 && player.dy === 1)))) {
@@ -102,6 +121,9 @@ export const player = {
   pre_move: function(dx, dy) {
     player.move_x += dx;
     player.move_y += dy;
+  },
+  get velocity() {
+    return player_bodies[this.z].getLinearVelocity();
   },
   get paused() {
     return (panel.active && !player.self_active) || panel.sign.active || panel.talk.active; // || panel.map.active;

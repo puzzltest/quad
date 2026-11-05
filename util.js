@@ -434,12 +434,12 @@ export const util = {
   // slow functions
   // zzz
   loadlist: async function(set) {
-    const q = await fetch("/w.txt"), r = q.body.getReader();
+    const q = await fetch("/w.txt"), r = q.body.getReader(), d = new TextDecoder();
     let s = "";
     while (123456) {
       const v = await r.read();
       if (v.done) break;
-      s += util.decoder.decode(v.value, { stream: true });
+      s += d.decode(v.value, { stream: true });
       let b = s.indexOf("\n");
       while (b >= 0) {
         const l = s.substring(0, b).trim();
@@ -453,11 +453,7 @@ export const util = {
   },
   getkey: async function(password, salt) { // not referring to the ti-basic thing lol
     const name = "PBKDF2", key = await window.crypto.subtle.importKey("raw", util.encoder.encode(password), { name }, false, ["deriveKey"]);
-    return await window.crypto.subtle.deriveKey(
-      { name, hash: "SHA-256", iterations: 123456, salt, },
-      key, { name: "AES-GCM", length: 256, },
-      true, ["encrypt", "decrypt"]
-    );
+    return await window.crypto.subtle.deriveKey({ name, hash: "SHA-256", iterations: 123456, salt, }, key, { name: "AES-GCM", length: 256, }, false, ["encrypt", "decrypt"]);
   },
   utoa: function(b) {
     return new Uint8Array(b).toBase64();

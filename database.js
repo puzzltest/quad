@@ -27,7 +27,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 export const firebase = {};
 export const the_id = util.randletters(10);
-export const VERSION = 130401; // remember to change...
+export const VERSION = 130500; // remember to change...
 const version = VERSION;
 
 let already_ran_connect = false;
@@ -228,6 +228,8 @@ firebase.init_map = function() {
       if (temp.account.logged_in) temp.account.load();
       v.map_done = true;
     });
+  } else {
+    document.title = "qat (old)";
   }
 };
 
